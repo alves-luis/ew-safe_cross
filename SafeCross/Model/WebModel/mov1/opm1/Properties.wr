@@ -1,0 +1,29 @@
+<OperationModule xmlns:gr="http://www.webratio.com/2006/WebML/Graph" gr:x="225" gr:y="145" id="mov1#opm1" name="Add">
+  <OperationUnits>
+    <InputCollectorUnit id="mov1#opm1#icu1" gr:x="30" gr:y="135">
+      <InputCollectorParameter id="mov1#opm1#icu1#icp2" name="y"/>
+      <InputCollectorParameter id="mov1#opm1#icu1#icp1" name="x"/>
+      <OKLink id="mov1#opm1#icu1#oln2" name="OKFlow2" to="mov1#opm1#cru3">
+        <LinkParameter id="mov1#opm1#icu1#oln2#par10" name="x_x" target="mov1#opm1#cru3.ent5#att9" source="mov1#opm1#icu1#icp1"/>
+        <LinkParameter id="mov1#opm1#icu1#oln2#par11" name="y_y" target="mov1#opm1#cru3.ent5#att10" source="mov1#opm1#icu1#icp2"/>
+      </OKLink>
+    </InputCollectorUnit>
+    <CreateUnit gr:x="530" gr:y="135" id="mov1#opm1#cru1" name="Add new crosswalk" entity="ent1">
+      <OKLink id="mov1#opm1#cru1#oln3" name="OKFlow3" to="mov1#opm1#okcu1">
+        <LinkParameter id="mov1#opm1#cru1#oln3#par14" name="oid_id" source="ent1#att1Array" target="mov1#opm1#okcu1#ocp1"/>
+      </OKLink>
+      <KOLink id="mov1#opm1#cru1#kln3" name="KOFlow3" to="mov1#opm1#kocu1" automaticCoupling="true" gr:bendpoints="-1,65,-246,0"/>
+    </CreateUnit>
+    <OKCollectorUnit gr:x="725" gr:y="95" id="mov1#opm1#okcu1" name="OK Port1">
+      <OutputCollectorParameter id="mov1#opm1#okcu1#ocp1" name="id"/>
+    </OKCollectorUnit>
+    <KOCollectorUnit gr:x="725" gr:y="200" id="mov1#opm1#kocu1" name="KO Port1"/>
+    <CreateUnit id="mov1#opm1#cru3" name="Add new location" gr:x="335" gr:y="135" entity="ent5">
+      <OKLink id="mov1#opm1#cru3#oln4" name="OKFlow4" to="mov1#opm1#cru1">
+        <LinkParameter id="mov1#opm1#cru3#oln4#par8" name="oid_Location.oid(CrosswalkToLocation)" source="ent5#att8Array" target="mov1#opm1#cru1.rel15#role30.ent5#att8"/>
+        <LinkParameter id="mov1#opm1#cru3#oln4#par9" name="0_traffic_light" sourceValue="0" target="mov1#opm1#cru1.ent1#att11"/>
+      </OKLink>
+      <KOLink id="mov1#opm1#cru3#kln2" name="KOFlow2" to="mov1#opm1#kocu1" automaticCoupling="true" gr:bendpoints="-1,60,-441,5"/>
+    </CreateUnit>
+  </OperationUnits>
+</OperationModule>
