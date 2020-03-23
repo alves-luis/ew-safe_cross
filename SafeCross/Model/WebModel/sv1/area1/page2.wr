@@ -1,9 +1,18 @@
-<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" gr:x="255" gr:y="0" id="sv1#area1#page2" name="Crosswalk" linkOrder="sv1#area1#page2#ln4">
+<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" gr:x="210" gr:y="0" id="sv1#area1#page2" name="Crosswalk Details" linkOrder="sv1#area1#page2#ln4">
   <ContentUnits>
-    <DataUnit id="sv1#area1#page2#dau2" name="Crosswalk" gr:x="0" gr:y="0" entity="ent1" displayAttributes="ent1#att1 ent1#att11 count(rel10#role19.ent3#att5) rel15#role30.ent5#att9 rel15#role30.ent5#att10 count(rel8#role15.ent2#att4)" customDescriptor="false">
+    <DataUnit id="sv1#area1#page2#dau2" name="Crosswalk" gr:x="0" gr:y="0" entity="ent1" displayAttributes="ent1#att1 ent1#att11 count(rel10#role19.ent3#att5) rel15#role30.ent5#att9 rel15#role30.ent5#att10 count(rel8#role15.ent2#att4)" customDescriptor="false" linkOrder="sv1#area1#page2#dau2#ln5 sv1#area1#page2#dau2#ln8">
       <Selector id="sv1#area1#page2#dau2#su2" defaultPolicy="fill" booleanOperator="and">
         <KeyCondition id="sv1#area1#page2#dau2#su2#kcond2" name="KeyCondition1" predicate="in" implied="false"/>
       </Selector>
+      <Link id="sv1#area1#page2#dau2#ln5" name="Edit" to="sv1#area1#page4#enu2" type="normal" validate="true">
+        <LinkParameter id="sv1#area1#page2#dau2#ln5#par20" name="oid_id" source="data.ent1#att1" target="sv1#area1#page4#enu2#fld5_slot"/>
+        <LinkParameter id="sv1#area1#page2#dau2#ln5#par21" name="oid_Key Condition [oid]" source="data.ent1#att1" target="sv1#area1#page4#enu2.ent1#att1"/>
+        <LinkParameter id="sv1#area1#page2#dau2#ln5#par22" name="CrosswalkToLocation.x_x" source="data.rel15#role30$ent5#att9" target="sv1#area1#page4#enu2#fld3_slot"/>
+        <LinkParameter id="sv1#area1#page2#dau2#ln5#par23" name="CrosswalkToLocation.y_y" source="data.rel15#role30$ent5#att10" target="sv1#area1#page4#enu2#fld4_slot"/>
+      </Link>
+      <Link id="sv1#area1#page2#dau2#ln8" name="Delete" to="sv1#miu3" type="normal" validate="true" gr:bendpoints="36,-108,41,92">
+        <LinkParameter id="sv1#area1#page2#dau2#ln8#par81" name="Key [oid]_id" source="data.ent1#att1" target="sv1#miu3.mov1#opm3#icu3#icp6"/>
+      </Link>
     </DataUnit>
   </ContentUnits>
   <layout:Grid containerType="grid">
@@ -16,6 +25,8 @@
           <layout:Attribute attribute="rel15#role30.ent5#att9"/>
           <layout:Attribute attribute="rel15#role30.ent5#att10"/>
           <layout:Attribute attribute="count(rel8#role15.ent2#att4)"/>
+          <layout:Link link="sv1#area1#page2#dau2#ln5"/>
+          <layout:Link link="sv1#area1#page2#dau2#ln8"/>
         </layout:Unit>
       </layout:Cell>
       <layout:Cell/>

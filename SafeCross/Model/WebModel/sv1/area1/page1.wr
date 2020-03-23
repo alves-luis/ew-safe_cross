@@ -1,4 +1,4 @@
-<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" gr:x="45" gr:y="5" id="sv1#area1#page1" name="Crosswalks" linkOrder="sv1#area1#page1#ln2">
+<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" gr:x="0" gr:y="10" id="sv1#area1#page1" name="Crosswalks" linkOrder="sv1#area1#page1#ln2">
   <ContentUnits>
     <IndexUnit gr:x="0" gr:y="0" id="sv1#area1#page1#inu1" name="Crosswalk List" entity="ent1" displayAttributes="ent1#att1 rel15#role30.ent5#att9 rel15#role30.ent5#att10" linkOrder="sv1#area1#page1#inu1#ln1">
       <Link id="sv1#area1#page1#inu1#ln1" name="See more" to="sv1#area1#page2#dau2" automaticCoupling="true" type="normal" validate="true"/>

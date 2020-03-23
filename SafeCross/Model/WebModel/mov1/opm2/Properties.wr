@@ -1,0 +1,90 @@
+<OperationModule xmlns:gr="http://www.webratio.com/2006/WebML/Graph" gr:x="250" gr:y="255" id="mov1#opm2" name="Edit">
+  <OperationUnits>
+    <InputCollectorUnit id="mov1#opm2#icu2" gr:x="5" gr:y="270">
+      <OKLink id="mov1#opm2#icu2#oln15" name="OKFlow15" to="mov1#opm2#seu3">
+        <LinkParameter id="mov1#opm2#icu2#oln15#par43" name="id_PASSING" source="mov1#opm2#icu2#icp5" passing="true"/>
+        <LinkParameter id="mov1#opm2#icu2#oln15#par44" name="x_PASSING" source="mov1#opm2#icu2#icp3" passing="true"/>
+        <LinkParameter id="mov1#opm2#icu2#oln15#par45" name="y_PASSING" source="mov1#opm2#icu2#icp4" passing="true"/>
+        <LinkParameter id="mov1#opm2#icu2#oln15#par46" name="x_x" source="mov1#opm2#icu2#icp3" target="mov1#opm2#seu3#su4#acond5"/>
+        <LinkParameter id="mov1#opm2#icu2#oln15#par47" name="y_y" source="mov1#opm2#icu2#icp4" target="mov1#opm2#seu3#su4#acond6"/>
+      </OKLink>
+      <InputCollectorParameter id="mov1#opm2#icu2#icp5" name="id"/>
+      <InputCollectorParameter id="mov1#opm2#icu2#icp4" name="y"/>
+      <InputCollectorParameter id="mov1#opm2#icu2#icp3" name="x"/>
+    </InputCollectorUnit>
+    <SwitchUnit id="mov1#opm2#switch1" name="Location exists?" gr:x="505" gr:y="235">
+      <Case value="0"/>
+      <OKLink id="mov1#opm2#switch1#oln2" name="OKFlow12" to="mov1#opm2#cru5" code="0">
+        <LinkParameter id="mov1#opm2#switch1#oln2#par55" name="x_PASSING_x" sourceLinkParameter="mov1#opm2#seu3#oln9#par48" target="mov1#opm2#cru5.ent5#att9"/>
+        <LinkParameter id="mov1#opm2#switch1#oln2#par56" name="y_PASSING_y" sourceLinkParameter="mov1#opm2#seu3#oln9#par49" target="mov1#opm2#cru5.ent5#att10"/>
+        <LinkParameter id="mov1#opm2#switch1#oln2#par59" name="id_PASSING" sourceLinkParameter="mov1#opm2#seu3#oln9#par58" passing="true"/>
+      </OKLink>
+      <OKLink id="mov1#opm2#switch1#oln5" name="OKFlow13" to="mov1#opm2#seu5">
+        <LinkParameter id="mov1#opm2#switch1#oln5#par51" name="oid_PASSING_location [oid]" sourceLinkParameter="mov1#opm2#seu3#oln9#par50" target="mov1#opm2#seu5#su8#rcond3.ent5#att8"/>
+        <LinkParameter id="mov1#opm2#switch1#oln5#par52" name="x_PASSING" sourceLinkParameter="mov1#opm2#seu3#oln9#par48" passing="true"/>
+        <LinkParameter id="mov1#opm2#switch1#oln5#par53" name="y_PASSING" sourceLinkParameter="mov1#opm2#seu3#oln9#par49" passing="true"/>
+        <LinkParameter id="mov1#opm2#switch1#oln5#par61" name="oid_PASSING" sourceLinkParameter="mov1#opm2#seu3#oln9#par50" passing="true"/>
+        <LinkParameter id="mov1#opm2#switch1#oln5#par64" name="id_PASSING" sourceLinkParameter="mov1#opm2#seu3#oln9#par58" passing="true"/>
+      </OKLink>
+    </SwitchUnit>
+    <OKCollectorUnit id="mov1#opm2#okcu2" name="OK Port1" gr:x="1060" gr:y="225">
+      <OutputCollectorParameter id="mov1#opm2#okcu2#ocp2" name="id"/>
+    </OKCollectorUnit>
+    <KOCollectorUnit id="mov1#opm2#kocu2" name="KO Port1" gr:x="1060" gr:y="365">
+      <OutputCollectorParameter id="mov1#opm2#kocu2#ocp3" name="id"/>
+    </KOCollectorUnit>
+    <SelectorUnit id="mov1#opm2#seu3" name="Location w/ new x &amp; y" gr:x="290" gr:y="210" entity="ent5">
+      <Selector id="mov1#opm2#seu3#su4" defaultPolicy="fill" booleanOperator="and">
+        <AttributesCondition id="mov1#opm2#seu3#su4#acond5" name="x" predicate="eq" booleanOperator="or" implied="false" attributes="ent5#att9"/>
+        <AttributesCondition id="mov1#opm2#seu3#su4#acond6" name="y" predicate="eq" booleanOperator="or" implied="false" attributes="ent5#att10"/>
+      </Selector>
+      <OKLink id="mov1#opm2#seu3#oln9" name="OKFlow11" to="mov1#opm2#switch1">
+        <LinkParameter id="mov1#opm2#seu3#oln9#par10" name="Data Size_Switch" source="dataSize" target="mov1#opm2#switch1.switch"/>
+        <LinkParameter id="mov1#opm2#seu3#oln9#par48" name="x_PASSING" sourceLinkParameter="mov1#opm2#icu2#oln15#par44" passing="true"/>
+        <LinkParameter id="mov1#opm2#seu3#oln9#par49" name="y_PASSING" sourceLinkParameter="mov1#opm2#icu2#oln15#par45" passing="true"/>
+        <LinkParameter id="mov1#opm2#seu3#oln9#par50" name="oid_PASSING" source="ent5#att8Array" passing="true"/>
+        <LinkParameter id="mov1#opm2#seu3#oln9#par58" name="id_PASSING" sourceLinkParameter="mov1#opm2#icu2#oln15#par43" passing="true"/>
+      </OKLink>
+    </SelectorUnit>
+    <SelectorUnit gr:x="490" gr:y="360" id="mov1#opm2#seu5" name="Is crosswalk?" entity="ent1">
+      <OKLink id="mov1#opm2#seu5#oln19" name="OKFlow19" to="mov1#opm2#switch2">
+        <LinkParameter id="mov1#opm2#seu5#oln19#par54" name="Data Size_Switch" source="dataSize" target="mov1#opm2#switch2.switch"/>
+        <LinkParameter id="mov1#opm2#seu5#oln19#par62" name="oid_PASSING" sourceLinkParameter="mov1#opm2#switch1#oln5#par61" passing="true"/>
+        <LinkParameter id="mov1#opm2#seu5#oln19#par65" name="id_PASSING" sourceLinkParameter="mov1#opm2#switch1#oln5#par64" passing="true"/>
+      </OKLink>
+      <Selector id="mov1#opm2#seu5#su8" defaultPolicy="fill" booleanOperator="and">
+        <RelationshipRoleCondition id="mov1#opm2#seu5#su8#rcond3" name="location" predicate="in" implied="false" role="rel15#role29"/>
+      </Selector>
+    </SelectorUnit>
+    <SwitchUnit gr:x="710" gr:y="380" id="mov1#opm2#switch2" name="Is crosswalk?">
+      <OKLink id="mov1#opm2#switch2#oln20" name="OKFlow20" to="mov1#opm2#kocu2" code="1">
+        <LinkParameter id="mov1#opm2#switch2#oln20#par70" name="id_PASSING_id" sourceLinkParameter="mov1#opm2#seu5#oln19#par65" target="mov1#opm2#kocu2#ocp3"/>
+      </OKLink>
+      <Case value="1"/>
+      <OKLink id="mov1#opm2#switch2#oln24" name="OKFlow24" to="mov1#opm2#mfu3">
+        <LinkParameter id="mov1#opm2#switch2#oln24#par63" name="oid_PASSING_Location.oid(CrosswalkToLocation)" sourceLinkParameter="mov1#opm2#seu5#oln19#par62" target="mov1#opm2#mfu3.rel15#role30.ent5#att8"/>
+        <LinkParameter id="mov1#opm2#switch2#oln24#par66" name="id_PASSING_KeyCondition4 [oid]" sourceLinkParameter="mov1#opm2#seu5#oln19#par65" target="mov1#opm2#mfu3#su9#kcond4.ent1#att1"/>
+      </OKLink>
+    </SwitchUnit>
+    <CreateUnit gr:x="715" gr:y="225" id="mov1#opm2#cru5" name="Create location" entity="ent5">
+      <OKLink id="mov1#opm2#cru5#oln21" name="OKFlow21" to="mov1#opm2#mfu3">
+        <LinkParameter id="mov1#opm2#cru5#oln21#par57" name="oid_Location.oid(CrosswalkToLocation)" source="ent5#att8Array" target="mov1#opm2#mfu3.rel15#role30.ent5#att8"/>
+        <LinkParameter id="mov1#opm2#cru5#oln21#par60" name="id_PASSING_KeyCondition4 [oid]" sourceLinkParameter="mov1#opm2#switch1#oln2#par59" target="mov1#opm2#mfu3#su9#kcond4.ent1#att1"/>
+      </OKLink>
+      <KOLink id="mov1#opm2#cru5#kln12" name="KOFlow12" to="mov1#opm2#kocu2" gr:bendpoints="151,110,-254,-30">
+        <LinkParameter id="mov1#opm2#cru5#kln12#par75" name="id_PASSING_id" sourceLinkParameter="mov1#opm2#switch1#oln2#par59" target="mov1#opm2#kocu2#ocp3"/>
+      </KOLink>
+    </CreateUnit>
+    <ModifyUnit gr:x="870" gr:y="220" id="mov1#opm2#mfu3" name="Update crosswalk" entity="ent1">
+      <Selector id="mov1#opm2#mfu3#su9" defaultPolicy="fill" booleanOperator="and">
+        <KeyCondition id="mov1#opm2#mfu3#su9#kcond4" name="KeyCondition4" predicate="in" implied="false"/>
+      </Selector>
+      <OKLink id="mov1#opm2#mfu3#oln22" name="OKFlow22" to="mov1#opm2#okcu2" gr:bendpoints="70,-1,-170,4">
+        <LinkParameter id="mov1#opm2#mfu3#oln22#par71" name="oid_id" source="ent1#att1Array" target="mov1#opm2#okcu2#ocp2"/>
+      </OKLink>
+      <KOLink id="mov1#opm2#mfu3#kln11" name="KOFlow11" to="mov1#opm2#kocu2">
+        <LinkParameter id="mov1#opm2#mfu3#kln11#par76" name="oid_id" source="ent1#att1Array" target="mov1#opm2#kocu2#ocp3"/>
+      </KOLink>
+    </ModifyUnit>
+  </OperationUnits>
+</OperationModule>

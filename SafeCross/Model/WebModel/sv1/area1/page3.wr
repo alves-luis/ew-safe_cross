@@ -1,7 +1,7 @@
-<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" gr:x="0" gr:y="200" id="sv1#area1#page3" name="Add crosswalk">
+<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" gr:x="10" gr:y="200" id="sv1#area1#page3" name="Add crosswalk">
   <ContentUnits>
     <EntryUnit gr:x="0" gr:y="0" id="sv1#area1#page3#enu1" name="New crosswalk" entity="ent1" linkOrder="sv1#area1#page3#enu1#ln3" fieldOrder="sv1#area1#page3#enu1#fld1 sv1#area1#page3#enu1#fld2">
-      <Link id="sv1#area1#page3#enu1#ln3" name="Add" to="sv1#miu1" type="normal" validate="true" gr:bendpoints="-1,83,-61,-82;60,82,0,-83">
+      <Link id="sv1#area1#page3#enu1#ln3" name="Add" to="sv1#miu1" type="normal" validate="true" gr:bendpoints="-2,84,3,-81">
         <LinkParameter id="sv1#area1#page3#enu1#ln3#par3" name="x_x" source="sv1#area1#page3#enu1#fld1" target="sv1#miu1.mov1#opm1#icu1#icp1"/>
         <LinkParameter id="sv1#area1#page3#enu1#ln3#par4" name="y_y" source="sv1#area1#page3#enu1#fld2" target="sv1#miu1.mov1#opm1#icu1#icp2"/>
       </Link>

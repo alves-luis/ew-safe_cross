@@ -1,0 +1,35 @@
+<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" gr:x="405" gr:y="10" id="sv1#area1#page4" name="Edit crosswalk">
+  <ContentUnits>
+    <EntryUnit gr:x="0" gr:y="0" id="sv1#area1#page4#enu2" name="Edit crosswalk" entity="ent1" fieldOrder="sv1#area1#page4#enu2#fld3 sv1#area1#page4#enu2#fld4" linkOrder="sv1#area1#page4#enu2#ln6">
+      <Field id="sv1#area1#page4#enu2#fld4" name="y" type="float" modifiable="true" preloaded="true"/>
+      <Field id="sv1#area1#page4#enu2#fld3" name="x" type="float" modifiable="true" preloaded="true"/>
+      <Link id="sv1#area1#page4#enu2#ln6" name="Edit" to="sv1#miu2" type="normal" validate="true">
+        <LinkParameter id="sv1#area1#page4#enu2#ln6#par67" name="Key [oid]_id" source="key.ent1#att1" target="sv1#miu2.mov1#opm2#icu2#icp5"/>
+        <LinkParameter id="sv1#area1#page4#enu2#ln6#par68" name="x_x" source="sv1#area1#page4#enu2#fld3" target="sv1#miu2.mov1#opm2#icu2#icp3"/>
+        <LinkParameter id="sv1#area1#page4#enu2#ln6#par69" name="y_y" source="sv1#area1#page4#enu2#fld4" target="sv1#miu2.mov1#opm2#icu2#icp4"/>
+      </Link>
+    </EntryUnit>
+  </ContentUnits>
+  <layout:Grid containerType="grid">
+    <layout:Row>
+      <layout:Cell colspan="12">
+        <layout:Unit unitId="sv1#area1#page4#enu2">
+          <layout:Field field="sv1#area1#page4#enu2#fld3"/>
+          <layout:Field field="sv1#area1#page4#enu2#fld4"/>
+          <layout:Link link="sv1#area1#page4#enu2#ln6"/>
+        </layout:Unit>
+      </layout:Cell>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+  </layout:Grid>
+</Page>

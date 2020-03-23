@@ -61,8 +61,7 @@
     <Attribute id="ent5#att9" name="x" type="float" db:column="x"/>
     <Attribute id="ent5#att10" name="y" type="float" db:column="y"/>
   </Entity>
-  <db:Database id="db2" name="Database" type="MySQL (InnoDB)" url="jdbc:mysql://localhost:3306/safe_cross" username="root" password="1234567890">
-  </db:Database>
+  <db:Database id="db2" name="Database" type="MySQL (InnoDB)" url="jdbc:mysql://localhost:3306/safe_cross" username="root" password="1234567890"/>
   <Relationship id="rel8" name="Crosswalk_Vehicle" sourceEntity="ent1" targetEntity="ent2" db:database="db2" db:table="vehicle">
     <RelationshipRole1 id="rel8#role15" name="CrosswalkToVehicle" maxCard="N">
       <db:JoinColumn attribute="ent1#att1" name="crosswalk_oid"/>
