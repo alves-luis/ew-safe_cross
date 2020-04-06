@@ -50,8 +50,9 @@
     <Attribute id="ent1#att1" key="true" name="oid" type="integer" db:column="oid"/>
     <Attribute id="ent1#att11" name="traffic_light" type="integer" db:column="traffic_light"/>
   </Entity>
-  <Entity gr:x="175" gr:y="230" id="ent2" name="Vehicle" duration="persistent" db:database="db2" db:table="vehicle">
+  <Entity gr:x="165" gr:y="220" id="ent2" name="Vehicle" duration="persistent" db:database="db2" db:table="vehicle" attributeOrder="ent2#att4 ent2#att2">
     <Attribute id="ent2#att4" key="true" name="oid" type="integer" db:column="oid"/>
+    <Attribute id="ent2#att2" name="distance" type="float" db:column="distance"/>
   </Entity>
   <Entity gr:x="370" gr:y="385" id="ent3" name="Pedestrian" duration="persistent" db:database="db2" db:table="pedestrian">
     <Attribute id="ent3#att5" key="true" name="oid" type="integer" db:column="oid"/>
@@ -61,23 +62,8 @@
     <Attribute id="ent5#att9" name="x" type="float" db:column="x"/>
     <Attribute id="ent5#att10" name="y" type="float" db:column="y"/>
   </Entity>
-  <db:Database id="db2" name="Database" type="MySQL (InnoDB)" url="jdbc:mysql://localhost:3306/safe_cross" username="root" password="1234567890"/>
-  <Relationship id="rel8" name="Crosswalk_Vehicle" sourceEntity="ent1" targetEntity="ent2" db:database="db2" db:table="vehicle">
-    <RelationshipRole1 id="rel8#role15" name="CrosswalkToVehicle" maxCard="N">
-      <db:JoinColumn attribute="ent1#att1" name="crosswalk_oid"/>
-    </RelationshipRole1>
-    <RelationshipRole2 id="rel8#role16" name="VehicleToCrosswalk" maxCard="1">
-      <db:JoinColumn attribute="ent2#att4" name="oid"/>
-    </RelationshipRole2>
-  </Relationship>
-  <Relationship id="rel10" name="Crosswalk_Pedestrian" sourceEntity="ent1" targetEntity="ent3" db:database="db2" db:table="pedestrian">
-    <RelationshipRole1 id="rel10#role19" name="CrosswalkToPedestrian" maxCard="N">
-      <db:JoinColumn attribute="ent1#att1" name="crosswalk_oid"/>
-    </RelationshipRole1>
-    <RelationshipRole2 id="rel10#role20" name="PedestrianToCrosswalk" maxCard="1">
-      <db:JoinColumn attribute="ent3#att5" name="oid"/>
-    </RelationshipRole2>
-  </Relationship>
+  <db:Database id="db2" name="Database" type="MySQL (InnoDB)" url="jdbc:mysql://localhost:3306/safe_cross" username="root" password="1234567890">
+  </db:Database>
   <Relationship id="rel13" name="Location_Vehicle" sourceEntity="ent5" targetEntity="ent2" db:database="db2" db:table="vehicle">
     <RelationshipRole1 id="rel13#role25" name="LocationToVehicle" maxCard="1">
       <db:JoinColumn attribute="ent5#att8" name="location_oid"/>
@@ -100,6 +86,22 @@
     </RelationshipRole1>
     <RelationshipRole2 id="rel15#role30" name="CrosswalkToLocation" maxCard="1">
       <db:JoinColumn attribute="ent1#att1" name="oid"/>
+    </RelationshipRole2>
+  </Relationship>
+  <Relationship id="rel1" name="Crosswalk_Pedestrian" sourceEntity="ent1" targetEntity="ent3" db:database="db2" db:table="pedestrian">
+    <RelationshipRole1 id="rel1#role1" name="CrosswalkToPedestrian" maxCard="N">
+      <db:JoinColumn attribute="ent1#att1" name="crosswalk_oid"/>
+    </RelationshipRole1>
+    <RelationshipRole2 id="rel1#role2" name="PedestrianToCrosswalk" maxCard="1">
+      <db:JoinColumn attribute="ent3#att5" name="oid"/>
+    </RelationshipRole2>
+  </Relationship>
+  <Relationship id="rel2" name="Crosswalk_Vehicle" sourceEntity="ent1" targetEntity="ent2" db:database="db2" db:table="vehicle">
+    <RelationshipRole1 id="rel2#role3" name="CrosswalkToVehicle" maxCard="N">
+      <db:JoinColumn attribute="ent1#att1" name="crosswalk_oid"/>
+    </RelationshipRole1>
+    <RelationshipRole2 id="rel2#role4" name="VehicleToCrosswalk" maxCard="1">
+      <db:JoinColumn attribute="ent2#att4" name="oid"/>
     </RelationshipRole2>
   </Relationship>
 </DataModel>

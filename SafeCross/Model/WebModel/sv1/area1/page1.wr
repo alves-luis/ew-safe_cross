@@ -1,17 +1,23 @@
 <Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" gr:x="0" gr:y="10" id="sv1#area1#page1" name="Crosswalks" linkOrder="sv1#area1#page1#ln2">
   <ContentUnits>
-    <IndexUnit gr:x="0" gr:y="0" id="sv1#area1#page1#inu1" name="Crosswalk List" entity="ent1" displayAttributes="ent1#att1 rel15#role30.ent5#att9 rel15#role30.ent5#att10" linkOrder="sv1#area1#page1#inu1#ln1">
-      <Link id="sv1#area1#page1#inu1#ln1" name="See more" to="sv1#area1#page2#dau2" automaticCoupling="true" type="normal" validate="true"/>
+    <IndexUnit gr:x="0" gr:y="0" id="sv1#area1#page1#inu1" name="Crosswalk List" entity="ent1" displayAttributes="ent1#att1 rel15#role30.ent5#att9 rel15#role30.ent5#att10" linkOrder="sv1#area1#page1#inu1#ln7">
+      <Link id="sv1#area1#page1#inu1#ln7" name="Flow7" to="sv1#miu4" type="normal" validate="true">
+        <LinkParameter id="sv1#area1#page1#inu1#ln7#par1" name="CrosswalkToLocation.x_PASSING" source="data[].rel15#role30$ent5#att9" passing="true"/>
+        <LinkParameter id="sv1#area1#page1#inu1#ln7#par2" name="CrosswalkToLocation.y_PASSING" source="data[].rel15#role30$ent5#att10" passing="true"/>
+        <LinkParameter id="sv1#area1#page1#inu1#ln7#par98" name="CrosswalkToLocation.oid_crosswalk_id" source="data[].ent1#att1" target="sv1#miu4.mov1#opm4#icu4#icp9"/>
+        <LinkParameter id="sv1#area1#page1#inu1#ln7#par99" name="CrosswalkToLocation.x_crosswalk_x" source="data[].rel15#role30$ent5#att9" target="sv1#miu4.mov1#opm4#icu4#icp7"/>
+        <LinkParameter id="sv1#area1#page1#inu1#ln7#par100" name="CrosswalkToLocation.y_crosswalk_y" source="data[].rel15#role30$ent5#att10" target="sv1#miu4.mov1#opm4#icu4#icp8"/>
+      </Link>
     </IndexUnit>
   </ContentUnits>
   <layout:Grid containerType="grid">
     <layout:Row>
       <layout:Cell colspan="12">
         <layout:Unit unitId="sv1#area1#page1#inu1">
-          <layout:Link link="sv1#area1#page1#inu1#ln1"/>
           <layout:Attribute attribute="ent1#att1"/>
           <layout:Attribute attribute="rel15#role30.ent5#att9"/>
           <layout:Attribute attribute="rel15#role30.ent5#att10"/>
+          <layout:Link link="sv1#area1#page1#inu1#ln7"/>
         </layout:Unit>
       </layout:Cell>
       <layout:Cell/>
