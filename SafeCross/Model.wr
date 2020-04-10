@@ -52,13 +52,13 @@
     </Relationship>  
     <Entity gr:x="345" gr:y="220" id="ent1" name="Crosswalk" duration="persistent" attributeOrder="att1 att11" db:database="db2" db:table="crosswalk"> 
       <Attribute id="att1" key="true" name="oid" type="integer" db:column="oid"/>  
-      <Attribute id="att11" name="traffic_light" type="integer" db:column="traffic_light"/> 
+      <Attribute id="att11" name="traffic_light" type="string" db:column="traffic_light" key="false"/> 
     </Entity>  
     <Entity gr:x="165" gr:y="220" id="ent2" name="Vehicle" duration="persistent" db:database="db2" db:table="vehicle" attributeOrder="att4 att2"> 
       <Attribute id="att4" key="true" name="oid" type="integer" db:column="oid"/>  
       <Attribute id="att2" name="distance" type="float" db:column="distance"/> 
     </Entity>  
-    <Entity gr:x="370" gr:y="385" id="ent3" name="Pedestrian" duration="persistent" db:database="db2" db:table="pedestrian" attributeOrder="att5 att3"> 
+    <Entity gr:x="360" gr:y="375" id="ent3" name="Pedestrian" duration="persistent" db:database="db2" db:table="pedestrian" attributeOrder="att5 att3"> 
       <Attribute id="att5" key="true" name="oid" type="integer" db:column="oid"/>  
       <Attribute id="att3" name="distance" type="float" db:column="distance"/> 
     </Entity>  
@@ -67,11 +67,11 @@
       <Attribute id="att9" name="x" type="float" db:column="x"/>  
       <Attribute id="att10" name="y" type="float" db:column="y"/> 
     </Entity>  
-    <db:Database id="db2" name="Database" type="MySQL (InnoDB)" url="jdbc:mysql://localhost:3306/safe_cross" username="root" password="1234567890"> 
+    <db:Database id="db2" name="Database" type="MySQL (InnoDB)" url="jdbc:mysql://localhost:3306/safe_cross" username="root" cryptedPassword="true" password="OFJhZmFlbGE3"> 
       <temp:DBMetaData driverMajorVersion="5" driverMinorVersion="1" driverVersion="mysql-connector-java-5.1.47 ( Revision: fe1903b1ecb4a96a917f7ed3190d80c049b1de29 )" productVersion="8.0.19" identifierQuoteString="`" transactionLevel="Repeatable read" driverName="MySQL Connector Java" productName="MySQL"> 
         <temp:Table type="TABLE" ignoreIndexes="false" name="crosswalk" refreshed="true"> 
           <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="oid" primaryKey="true" notNull="true"/>  
-          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="traffic_light" primaryKey="false" notNull="false"/>  
+          <temp:Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="VARCHAR" size="255" decimalDigits="0" name="traffic_light" primaryKey="false" notNull="false"/>  
           <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="location_oid" primaryKey="false" notNull="false"/> 
         </temp:Table>  
         <temp:Table type="TABLE" ignoreIndexes="false" name="group" refreshed="true"> 
@@ -95,9 +95,9 @@
         </temp:Table>  
         <temp:Table type="TABLE" ignoreIndexes="false" name="pedestrian" refreshed="true"> 
           <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="oid" primaryKey="true" notNull="true"/>  
+          <temp:Column sqlTypeId="8" indexed="unknown" autoIncrement="false" type="DOUBLE" size="22" decimalDigits="0" name="distance" primaryKey="false" notNull="false"/>  
           <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="crosswalk_oid" primaryKey="false" notNull="false"/>  
-          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="location_oid" primaryKey="false" notNull="false"/>  
-          <temp:Column sqlTypeId="8" indexed="unknown" autoIncrement="false" type="DOUBLE" size="22" decimalDigits="0" name="distance" primaryKey="false" notNull="false"/> 
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="location_oid" primaryKey="false" notNull="false"/> 
         </temp:Table>  
         <temp:Table type="TABLE" ignoreIndexes="false" name="user" refreshed="true"> 
           <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="oid" primaryKey="true" notNull="true"/>  
@@ -112,9 +112,9 @@
         </temp:Table>  
         <temp:Table type="TABLE" ignoreIndexes="false" name="vehicle" refreshed="true"> 
           <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="oid" primaryKey="true" notNull="true"/>  
+          <temp:Column sqlTypeId="8" indexed="unknown" autoIncrement="false" type="DOUBLE" size="22" decimalDigits="0" name="distance" primaryKey="false" notNull="false"/>  
           <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="location_oid" primaryKey="false" notNull="false"/>  
-          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="crosswalk_oid" primaryKey="false" notNull="false"/>  
-          <temp:Column sqlTypeId="8" indexed="unknown" autoIncrement="false" type="DOUBLE" size="22" decimalDigits="0" name="distance" primaryKey="false" notNull="false"/> 
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="crosswalk_oid" primaryKey="false" notNull="false"/> 
         </temp:Table> 
       </temp:DBMetaData> 
     </db:Database>  
@@ -186,19 +186,20 @@
               <LinkParameter id="par29" name="y_PASSING" source="icp2" passing="true"/> 
             </OKLink> 
           </InputCollectorUnit>  
-          <CreateUnit gr:x="730" gr:y="110" id="cru1" name="Add new crosswalk" entity="ent1"> 
+          <CreateUnit gr:x="730" gr:y="120" id="cru1" name="Add new crosswalk" entity="ent1"> 
             <OKLink id="oln3" name="OKFlow3" to="okcu1"> 
               <LinkParameter id="par14" name="oid_id" source="att1Array" target="ocp1"/> 
             </OKLink>  
             <KOLink id="kln3" name="KOFlow3" to="kocu1" automaticCoupling="true" gr:bendpoints="0,95,-225,0"/> 
           </CreateUnit>  
           <OKCollectorUnit gr:x="1155" gr:y="120" id="okcu1" name="OK Port1"> 
-            <OutputCollectorParameter id="ocp1" name="id"/> 
+            <OutputCollectorParameter id="ocp1" name="id"/>  
+            <OutputCollectorParameter id="ocp16" name="message" value="Crosswalk created!"/> 
           </OKCollectorUnit>  
           <KOCollectorUnit gr:x="1155" gr:y="215" id="kocu1" name="KO Port1"> 
             <OutputCollectorParameter id="ocp19" name="message" value="A Crosswalk with coordinates ($$x$$, $$y$$) already exists!"/> 
           </KOCollectorUnit>  
-          <CreateUnit id="cru3" name="Add new location" gr:x="545" gr:y="110" entity="ent5"> 
+          <CreateUnit id="cru3" name="Add new location" gr:x="545" gr:y="120" entity="ent5"> 
             <OKLink id="oln4" name="OKFlow4" to="cru1"> 
               <LinkParameter id="par8" name="oid_Location.oid(CrosswalkToLocation)" source="att8Array" target="cru1.role30.att8"/>  
               <LinkParameter id="par9" name="0_traffic_light" sourceValue="0" target="cru1.att11"/> 
@@ -263,8 +264,9 @@
               <LinkParameter id="par328" name="new_y_PASSING" source="icp4" passing="true"/> 
             </OKLink> 
           </InputCollectorUnit>  
-          <OKCollectorUnit id="okcu2" name="OK Port1" gr:x="1055" gr:y="230"> 
-            <OutputCollectorParameter id="ocp2" name="id"/> 
+          <OKCollectorUnit id="okcu2" name="OK Port1" gr:x="1055" gr:y="225"> 
+            <OutputCollectorParameter id="ocp2" name="id"/>  
+            <OutputCollectorParameter id="ocp17" name="message" value="Crosswalk edited!"/> 
           </OKCollectorUnit>  
           <KOCollectorUnit id="kocu2" name="KO Port1" gr:x="1055" gr:y="370"> 
             <OutputCollectorParameter id="ocp3" name="id"/>  
@@ -363,122 +365,107 @@
       </OperationModule>  
       <OperationModule gr:x="630" gr:y="180" id="opm4" name="Count nearby vehicles"> 
         <OperationUnits> 
-          <InputCollectorUnit id="icu4" gr:x="35" gr:y="215"> 
+          <InputCollectorUnit id="icu4" gr:x="35" gr:y="325"> 
             <InputCollectorParameter id="icp8" name="crosswalk_y"/>  
             <InputCollectorParameter id="icp7" name="crosswalk_x"/>  
             <InputCollectorParameter id="icp9" name="crosswalk_id"/>  
-            <OKLink id="oln34" name="Flow10" to="seu6"> 
+            <OKLink id="oln34" name="Flow10" to="seu6" gr:bendpoints="81,-95,-119,0"> 
               <LinkParameter id="par130" name="crosswalk_id_PASSING" source="icp9" passing="true"/>  
               <LinkParameter id="par131" name="crosswalk_x_PASSING" source="icp7" passing="true"/>  
               <LinkParameter id="par132" name="crosswalk_y_PASSING" source="icp8" passing="true"/> 
             </OKLink> 
           </InputCollectorUnit>  
-          <SelectorUnit gr:x="240" gr:y="445" id="seu6" name="Vehicles nearby" entity="ent2" distinctAttributes="role26.att9 role26.att10 att4"> 
-            <OKLink id="oln31" name="Flow1" to="inn1"> 
-              <LinkParameter id="par116" name="Data Size_Input" source="att4Array" target="inn1.isnotnull"/>  
-              <LinkParameter id="par118" name="VehicleToLocation.x_PASSING" source="role26$att9Array" passing="true"/>  
-              <LinkParameter id="par119" name="crosswalk_id_PASSING" sourceLinkParameter="par130" passing="true"/>  
-              <LinkParameter id="par120" name="crosswalk_y_PASSING" sourceLinkParameter="par132" passing="true"/>  
-              <LinkParameter id="par121" name="crosswalk_x_PASSING" sourceLinkParameter="par131" passing="true"/>  
-              <LinkParameter id="par122" name="oid_PASSING" source="att4Array" passing="true"/>  
-              <LinkParameter id="par123" name="VehicleToLocation.y_PASSING" source="role26$att10Array" passing="true"/> 
+          <SelectorUnit gr:x="285" gr:y="245" id="seu6" name="Vehicles nearby" entity="ent2" distinctAttributes="role26.att9 role26.att10 att4"> 
+            <OKLink id="oln38" name="OKFlow38" to="lpu3"> 
+              <LinkParameter id="par216" name="oid_Input Array" source="att4Array" target="lpu3.array"/>  
+              <LinkParameter id="par218" name="VehicleToLocation.x_vehicle_x" source="role26$att9Array" target="lsa6"/>  
+              <LinkParameter id="par219" name="VehicleToLocation.y_vehicle_y" source="role26$att10Array" target="lsa5"/>  
+              <LinkParameter id="par220" name="crosswalk_id_PASSING" sourceLinkParameter="par130" passing="true"/>  
+              <LinkParameter id="par221" name="crosswalk_x_PASSING" sourceLinkParameter="par131" passing="true"/>  
+              <LinkParameter id="par222" name="crosswalk_y_PASSING" sourceLinkParameter="par132" passing="true"/> 
             </OKLink> 
           </SelectorUnit>  
-          <MathUnit gr:x="510" gr:y="445" id="mathu1" name="In Range" resultType="boolean" defaultExpression="sqr(x-crosswalk_x) + sqr(y-crosswalk_y) &lt;= sqr(5)"> 
+          <MathUnit gr:x="295" gr:y="370" id="mathu1" name="In Range" resultType="boolean" defaultExpression="sqr(x-crosswalk_x) + sqr(y-crosswalk_y) &lt;= sqr(5)"> 
             <MathVariable id="mathv1" name="x"/>  
             <MathVariable id="mathv2" name="y"/>  
             <MathVariable id="mathv4" name="crosswalk_x"/>  
             <MathVariable id="mathv5" name="crosswalk_y"/>  
-            <OKLink id="oln29" name="OKFlow29" to="switch4"> 
+            <OKLink id="oln29" name="OKFlow29" to="switch4" gr:bendpoints="-4,99,-144,-1"> 
               <LinkParameter id="par101" name="Result_Switch" source="result" target="switch4.switch"/>  
-              <LinkParameter id="par89" name="crosswalk_id_PASSING" sourceLinkParameter="par38" passing="true"/>  
-              <LinkParameter id="par91" name="crosswalk_x_PASSING" sourceLinkParameter="par39" passing="true"/>  
-              <LinkParameter id="par92" name="crosswalk_y_PASSING" sourceLinkParameter="par40" passing="true"/>  
-              <LinkParameter id="par93" name="oid_PASSING" sourceLinkParameter="par41" passing="true"/>  
-              <LinkParameter id="par94" name="VehicleToLocation.x_PASSING" sourceLinkParameter="par42" passing="true"/>  
-              <LinkParameter id="par95" name="VehicleToLocation.y_PASSING" sourceLinkParameter="par77" passing="true"/> 
+              <LinkParameter id="par232" name="crosswalk_id_PASSING" sourceLinkParameter="par228" passing="true"/>  
+              <LinkParameter id="par233" name="crosswalk_x_PASSING" sourceLinkParameter="par229" passing="true"/>  
+              <LinkParameter id="par234" name="crosswalk_y_PASSING" sourceLinkParameter="par230" passing="true"/>  
+              <LinkParameter id="par235" name="Next Element_PASSING" sourceLinkParameter="par231" passing="true"/>  
+              <LinkParameter id="par238" name="Next Element (vehicle_x)_PASSING" sourceLinkParameter="par236" passing="true"/>  
+              <LinkParameter id="par239" name="Next Element (vehicle_y)_PASSING" sourceLinkParameter="par237" passing="true"/> 
             </OKLink> 
           </MathUnit>  
-          <ModifyUnit gr:x="1135" gr:y="320" id="mfu1" name="Update1" entity="ent2"> 
+          <ModifyUnit gr:x="835" gr:y="400" id="mfu1" name="Update Vehicle w/ Crosswalk" entity="ent2"> 
             <Selector id="su6" defaultPolicy="fill" booleanOperator="and"> 
               <KeyCondition id="kcond1" name="KeyCondition1" predicate="in" implied="false"/> 
             </Selector>  
-            <OKLink id="oln14" name="OKFlow14" to="okcu5"> 
-              <LinkParameter id="par115" name="crosswalk_id_PASSING_crosswalk_id" sourceLinkParameter="par114" target="ocp5"/>  
-              <LinkParameter id="par226" name="crosswalk_x_PASSING_crosswalk_x" sourceLinkParameter="par224" target="ocp8"/>  
-              <LinkParameter id="par227" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par225" target="ocp9"/> 
-            </OKLink> 
+            <OKLink id="oln44" name="OKFlow44" to="lpu3" automaticCoupling="true"/> 
           </ModifyUnit>  
-          <SwitchUnit gr:x="775" gr:y="455" id="switch4" name="Switch4"> 
-            <OKLink id="oln8" name="OKFlow8" to="mathu2" code="true" gr:bendpoints="0,-118,-165,-3"> 
-              <LinkParameter id="par103" name="crosswalk_x_PASSING_crosswalk_x" sourceLinkParameter="par91" target="mathv9"/>  
-              <LinkParameter id="par104" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par92" target="mathv8"/>  
-              <LinkParameter id="par105" name="VehicleToLocation.x_PASSING_x" sourceLinkParameter="par94" target="mathv7"/>  
-              <LinkParameter id="par108" name="VehicleToLocation.y_PASSING_y" sourceLinkParameter="par95" target="mathv10"/>  
-              <LinkParameter id="par110" name="crosswalk_id_PASSING" sourceLinkParameter="par89" passing="true"/>  
-              <LinkParameter id="par111" name="oid_PASSING" sourceLinkParameter="par93" passing="true"/>  
-              <LinkParameter id="par222" name="crosswalk_x_PASSING" sourceLinkParameter="par91" passing="true"/>  
-              <LinkParameter id="par223" name="crosswalk_y_PASSING" sourceLinkParameter="par92" passing="true"/> 
+          <SwitchUnit gr:x="485" gr:y="475" id="switch4" name="Switch"> 
+            <OKLink id="oln8" name="OKFlow8" to="mathu2" code="true" gr:bendpoints="0,-61,-150,-1"> 
+              <LinkParameter id="par240" name="crosswalk_x_PASSING_crosswalk_x" sourceLinkParameter="par233" target="mathv9"/>  
+              <LinkParameter id="par241" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par234" target="mathv8"/>  
+              <LinkParameter id="par242" name="Next Element (vehicle_x)_PASSING_x" sourceLinkParameter="par238" target="mathv7"/>  
+              <LinkParameter id="par243" name="Next Element (vehicle_y)_PASSING_y" sourceLinkParameter="par239" target="mathv10"/>  
+              <LinkParameter id="par244" name="crosswalk_id_PASSING" sourceLinkParameter="par232" passing="true"/>  
+              <LinkParameter id="par259" name="Next Element_PASSING" sourceLinkParameter="par235" passing="true"/> 
             </OKLink>  
-            <OKLink id="oln17" name="OKFlow17" to="mfu2"> 
+            <OKLink id="oln17" name="OKFlow17" to="mfu2" gr:bendpoints="-3,65,-423,0"> 
               <LinkParameter id="par90" name="$$NULL$$_Crosswalk.oid(VehicleToCrosswalk)" sourceValue="$$NULL$$" target="mfu2.role4.att1"/>  
               <LinkParameter id="par139" name="$$NULL$$_distance" sourceValue="$$NULL$$" target="mfu2.att2"/>  
-              <LinkParameter id="par96" name="oid_PASSING_KeyCondition3 [oid]" sourceLinkParameter="par93" target="kcond3.att4"/>  
-              <LinkParameter id="par97" name="crosswalk_id_PASSING" sourceLinkParameter="par89" passing="true"/>  
-              <LinkParameter id="par228" name="crosswalk_x_PASSING" sourceLinkParameter="par91" passing="true"/>  
-              <LinkParameter id="par229" name="crosswalk_y_PASSING" sourceLinkParameter="par92" passing="true"/> 
+              <LinkParameter id="par354" name="Next Element_PASSING_KeyCondition3 [oid]" sourceLinkParameter="par235" target="kcond3.att4"/> 
             </OKLink>  
             <Case value="true"/>  
             <Case value="false"/> 
           </SwitchUnit>  
-          <OKCollectorUnit gr:x="1330" gr:y="325" id="okcu5" name="OK Port"> 
+          <OKCollectorUnit gr:x="1155" gr:y="325" id="okcu5" name="OK Port"> 
             <OutputCollectorParameter id="ocp5" name="crosswalk_id"/>  
             <OutputCollectorParameter id="ocp9" name="crosswalk_y"/>  
             <OutputCollectorParameter id="ocp8" name="crosswalk_x"/> 
           </OKCollectorUnit>  
-          <ModifyUnit gr:x="1140" gr:y="435" id="mfu2" name="Update2" entity="ent2"> 
+          <ModifyUnit gr:x="835" gr:y="525" id="mfu2" name="Update Vehicle wo/ Crosswalk" entity="ent2"> 
             <Selector id="su11" defaultPolicy="fill" booleanOperator="and"> 
               <KeyCondition id="kcond3" name="KeyCondition3" predicate="in" implied="false"/> 
             </Selector>  
-            <OKLink id="oln18" name="OKFlow18" to="okcu5"> 
-              <LinkParameter id="par102" name="crosswalk_id_PASSING_crosswalk_id" sourceLinkParameter="par97" target="ocp5"/>  
-              <LinkParameter id="par230" name="crosswalk_x_PASSING_crosswalk_x" sourceLinkParameter="par228" target="ocp8"/>  
-              <LinkParameter id="par231" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par229" target="ocp9"/> 
-            </OKLink> 
+            <OKLink id="oln53" name="OKFlow53" to="lpu3" automaticCoupling="true" gr:bendpoints="131,1,106,286;164,-211,89,74"/> 
           </ModifyUnit>  
-          <MathUnit gr:x="870" gr:y="330" id="mathu2" name="Distance" resultType="float" defaultExpression="sqrt(sqr(x-crosswalk_x) + sqr(y-crosswalk_y))"> 
+          <MathUnit gr:x="590" gr:y="410" id="mathu2" name="Distance" resultType="float" defaultExpression="sqrt(sqr(x-crosswalk_x) + sqr(y-crosswalk_y))"> 
             <OKLink id="oln33" name="OKFlow33" to="mfu1"> 
               <LinkParameter id="par135" name="Result_distance" source="result" target="mfu1.att2"/>  
-              <LinkParameter id="par112" name="crosswalk_id_PASSING_Crosswalk.oid(VehicleToCrosswalk)" sourceLinkParameter="par110" target="mfu1.role4.att1"/>  
-              <LinkParameter id="par113" name="oid_PASSING_KeyCondition1 [oid]" sourceLinkParameter="par111" target="kcond1.att4"/>  
-              <LinkParameter id="par114" name="crosswalk_id_PASSING" sourceLinkParameter="par110" passing="true"/>  
-              <LinkParameter id="par224" name="crosswalk_x_PASSING" sourceLinkParameter="par222" passing="true"/>  
-              <LinkParameter id="par225" name="crosswalk_y_PASSING" sourceLinkParameter="par223" passing="true"/> 
+              <LinkParameter id="par260" name="crosswalk_id_PASSING_Crosswalk.oid(VehicleToCrosswalk)" sourceLinkParameter="par244" target="mfu1.role4.att1"/>  
+              <LinkParameter id="par261" name="Next Element_PASSING_KeyCondition1 [oid]" sourceLinkParameter="par259" target="kcond1.att4"/> 
             </OKLink>  
             <MathVariable id="mathv7" name="x"/>  
             <MathVariable id="mathv8" name="crosswalk_y"/>  
             <MathVariable id="mathv9" name="crosswalk_x"/>  
             <MathVariable id="mathv10" name="y"/> 
           </MathUnit>  
-          <IsNotNullUnit gr:x="380" gr:y="455" id="inn1" name="Any Vehicles?"> 
-            <OKLink id="oln7" name="OKFlow7" to="mathu1"> 
-              <LinkParameter id="par24" name="crosswalk_x_PASSING_crosswalk_x" sourceLinkParameter="par121" target="mathv4"/>  
-              <LinkParameter id="par25" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par120" target="mathv5"/>  
-              <LinkParameter id="par36" name="VehicleToLocation.x_PASSING_x" sourceLinkParameter="par118" target="mathv1"/>  
-              <LinkParameter id="par37" name="VehicleToLocation.y_PASSING_y" sourceLinkParameter="par123" target="mathv2"/>  
-              <LinkParameter id="par38" name="crosswalk_id_PASSING" sourceLinkParameter="par119" passing="true"/>  
-              <LinkParameter id="par39" name="crosswalk_x_PASSING" sourceLinkParameter="par121" passing="true"/>  
-              <LinkParameter id="par40" name="crosswalk_y_PASSING" sourceLinkParameter="par120" passing="true"/>  
-              <LinkParameter id="par41" name="oid_PASSING" sourceLinkParameter="par122" passing="true"/>  
-              <LinkParameter id="par42" name="VehicleToLocation.x_PASSING" sourceLinkParameter="par118" passing="true"/>  
-              <LinkParameter id="par77" name="VehicleToLocation.y_PASSING" sourceLinkParameter="par123" passing="true"/> 
+          <LoopUnit gr:x="900" gr:y="255" id="lpu3" name="Interate Vehicles"> 
+            <SecondaryArray id="lsa5" name="vehicle_y"/>  
+            <SecondaryArray id="lsa6" name="vehicle_x"/>  
+            <OKLink id="oln41" name="OKFlow41" to="mathu1" code="next"> 
+              <LinkParameter id="par224" name="crosswalk_x_PASSING_crosswalk_x" sourceLinkParameter="par221" target="mathv4"/>  
+              <LinkParameter id="par225" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par222" target="mathv5"/>  
+              <LinkParameter id="par226" name="Next Element (vehicle_x)_x" source="lsa6" target="mathv1"/>  
+              <LinkParameter id="par227" name="Next Element (vehicle_y)_y" source="lsa5" target="mathv2"/>  
+              <LinkParameter id="par228" name="crosswalk_id_PASSING" sourceLinkParameter="par220" passing="true"/>  
+              <LinkParameter id="par229" name="crosswalk_x_PASSING" sourceLinkParameter="par221" passing="true"/>  
+              <LinkParameter id="par230" name="crosswalk_y_PASSING" sourceLinkParameter="par222" passing="true"/>  
+              <LinkParameter id="par231" name="Next Element_PASSING" source="next" passing="true"/>  
+              <LinkParameter id="par236" name="Next Element (vehicle_x)_PASSING" source="lsa6" passing="true"/>  
+              <LinkParameter id="par237" name="Next Element (vehicle_y)_PASSING" source="lsa5" passing="true"/> 
             </OKLink>  
-            <KOLink id="kln5" name="KOFlow5" to="okcu5" gr:bendpoints="1,56,-1014,176;896,55,-119,175"> 
-              <LinkParameter id="par87" name="crosswalk_id_PASSING_crosswalk_id" sourceLinkParameter="par119" target="ocp5"/>  
-              <LinkParameter id="par220" name="crosswalk_x_PASSING_crosswalk_x" sourceLinkParameter="par121" target="ocp8"/>  
-              <LinkParameter id="par221" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par120" target="ocp9"/> 
-            </KOLink> 
-          </IsNotNullUnit> 
+            <OKLink id="oln59" name="OKFlow59" to="okcu5" code="end"> 
+              <LinkParameter id="par356" name="crosswalk_id_PASSING_crosswalk_id" sourceLinkParameter="par220" target="ocp5"/>  
+              <LinkParameter id="par357" name="crosswalk_x_PASSING_crosswalk_x" sourceLinkParameter="par221" target="ocp8"/>  
+              <LinkParameter id="par358" name="crosswalk_x_PASSING_crosswalk_y" sourceLinkParameter="par221" target="ocp9"/> 
+            </OKLink> 
+          </LoopUnit> 
         </OperationUnits> 
       </OperationModule>  
       <OperationModule gr:x="695" gr:y="275" id="opm5" name="Count nearby pedestrians"> 
@@ -487,123 +474,130 @@
             <InputCollectorParameter id="icp12" name="crosswalk_y"/>  
             <InputCollectorParameter id="icp11" name="crosswalk_x"/>  
             <InputCollectorParameter id="icp10" name="crosswalk_id"/>  
-            <OKLink id="oln44" name="OKFlow44" to="seu7"> 
-              <LinkParameter id="par176" name="crosswalk_id_PASSING" source="icp10" passing="true"/>  
-              <LinkParameter id="par177" name="crosswalk_x_PASSING" source="icp11" passing="true"/>  
-              <LinkParameter id="par178" name="crosswalk_y_PASSING" source="icp12" passing="true"/> 
+            <OKLink id="oln42" name="OKFlow42" to="mfu9" gr:bendpoints="79,-79,-161,1"> 
+              <LinkParameter id="par265" name="crosswalk_id_KeyCondition12 [oid]" source="icp10" target="kcond12.att1"/>  
+              <LinkParameter id="par266" name="verde_traffic_light" sourceValue="green" target="mfu9.att11"/>  
+              <LinkParameter id="par267" name="crosswalk_id_PASSING" source="icp10" passing="true"/>  
+              <LinkParameter id="par268" name="crosswalk_x_PASSING" source="icp11" passing="true"/>  
+              <LinkParameter id="par269" name="crosswalk_y_PASSING" source="icp12" passing="true"/> 
             </OKLink> 
           </InputCollectorUnit>  
-          <MathUnit id="mathu3" name="Distance" gr:x="880" gr:y="95" resultType="float" defaultExpression="sqrt(sqr(x-crosswalk_x) + sqr(y-crosswalk_y))"> 
+          <MathUnit id="mathu3" name="Distance" gr:x="540" gr:y="240" resultType="float" defaultExpression="sqrt(sqr(x-crosswalk_x) + sqr(y-crosswalk_y))"> 
             <OKLink id="oln36" name="OKFlow33" to="mfu4"> 
-              <LinkParameter id="par212" name="crosswalk_id_PASSING" sourceLinkParameter="par208" passing="true"/>  
-              <LinkParameter id="par216" name="crosswalk_id_PASSING_Crosswalk.oid(PedestrianToCrosswalk)" sourceLinkParameter="par208" target="mfu4.role2.att1"/>  
               <LinkParameter id="par217" name="Result_distance" source="result" target="mfu4.att3"/>  
-              <LinkParameter id="par218" name="oid_PASSING_KeyCondition1 [oid]" sourceLinkParameter="par209" target="kcond6.att5"/>  
-              <LinkParameter id="par237" name="crosswalk_x_PASSING" sourceLinkParameter="par235" passing="true"/>  
-              <LinkParameter id="par238" name="crosswalk_y_PASSING" sourceLinkParameter="par236" passing="true"/> 
+              <LinkParameter id="par156" name="Next Element_PASSING_KeyCondition1 [oid]" sourceLinkParameter="par154" target="kcond6.att5"/>  
+              <LinkParameter id="par313" name="crosswalk_id_PASSING_Crosswalk.oid(PedestrianToCrosswalk)" sourceLinkParameter="par310" target="mfu4.role2.att1"/>  
+              <LinkParameter id="par343" name="crosswalk_id_PASSING" sourceLinkParameter="par310" passing="true"/> 
             </OKLink>  
             <MathVariable id="mathv3" name="x"/>  
             <MathVariable id="mathv6" name="crosswalk_y"/>  
             <MathVariable id="mathv11" name="crosswalk_x"/>  
             <MathVariable id="mathv12" name="y"/> 
           </MathUnit>  
-          <MathUnit id="mathu4" name="In Range" gr:x="530" gr:y="165" resultType="boolean" defaultExpression="sqr(x-crosswalk_x) + sqr(y-crosswalk_y) &lt;= sqr(5)"> 
+          <MathUnit id="mathu4" name="In Range" gr:x="250" gr:y="210" resultType="boolean" defaultExpression="sqr(x-crosswalk_x) + sqr(y-crosswalk_y) &lt;= sqr(5)"> 
             <MathVariable id="mathv13" name="x"/>  
             <MathVariable id="mathv14" name="y"/>  
             <MathVariable id="mathv15" name="crosswalk_x"/>  
             <MathVariable id="mathv16" name="crosswalk_y"/>  
-            <OKLink id="oln37" name="OKFlow29" to="switch5"> 
+            <OKLink id="oln37" name="OKFlow29" to="switch5" gr:bendpoints="-1,99,-121,-1"> 
               <LinkParameter id="par138" name="Result_Switch" source="result" target="switch5.switch"/>  
-              <LinkParameter id="par195" name="crosswalk_id_PASSING" sourceLinkParameter="par189" passing="true"/>  
-              <LinkParameter id="par196" name="crosswalk_x_PASSING" sourceLinkParameter="par190" passing="true"/>  
-              <LinkParameter id="par197" name="crosswalk_y_PASSING" sourceLinkParameter="par191" passing="true"/>  
-              <LinkParameter id="par198" name="oid_PASSING" sourceLinkParameter="par192" passing="true"/>  
-              <LinkParameter id="par199" name="PedestrianToLocation.x_PASSING" sourceLinkParameter="par193" passing="true"/>  
-              <LinkParameter id="par200" name="PedestrianToLocation.y_PASSING" sourceLinkParameter="par194" passing="true"/> 
+              <LinkParameter id="par141" name="Next Element (Pedestrian_x)_PASSING" sourceLinkParameter="par109" passing="true"/>  
+              <LinkParameter id="par142" name="Next Element (Pedestrian_y)_PASSING" sourceLinkParameter="par124" passing="true"/>  
+              <LinkParameter id="par143" name="Next Element_PASSING" sourceLinkParameter="par125" passing="true"/>  
+              <LinkParameter id="par305" name="crosswalk_id_PASSING" sourceLinkParameter="par295" passing="true"/>  
+              <LinkParameter id="par306" name="crosswalk_x_PASSING" sourceLinkParameter="par296" passing="true"/>  
+              <LinkParameter id="par307" name="crosswalk_y_PASSING" sourceLinkParameter="par297" passing="true"/> 
             </OKLink> 
           </MathUnit>  
-          <ModifyUnit id="mfu4" name="Update Pedestrian w/ Crosswalk" gr:x="1140" gr:y="85" entity="ent3"> 
+          <ModifyUnit id="mfu4" name="Update Pedestrian w/ Crosswalk" gr:x="740" gr:y="230" entity="ent3"> 
             <Selector id="su5" defaultPolicy="fill" booleanOperator="and"> 
               <KeyCondition id="kcond6" name="KeyCondition1" predicate="in" implied="false"/> 
             </Selector>  
-            <OKLink id="oln38" name="OKFlow14" to="okcu4"> 
-              <LinkParameter id="par219" name="crosswalk_id_PASSING_crosswalk_id" sourceLinkParameter="par212" target="ocp7"/>  
-              <LinkParameter id="par239" name="crosswalk_x_PASSING_crosswalk_x" sourceLinkParameter="par237" target="ocp10"/>  
-              <LinkParameter id="par240" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par238" target="ocp11"/> 
+            <OKLink id="oln23" name="OKFlow23" to="mfu6"> 
+              <LinkParameter id="par165" name="1_traffic_light" sourceValue="red" target="mfu6.att11"/>  
+              <LinkParameter id="par350" name="crosswalk_id_PASSING_KeyCondition9 [oid]" sourceLinkParameter="par343" target="kcond9.att1"/> 
             </OKLink> 
           </ModifyUnit>  
-          <SwitchUnit id="switch5" name="Switch" gr:x="780" gr:y="175"> 
-            <OKLink id="oln39" name="OKFlow8" to="mathu3" code="true" gr:bendpoints="-2,-74,-172,-4"> 
-              <LinkParameter id="par204" name="crosswalk_x_PASSING_crosswalk_x" sourceLinkParameter="par196" target="mathv11"/>  
-              <LinkParameter id="par205" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par197" target="mathv6"/>  
-              <LinkParameter id="par206" name="PedestrianToLocation.x_PASSING_x" sourceLinkParameter="par199" target="mathv3"/>  
-              <LinkParameter id="par207" name="PedestrianToLocation.y_PASSING_y" sourceLinkParameter="par200" target="mathv12"/>  
-              <LinkParameter id="par208" name="crosswalk_id_PASSING" sourceLinkParameter="par195" passing="true"/>  
-              <LinkParameter id="par209" name="oid_PASSING" sourceLinkParameter="par198" passing="true"/>  
-              <LinkParameter id="par235" name="crosswalk_x_PASSING" sourceLinkParameter="par196" passing="true"/>  
-              <LinkParameter id="par236" name="crosswalk_y_PASSING" sourceLinkParameter="par197" passing="true"/> 
+          <SwitchUnit id="switch5" name="Switch" gr:x="420" gr:y="315"> 
+            <OKLink id="oln39" name="OKFlow8" to="mathu3" code="true" gr:bendpoints="1,-69,-164,1"> 
+              <LinkParameter id="par147" name="Next Element (Pedestrian_x)_PASSING_x" sourceLinkParameter="par141" target="mathv3"/>  
+              <LinkParameter id="par148" name="Next Element (Pedestrian_y)_PASSING_y" sourceLinkParameter="par142" target="mathv12"/>  
+              <LinkParameter id="par154" name="Next Element_PASSING" sourceLinkParameter="par143" passing="true"/>  
+              <LinkParameter id="par308" name="crosswalk_id_PASSING_crosswalk_x" sourceLinkParameter="par306" target="mathv11"/>  
+              <LinkParameter id="par309" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par307" target="mathv6"/>  
+              <LinkParameter id="par310" name="crosswalk_id_PASSING" sourceLinkParameter="par305" passing="true"/> 
             </OKLink>  
-            <OKLink id="oln40" name="OKFlow17" to="mfu5" gr:bendpoints="5,40,-360,0"> 
-              <LinkParameter id="par202" name="crosswalk_id_PASSING" sourceLinkParameter="par195" passing="true"/>  
+            <OKLink id="oln40" name="OKFlow17" to="mfu5" gr:bendpoints="-4,48,-249,-2"> 
               <LinkParameter id="par213" name="$$NULL$$_Crosswalk.oid(PedestrianToCrosswalk)" sourceValue="$$NULL$$" target="mfu5.role2.att1"/>  
-              <LinkParameter id="par214" name="oid_PASSING_KeyCondition3 [oid]" sourceLinkParameter="par198" target="kcond7.att5"/>  
               <LinkParameter id="par215" name="$$NULL$$_distance" sourceValue="$$NULL$$" target="mfu5.att3"/>  
-              <LinkParameter id="par241" name="crosswalk_x_PASSING" sourceLinkParameter="par196" passing="true"/>  
-              <LinkParameter id="par242" name="crosswalk_y_PASSING" sourceLinkParameter="par197" passing="true"/> 
+              <LinkParameter id="par144" name="Next Element_PASSING_KeyCondition3 [oid]" sourceLinkParameter="par143" target="kcond7.att5"/> 
             </OKLink>  
             <Case value="true"/>  
             <Case value="false"/> 
           </SwitchUnit>  
-          <OKCollectorUnit id="okcu4" name="OKPort" gr:x="1400" gr:y="145"> 
+          <OKCollectorUnit id="okcu4" name="OKPort" gr:x="1260" gr:y="145"> 
             <OutputCollectorParameter id="ocp7" name="crosswalk_id"/>  
             <OutputCollectorParameter id="ocp10" name="crosswalk_x"/>  
             <OutputCollectorParameter id="ocp11" name="crosswalk_y"/> 
           </OKCollectorUnit>  
-          <SelectorUnit id="seu7" name="Pedestrians nearby" gr:x="215" gr:y="165" entity="ent3" distinctAttributes="att5 role28.att9 role28.att10"> 
-            <OKLink id="oln41" name="Flow1" to="inn2"> 
-              <LinkParameter id="par157" name="Data Size_Input" source="att5Array" target="inn2.isnotnull"/>  
-              <LinkParameter id="par179" name="crosswalk_id_PASSING" sourceLinkParameter="par176" passing="true"/>  
-              <LinkParameter id="par180" name="crosswalk_x_PASSING" sourceLinkParameter="par177" passing="true"/>  
-              <LinkParameter id="par181" name="crosswalk_y_PASSING" sourceLinkParameter="par178" passing="true"/>  
-              <LinkParameter id="par182" name="oid_PASSING" source="att5Array" passing="true"/>  
-              <LinkParameter id="par183" name="PedestrianToLocation.x_PASSING" source="role28$att9Array" passing="true"/>  
-              <LinkParameter id="par184" name="PedestrianToLocation.y_PASSING" source="role28$att10Array" passing="true"/> 
+          <SelectorUnit id="seu7" name="Pedestrians nearby" gr:x="460" gr:y="85" entity="ent3" distinctAttributes="att5 role28.att9 role28.att10"> 
+            <OKLink id="oln32" name="OKFlow32" to="lpu2"> 
+              <LinkParameter id="par170" name="oid_Input Array" source="att5Array" target="lpu2.array"/>  
+              <LinkParameter id="par171" name="PedestrianToLocation.x_Pedestrian_x" source="role28$att9Array" target="lsa3"/>  
+              <LinkParameter id="par172" name="PedestrianToLocation.y_Pedestrian_y" source="role28$att10Array" target="lsa4"/>  
+              <LinkParameter id="par273" name="crosswalk_id_PASSING" sourceLinkParameter="par270" passing="true"/>  
+              <LinkParameter id="par274" name="crosswalk_x_PASSING" sourceLinkParameter="par271" passing="true"/>  
+              <LinkParameter id="par275" name="crosswalk_y_PASSING" sourceLinkParameter="par272" passing="true"/> 
             </OKLink> 
           </SelectorUnit>  
-          <IsNotNullUnit id="inn2" name="Any Pedestrians?" gr:x="375" gr:y="175"> 
-            <OKLink id="oln42" name="OKFlow7" to="mathu4"> 
-              <LinkParameter id="par185" name="crosswalk_x_PASSING_crosswalk_x" sourceLinkParameter="par180" target="mathv15"/>  
-              <LinkParameter id="par186" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par181" target="mathv16"/>  
-              <LinkParameter id="par187" name="PedestrianToLocation.x_PASSING_x" sourceLinkParameter="par183" target="mathv13"/>  
-              <LinkParameter id="par188" name="PedestrianToLocation.y_PASSING_y" sourceLinkParameter="par184" target="mathv14"/>  
-              <LinkParameter id="par189" name="crosswalk_id_PASSING" sourceLinkParameter="par179" passing="true"/>  
-              <LinkParameter id="par190" name="crosswalk_x_PASSING" sourceLinkParameter="par180" passing="true"/>  
-              <LinkParameter id="par191" name="crosswalk_y_PASSING" sourceLinkParameter="par181" passing="true"/>  
-              <LinkParameter id="par192" name="oid_PASSING" sourceLinkParameter="par182" passing="true"/>  
-              <LinkParameter id="par193" name="PedestrianToLocation.x_PASSING" sourceLinkParameter="par183" passing="true"/>  
-              <LinkParameter id="par194" name="PedestrianToLocation.y_PASSING" sourceLinkParameter="par184" passing="true"/> 
-            </OKLink>  
-            <KOLink id="kln7" name="KOFlow5" to="okcu4" gr:bendpoints="39,96,-1041,116;940,96,-140,116"> 
-              <LinkParameter id="par232" name="crosswalk_id_PASSING_crosswalk_id" sourceLinkParameter="par179" target="ocp7"/>  
-              <LinkParameter id="par233" name="crosswalk_x_PASSING_crosswalk_x" sourceLinkParameter="par180" target="ocp10"/>  
-              <LinkParameter id="par234" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par181" target="ocp11"/> 
-            </KOLink> 
-          </IsNotNullUnit>  
-          <ModifyUnit id="mfu5" name="Update Pedestrian wo/ Crosswalk" gr:x="1140" gr:y="195" entity="ent3"> 
+          <ModifyUnit id="mfu5" name="Update Pedestrian wo/ Crosswalk" gr:x="585" gr:y="350" entity="ent3"> 
             <Selector id="su12" defaultPolicy="fill" booleanOperator="and"> 
               <KeyCondition id="kcond7" name="KeyCondition3" predicate="in" implied="false"/> 
             </Selector>  
-            <OKLink id="oln43" name="OKFlow18" to="okcu4"> 
-              <LinkParameter id="par203" name="crosswalk_id_PASSING_crosswalk_id" sourceLinkParameter="par202" target="ocp7"/>  
-              <LinkParameter id="par243" name="crosswalk_x_PASSING_crosswalk_x" sourceLinkParameter="par241" target="ocp10"/>  
-              <LinkParameter id="par244" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par242" target="ocp11"/> 
+            <OKLink id="oln35" name="OKFlow35" to="lpu2" automaticCoupling="true" gr:bendpoints="447,-1,92,274;446,-199,91,71"/> 
+          </ModifyUnit>  
+          <LoopUnit gr:x="985" gr:y="90" id="lpu2" name="Iterate Pedestrians"> 
+            <OKLink id="oln12" name="OKFlow12" to="mathu4" code="next"> 
+              <LinkParameter id="par82" name="Next Element (Pedestrian_x)_x" source="lsa3" target="mathv13"/>  
+              <LinkParameter id="par83" name="Next Element (Pedestrian_y)_y" source="lsa4" target="mathv14"/>  
+              <LinkParameter id="par109" name="Next Element (Pedestrian_x)_PASSING" source="lsa3" passing="true"/>  
+              <LinkParameter id="par124" name="Next Element (Pedestrian_y)_PASSING" source="lsa4" passing="true"/>  
+              <LinkParameter id="par125" name="Next Element_PASSING" source="next" passing="true"/>  
+              <LinkParameter id="par284" name="crosswalk_x_PASSING_crosswalk_x" sourceLinkParameter="par274" target="mathv15"/>  
+              <LinkParameter id="par285" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par275" target="mathv16"/>  
+              <LinkParameter id="par295" name="crosswalk_id_PASSING" sourceLinkParameter="par273" passing="true"/>  
+              <LinkParameter id="par296" name="crosswalk_x_PASSING" sourceLinkParameter="par274" passing="true"/>  
+              <LinkParameter id="par297" name="crosswalk_y_PASSING" sourceLinkParameter="par275" passing="true"/> 
+            </OKLink>  
+            <SecondaryArray id="lsa3" name="Pedestrian_x"/>  
+            <SecondaryArray id="lsa4" name="Pedestrian_y"/>  
+            <OKLink id="oln15" name="OKFlow15" to="okcu4" code="end"> 
+              <LinkParameter id="par319" name="crosswalk_id_PASSING_crosswalk_id" sourceLinkParameter="par273" target="ocp7"/>  
+              <LinkParameter id="par321" name="crosswalk_x_PASSING_crosswalk_x" sourceLinkParameter="par274" target="ocp10"/>  
+              <LinkParameter id="par322" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par275" target="ocp11"/> 
+            </OKLink> 
+          </LoopUnit>  
+          <ModifyUnit gr:x="995" gr:y="235" id="mfu6" name="Traffic light red" entity="ent1"> 
+            <Selector id="su15" defaultPolicy="fill" booleanOperator="and"> 
+              <KeyCondition id="kcond9" name="KeyCondition9" predicate="in" implied="false"/> 
+            </Selector>  
+            <OKLink id="oln24" name="OKFlow24" to="lpu2" automaticCoupling="true"/> 
+          </ModifyUnit>  
+          <ModifyUnit gr:x="240" gr:y="80" id="mfu9" name="Traffic_light green" entity="ent1"> 
+            <Selector id="su18" defaultPolicy="fill" booleanOperator="and"> 
+              <KeyCondition id="kcond12" name="KeyCondition12" predicate="in" implied="false"/> 
+            </Selector>  
+            <OKLink id="oln43" name="OKFlow43" to="seu7"> 
+              <LinkParameter id="par270" name="crosswalk_id_PASSING" sourceLinkParameter="par267" passing="true"/>  
+              <LinkParameter id="par271" name="crosswalk_x_PASSING" sourceLinkParameter="par268" passing="true"/>  
+              <LinkParameter id="par272" name="crosswalk_y_PASSING" sourceLinkParameter="par269" passing="true"/> 
             </OKLink> 
           </ModifyUnit> 
         </OperationUnits> 
       </OperationModule>  
       <OperationModule id="opm6" name="Count nearby" gr:x="525" gr:y="290"> 
         <OperationUnits> 
-          <InputCollectorUnit id="icu6" gr:x="30" gr:y="60"> 
+          <InputCollectorUnit id="icu6" gr:x="30" gr:y="60" linkOrder="ln22"> 
             <InputCollectorParameter id="icp15" name="crosswalk_y"/>  
             <InputCollectorParameter id="icp14" name="crosswalk_x"/>  
             <InputCollectorParameter id="icp13" name="crosswalk_id"/>  
@@ -611,7 +605,11 @@
               <LinkParameter id="par245" name="crosswalk_id_crosswalk_id" source="icp13" target="miu8.icp10"/>  
               <LinkParameter id="par246" name="crosswalk_x_crosswalk_x" source="icp14" target="miu8.icp11"/>  
               <LinkParameter id="par247" name="crosswalk_y_crosswalk_y" source="icp15" target="miu8.icp12"/> 
-            </OKLink> 
+            </OKLink>  
+            <InputCollectorParameter id="icp18" name="message"/>  
+            <Link id="ln22" name="Flow22" to="okcu6" type="transport" validate="true" gr:bendpoints="426,-61,-424,-71"> 
+              <LinkParameter id="par390" name="message_message" source="icp18" target="ocp20"/> 
+            </Link> 
           </InputCollectorUnit>  
           <ModuleInstanceUnit gr:x="295" gr:y="85" id="miu8" action="true" moduleId="opm5"> 
             <OKLink id="oln46" name="OKFlow46" to="miu9"> 
@@ -626,7 +624,8 @@
             </OKLink> 
           </ModuleInstanceUnit>  
           <OKCollectorUnit gr:x="880" gr:y="85" id="okcu6" name="OK Port"> 
-            <OutputCollectorParameter id="ocp12" name="crosswalk_id"/> 
+            <OutputCollectorParameter id="ocp12" name="crosswalk_id"/>  
+            <OutputCollectorParameter id="ocp20" name="message"/> 
           </OKCollectorUnit> 
         </OperationUnits> 
       </OperationModule> 
@@ -634,10 +633,12 @@
     <SiteView id="sv1" name="Main" landmarks="area1" homePage="page1"> 
       <OperationUnits> 
         <ModuleInstanceUnit gr:x="90" gr:y="445" id="miu1" action="true" moduleId="opm1" linkOrder="ln19"> 
-          <OKLink id="oln1" name="OKFlow1" to="miu10" gr:bendpoints="-1,143,-806,218;804,143,-1,218"> 
+          <OKLink id="oln1" name="OKFlow1" to="miu10" gr:bendpoints="-2,184,-812,260;406,185,-404,261;810,183,0,259"> 
             <LinkParameter id="par280" name="id_crosswalk_id" source="ocp1" target="miu10.icp13"/>  
             <LinkParameter id="par281" name="x_PASSING_crosswalk_x" sourceLinkParameter="par278" target="miu10.icp14"/>  
-            <LinkParameter id="par282" name="y_PASSING_crosswalk_y" sourceLinkParameter="par279" target="miu10.icp15"/> 
+            <LinkParameter id="par282" name="y_PASSING_crosswalk_y" sourceLinkParameter="par279" target="miu10.icp15"/>  
+            <LinkParameter id="par369" name="message_message" source="ocp16" target="miu10.icp18"/>  
+            <LinkParameter id="par386" name="message_PASSING" source="ocp16" passing="true"/> 
           </OKLink>  
           <KOLink id="kln4" name="KOFlow4" to="page3" automaticCoupling="true" gr:bendpoints="96,-37,-104,-42"/>  
           <Link id="ln19" name="Flow19" to="mssu4" type="transport" validate="true"> 
@@ -650,7 +651,8 @@
           <OKLink id="oln25" name="OKFlow25" to="miu10" gr:bendpoints="30,-65,0,70"> 
             <LinkParameter id="par256" name="id_crosswalk_id" source="ocp2" target="miu10.icp13"/>  
             <LinkParameter id="par370" name="x_PASSING_crosswalk_x" sourceLinkParameter="par366" target="miu10.icp14"/>  
-            <LinkParameter id="par371" name="y_PASSING_crosswalk_y" sourceLinkParameter="par367" target="miu10.icp15"/> 
+            <LinkParameter id="par371" name="y_PASSING_crosswalk_y" sourceLinkParameter="par367" target="miu10.icp15"/>  
+            <LinkParameter id="par372" name="message_message" source="ocp17" target="miu10.icp18"/> 
           </OKLink>  
           <Link id="ln17" name="KOFlow9" to="mssu2" type="transport" gr:bendpoints="-118,75,127,0"> 
             <LinkParameter id="par373" name="y_PASSING_y" sourceLinkParameter="par367" target="mssu2.ph2"/>  
@@ -669,10 +671,13 @@
             <LinkParameter id="par80" name="id_KeyCondition1 [oid]" source="ocp4" target="kcond2.att1"/> 
           </KOLink> 
         </ModuleInstanceUnit>  
-        <ModuleInstanceUnit gr:x="870" gr:y="370" id="miu10" action="true" moduleId="opm6"> 
+        <ModuleInstanceUnit gr:x="870" gr:y="370" id="miu10" action="true" moduleId="opm6" linkOrder="ln21"> 
           <OKLink id="oln48" name="OKFlow16" to="dau2" gr:bendpoints="-239,0,146,140"> 
             <LinkParameter id="par252" name="crosswalk_id_KeyCondition1 [oid]" source="ocp12" target="kcond2.att1"/> 
-          </OKLink> 
+          </OKLink>  
+          <Link id="ln21" name="Flow21" to="mssu9" type="transport" validate="true" gr:bendpoints="-179,133,211,157"> 
+            <LinkParameter id="par368" name="message_Shown Messages" source="ocp20" target="mssu9.shownMessages"/> 
+          </Link> 
         </ModuleInstanceUnit> 
       </OperationUnits>  
       <Area gr:x="260" gr:y="145" id="area1" name="SafeCross" landmark="true" defaultPage="page1"> 
@@ -864,20 +869,21 @@
               <Link id="ln18" name="Flow18" to="inu3" type="transport" validate="true" gr:bendpoints="-87,116,-122,-99"> 
                 <LinkParameter id="par117" name="oid_Near Crosswalk [oid]" source="data.att1" target="rcond1.att1"/> 
               </Link>  
-              <Link id="ln11" name="Flow11" to="inu2" type="transport" validate="true"> 
+              <Link id="ln11" name="Flow11" to="inu2" type="transport" validate="true" gr:bendpoints="118,187,118,-33"> 
                 <LinkParameter id="par276" name="oid_Near Crosswalk [oid]" source="data.att1" target="rcond4.att1"/> 
               </Link> 
             </DataUnit>  
-            <IndexUnit gr:x="0" gr:y="145" id="inu2" name="Pedestrians Nearby" entity="ent3" displayAttributes="att5 role28.att9 role28.att10 att3"> 
+            <IndexUnit gr:x="0" gr:y="220" id="inu2" name="Pedestrians Nearby" entity="ent3" displayAttributes="att5 role28.att9 role28.att10 att3"> 
               <Selector id="su13" defaultPolicy="fill" booleanOperator="and"> 
                 <RelationshipRoleCondition id="rcond4" name="Near Crosswalk" predicate="in" implied="false" role="role1"/> 
               </Selector> 
             </IndexUnit>  
-            <IndexUnit gr:x="15" gr:y="275" id="inu3" name="Vehicles Nearby" entity="ent2" displayAttributes="att4 role26.att9 role26.att10 att2"> 
+            <IndexUnit gr:x="10" gr:y="330" id="inu3" name="Vehicles Nearby" entity="ent2" displayAttributes="att4 role26.att9 role26.att10 att2"> 
               <Selector id="su7" defaultPolicy="fill" booleanOperator="and"> 
                 <RelationshipRoleCondition id="rcond1" name="Near Crosswalk" predicate="in" implied="false" role="role3"/> 
               </Selector> 
-            </IndexUnit> 
+            </IndexUnit>  
+            <MultiMessageUnit gr:x="5" gr:y="135" id="mssu9" name="Sucess Message"/> 
           </ContentUnits>  
           <layout:Grid containerType="grid"> 
             <layout:Row> 
@@ -946,7 +952,9 @@
               <layout:Cell/> 
             </layout:Row>  
             <layout:Row> 
-              <layout:Cell colspan="12"/>  
+              <layout:Cell colspan="12"> 
+                <layout:Unit unitId="mssu9"/> 
+              </layout:Cell>  
               <layout:Cell/>  
               <layout:Cell/>  
               <layout:Cell/>  
