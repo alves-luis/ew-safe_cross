@@ -413,7 +413,7 @@
               <LinkParameter id="par96" name="Next Element (vehicle_y)_PASSING_y" sourceLinkParameter="par91" target="mathv18"/>  
               <LinkParameter id="par98" name="crosswalk_id_PASSING" sourceLinkParameter="par70" passing="true"/> 
             </OKLink>  
-            <KOLink id="kln18" name="KOFlow18" to="kocu6" automaticCoupling="true"/> 
+            <KOLink id="kln18" name="KOFlow18" to="kocu6" automaticCoupling="true" gr:bendpoints="6,148,-684,-2"/> 
           </ModifyUnit>  
           <SwitchUnit gr:x="445" gr:y="420" id="switch4" name="Switch"> 
             <OKLink id="oln8" name="OKFlow8" to="mathu2" code="true" gr:bendpoints="-1,-76,-126,-1"> 
@@ -446,7 +446,7 @@
               <KeyCondition id="kcond3" name="KeyCondition3" predicate="in" implied="false"/> 
             </Selector>  
             <OKLink id="oln53" name="OKFlow53" to="lpu3" automaticCoupling="true"/>  
-            <KOLink id="kln9" name="KOFlow9" to="kocu6" automaticCoupling="true"/> 
+            <KOLink id="kln9" name="KOFlow9" to="kocu6" automaticCoupling="true" gr:bendpoints="186,3,-684,-12;185,15,-685,0"/> 
           </ModifyUnit>  
           <MathUnit gr:x="525" gr:y="340" id="mathu2" name="Distance" resultType="float" defaultExpression="sqrt(sqr(x-crosswalk_x) + sqr(y-crosswalk_y))"> 
             <OKLink id="oln33" name="OKFlow33" to="mfu1"> 
@@ -531,7 +531,9 @@
             <MathVariable id="mathv19" name="crosswalk_x"/>  
             <MathVariable id="mathv20" name="crosswalk_y"/> 
           </MathUnit>  
-          <KOCollectorUnit gr:x="1400" gr:y="485" id="kocu6" name="KO Port6"/> 
+          <KOCollectorUnit gr:x="1400" gr:y="485" id="kocu6" name="KO Port6"> 
+            <OutputCollectorParameter id="ocp6" name="message" value="Veh"/> 
+          </KOCollectorUnit> 
         </OperationUnits> 
       </OperationModule>  
       <OperationModule gr:x="695" gr:y="275" id="opm5" name="Count nearby pedestrians"> 
@@ -644,7 +646,9 @@
               <LinkParameter id="par39" name="crosswalk_y_PASSING_crosswalk_y" sourceLinkParameter="par12" target="ocp11"/> 
             </OKLink> 
           </LoopUnit>  
-          <KOCollectorUnit gr:x="1265" gr:y="335" id="kocu4" name="KO Port4"/> 
+          <KOCollectorUnit gr:x="1265" gr:y="335" id="kocu4" name="KO Port4"> 
+            <OutputCollectorParameter id="ocp14" name="message" value="Ped"/> 
+          </KOCollectorUnit> 
         </OperationUnits> 
       </OperationModule>  
       <OperationModule id="opm6" name="Count nearby" gr:x="525" gr:y="290"> 
@@ -669,26 +673,34 @@
               <LinkParameter id="par249" name="crosswalk_x_crosswalk_x" source="ocp10" target="miu9.icp7"/>  
               <LinkParameter id="par250" name="crosswalk_y_crosswalk_y" source="ocp11" target="miu9.icp8"/> 
             </OKLink>  
-            <KOLink id="kln6" name="KOFlow6" to="kocu5" automaticCoupling="true" gr:bendpoints="-2,104,-567,54;485,102,-80,52"/> 
+            <KOLink id="kln6" name="KOFlow6" to="kocu5" gr:bendpoints="-2,104,-567,54;485,102,-80,52"> 
+              <LinkParameter id="par110" name="message_PASSING" source="ocp14" passing="true"/>  
+              <LinkParameter id="par113" name="message_message" source="ocp14" target="ocp13"/> 
+            </KOLink> 
           </ModuleInstanceUnit>  
           <ModuleInstanceUnit gr:x="600" gr:y="145" id="miu9" action="true" moduleId="opm4"> 
             <OKLink id="oln47" name="OKFlow47" to="okcu6"> 
               <LinkParameter id="par251" name="crosswalk_id_crosswalk_id" source="ocp5" target="ocp12"/> 
             </OKLink>  
-            <KOLink id="kln7" name="KOFlow7" to="kocu5" automaticCoupling="true" gr:bendpoints="-2,107,-277,52;196,107,-79,52"/> 
+            <KOLink id="kln7" name="KOFlow7" to="kocu5" gr:bendpoints="-2,107,-277,52;196,107,-79,52"> 
+              <LinkParameter id="par114" name="message_message" source="ocp6" target="ocp13"/>  
+              <LinkParameter id="par115" name="message_PASSING" source="ocp6" passing="true"/> 
+            </KOLink> 
           </ModuleInstanceUnit>  
           <OKCollectorUnit gr:x="885" gr:y="85" id="okcu6" name="OK Port"> 
             <OutputCollectorParameter id="ocp12" name="crosswalk_id"/>  
             <OutputCollectorParameter id="ocp20" name="message"/> 
           </OKCollectorUnit>  
-          <KOCollectorUnit gr:x="885" gr:y="195" id="kocu5" name="KO Port5"/> 
+          <KOCollectorUnit gr:x="885" gr:y="195" id="kocu5" name="KO Port"> 
+            <OutputCollectorParameter id="ocp13" name="message" value="Something went wrong on count nerby!"/> 
+          </KOCollectorUnit> 
         </OperationUnits> 
       </OperationModule> 
     </ModuleView>  
     <SiteView id="sv1" name="Main" landmarks="area1" homePage="page1"> 
       <OperationUnits> 
-        <ModuleInstanceUnit gr:x="90" gr:y="445" id="miu1" action="true" moduleId="opm1" linkOrder="ln19"> 
-          <OKLink id="oln1" name="OKFlow1" to="miu10" gr:bendpoints="-2,184,-812,260;406,185,-404,261;810,183,0,259"> 
+        <ModuleInstanceUnit gr:x="85" gr:y="505" id="miu1" action="true" moduleId="opm1" linkOrder="ln19"> 
+          <OKLink id="oln1" name="OKFlow1" to="miu10" gr:bendpoints="-1,-107,4,143"> 
             <LinkParameter id="par280" name="id_crosswalk_id" source="ocp1" target="miu10.icp13"/>  
             <LinkParameter id="par281" name="x_PASSING_crosswalk_x" sourceLinkParameter="par278" target="miu10.icp14"/>  
             <LinkParameter id="par282" name="y_PASSING_crosswalk_y" sourceLinkParameter="par279" target="miu10.icp15"/>  
@@ -696,14 +708,14 @@
             <LinkParameter id="par386" name="message_PASSING" source="ocp16" passing="true"/> 
           </OKLink>  
           <KOLink id="kln4" name="KOFlow4" to="page3" automaticCoupling="true" gr:bendpoints="96,-37,-104,-42"/>  
-          <Link id="ln19" name="Flow19" to="mssu4" type="transport" validate="true"> 
+          <Link id="ln19" name="Flow19" to="mssu4" type="transport" validate="true" gr:bendpoints="-2,53,-212,-2"> 
             <LinkParameter id="par383" name="KO Port1.message_Shown Messages" source="ocp19" target="mssu4.shownMessages"/>  
             <LinkParameter id="par384" name="x_PASSING_x" sourceLinkParameter="par278" target="mssu4.ph3"/>  
             <LinkParameter id="par385" name="y_PASSING_y" sourceLinkParameter="par279" target="mssu4.ph4"/> 
           </Link> 
         </ModuleInstanceUnit>  
         <ModuleInstanceUnit gr:x="925" gr:y="235" id="miu2" action="true" moduleId="opm2"> 
-          <OKLink id="oln25" name="OKFlow25" to="miu10" gr:bendpoints="30,-65,0,70"> 
+          <OKLink id="oln25" name="OKFlow25" to="miu10" gr:bendpoints="-3,-123,837,-158;-840,-127,0,-162"> 
             <LinkParameter id="par256" name="id_crosswalk_id" source="ocp2" target="miu10.icp13"/>  
             <LinkParameter id="par370" name="x_PASSING_crosswalk_x" sourceLinkParameter="par366" target="miu10.icp14"/>  
             <LinkParameter id="par371" name="y_PASSING_crosswalk_y" sourceLinkParameter="par367" target="miu10.icp15"/>  
@@ -714,24 +726,30 @@
             <LinkParameter id="par374" name="x_PASSING_x" sourceLinkParameter="par366" target="mssu2.ph1"/>  
             <LinkParameter id="par375" name="message_Shown Messages" source="ocp18" target="mssu2.shownMessages"/> 
           </Link>  
-          <KOLink id="kln17" name="KOFlow17" to="enu2" gr:bendpoints="-132,23,113,23"> 
+          <KOLink id="kln17" name="KOFlow17" to="enu2" gr:bendpoints="-120,37,100,37"> 
             <LinkParameter id="par376" name="id_Key Condition [oid]" source="ocp3" target="enu2.att1"/>  
             <LinkParameter id="par381" name="CrosswalkToLocation.x_PASSING_x" sourceLinkParameter="par379" target="fld3_slot"/>  
             <LinkParameter id="par382" name="CrosswalkToLocation.y_PASSING_y" sourceLinkParameter="par380" target="fld4_slot"/> 
           </KOLink> 
         </ModuleInstanceUnit>  
-        <ModuleInstanceUnit gr:x="470" gr:y="35" id="miu3" action="true" moduleId="opm3"> 
-          <OKLink id="oln28" name="OKFlow28" to="page1" automaticCoupling="true" gr:bendpoints="-190,-1,0,-186"/>  
+        <ModuleInstanceUnit gr:x="495" gr:y="65" id="miu3" action="true" moduleId="opm3"> 
+          <OKLink id="oln28" name="OKFlow28" to="page1" automaticCoupling="true" gr:bendpoints="-217,-1,-2,-191"/>  
           <KOLink id="kln13" name="KOFlow13" to="dau2" gr:bendpoints="-34,88,-39,-112"> 
             <LinkParameter id="par80" name="id_KeyCondition1 [oid]" source="ocp4" target="kcond2.att1"/> 
           </KOLink> 
         </ModuleInstanceUnit>  
-        <ModuleInstanceUnit gr:x="870" gr:y="370" id="miu10" action="true" moduleId="opm6" linkOrder="ln21"> 
-          <OKLink id="oln48" name="OKFlow16" to="dau2" gr:bendpoints="-239,0,146,140"> 
+        <ModuleInstanceUnit gr:x="55" gr:y="270" id="miu10" action="true" moduleId="opm6" linkOrder="ln21 ln1"> 
+          <OKLink id="oln48" name="OKFlow16" to="dau2" gr:bendpoints="0,-130,-425,-85;317,-127,-108,-82"> 
             <LinkParameter id="par252" name="crosswalk_id_KeyCondition1 [oid]" source="ocp12" target="kcond2.att1"/> 
           </OKLink>  
-          <Link id="ln21" name="Flow21" to="mssu9" type="transport" validate="true" gr:bendpoints="-179,133,211,157"> 
+          <Link id="ln21" name="Flow21" to="mssu9" type="transport" validate="true" gr:bendpoints="26,73,-399,-2"> 
             <LinkParameter id="par368" name="message_Shown Messages" source="ocp20" target="mssu9.shownMessages"/> 
+          </Link>  
+          <KOLink id="kln21" name="KOFlow21" to="mssu1" gr:bendpoints="109,49,-91,14"> 
+            <LinkParameter id="par116" name="message_Shown Messages" source="ocp13" target="mssu1.shownMessages"/> 
+          </KOLink>  
+          <Link id="ln1" name="Flow1" to="mssu1" type="transport" validate="true"> 
+            <LinkParameter id="par108" name="KO Port5.message_Shown Messages" source="ocp13" target="mssu1.shownMessages"/> 
           </Link> 
         </ModuleInstanceUnit> 
       </OperationUnits>  
@@ -760,6 +778,22 @@
           <layout:Grid containerType="grid"> 
             <layout:Row> 
               <layout:Cell colspan="12"> 
+                <layout:Unit unitId="mssu2"/> 
+              </layout:Cell>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/> 
+            </layout:Row>  
+            <layout:Row> 
+              <layout:Cell colspan="12"> 
                 <layout:Unit unitId="enu2"> 
                   <layout:Field field="fld3"/>  
                   <layout:Field field="fld4"/>  
@@ -779,9 +813,7 @@
               <layout:Cell/> 
             </layout:Row>  
             <layout:Row> 
-              <layout:Cell colspan="12"> 
-                <layout:Unit unitId="mssu2"/> 
-              </layout:Cell>  
+              <layout:Cell colspan="12"/>  
               <layout:Cell/>  
               <layout:Cell/>  
               <layout:Cell/>  
@@ -807,9 +839,26 @@
                 <LinkParameter id="par255" name="CrosswalkToLocation.y_crosswalk_y" source="data[].role30$att10" target="miu10.icp15"/> 
               </Link>  
               <SortAttribute attribute="att1" order="ascending"/> 
-            </IndexUnit> 
+            </IndexUnit>  
+            <MultiMessageUnit gr:x="5" gr:y="85" id="mssu1" name="Error Message"/> 
           </ContentUnits>  
           <layout:Grid containerType="grid"> 
+            <layout:Row> 
+              <layout:Cell colspan="12"> 
+                <layout:Unit unitId="mssu1"/> 
+              </layout:Cell>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/> 
+            </layout:Row>  
             <layout:Row> 
               <layout:Cell colspan="12"> 
                 <layout:Unit unitId="inu1"> 
@@ -848,7 +897,7 @@
           </layout:Grid>  
           <Link id="ln2" name="Add crosswalk" to="page3" automaticCoupling="true" type="normal" validate="true"/> 
         </Page>  
-        <Page gr:x="10" gr:y="200" id="page3" name="Add crosswalk" linkOrder="ln20"> 
+        <Page gr:x="10" gr:y="255" id="page3" name="Add crosswalk" linkOrder="ln20"> 
           <ContentUnits> 
             <EntryUnit gr:x="0" gr:y="0" id="enu1" name="New crosswalk" entity="ent1" linkOrder="ln3" fieldOrder="fld1 fld2"> 
               <Link id="ln3" name="Add" to="miu1" type="normal" validate="true" gr:bendpoints="-2,84,3,-81"> 
@@ -857,8 +906,16 @@
                 <LinkParameter id="par278" name="x_PASSING" source="fld1" passing="true"/>  
                 <LinkParameter id="par279" name="y_PASSING" source="fld2" passing="true"/> 
               </Link>  
-              <Field id="fld2" name="y" type="float" modifiable="true"/>  
-              <Field id="fld1" name="x" type="float" modifiable="true"/> 
+              <Field id="fld2" name="y" type="float" modifiable="true"> 
+                <VRules> 
+                  <MandatoryValidationRule id="mnd2" name="Por favor insira uma coordenada"/> 
+                </VRules> 
+              </Field>  
+              <Field id="fld1" name="x" type="float" modifiable="true"> 
+                <VRules> 
+                  <MandatoryValidationRule id="mnd1" name="Por favor insira uma coordenada"/> 
+                </VRules> 
+              </Field> 
             </EntryUnit>  
             <MultiMessageUnit gr:x="5" gr:y="95" id="mssu4" name="Error Message"> 
               <Placeholder id="ph3" name="x"/>  
@@ -866,6 +923,22 @@
             </MultiMessageUnit> 
           </ContentUnits>  
           <layout:Grid containerType="grid"> 
+            <layout:Row> 
+              <layout:Cell colspan="12"> 
+                <layout:Unit unitId="mssu4"/> 
+              </layout:Cell>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/> 
+            </layout:Row>  
             <layout:Row> 
               <layout:Cell colspan="12"> 
                 <layout:Unit unitId="enu1"> 
@@ -887,9 +960,7 @@
               <layout:Cell/> 
             </layout:Row>  
             <layout:Row> 
-              <layout:Cell colspan="12"> 
-                <layout:Unit unitId="mssu4"/> 
-              </layout:Cell>  
+              <layout:Cell colspan="12"/>  
               <layout:Cell/>  
               <layout:Cell/>  
               <layout:Cell/>  
@@ -943,6 +1014,22 @@
           <layout:Grid containerType="grid"> 
             <layout:Row> 
               <layout:Cell colspan="12"> 
+                <layout:Unit unitId="mssu9"/> 
+              </layout:Cell>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/> 
+            </layout:Row>  
+            <layout:Row> 
+              <layout:Cell colspan="12"> 
                 <layout:Unit unitId="dau2"> 
                   <layout:Link link="ln5"/>  
                   <layout:Link link="ln8"/>  
@@ -952,6 +1039,20 @@
                   <layout:Attribute attribute="role30.att10"/> 
                 </layout:Unit> 
               </layout:Cell>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/> 
+            </layout:Row>  
+            <layout:Row> 
+              <layout:Cell colspan="12"/>  
               <layout:Cell/>  
               <layout:Cell/>  
               <layout:Cell/>  
@@ -986,6 +1087,20 @@
               <layout:Cell/> 
             </layout:Row>  
             <layout:Row> 
+              <layout:Cell colspan="12"/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/>  
+              <layout:Cell/> 
+            </layout:Row>  
+            <layout:Row> 
               <layout:Cell colspan="12"> 
                 <layout:Unit unitId="inu3"> 
                   <layout:Attribute attribute="att4"/>  
@@ -1007,9 +1122,7 @@
               <layout:Cell/> 
             </layout:Row>  
             <layout:Row> 
-              <layout:Cell colspan="12"> 
-                <layout:Unit unitId="mssu9"/> 
-              </layout:Cell>  
+              <layout:Cell colspan="12"/>  
               <layout:Cell/>  
               <layout:Cell/>  
               <layout:Cell/>  
