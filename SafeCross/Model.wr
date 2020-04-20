@@ -67,7 +67,57 @@
       <Attribute id="att9" name="x" type="float" db:column="x"/>  
       <Attribute id="att10" name="y" type="float" db:column="y"/> 
     </Entity>  
-    <db:Database id="db2" name="Database" type="MySQL (InnoDB)" url="jdbc:mysql://localhost:3306/safe_cross" username="root" cryptedPassword="true" password="OFJhZmFlbGE3"/>  
+    <db:Database id="db2" name="Database" type="MySQL (InnoDB)" url="jdbc:mysql://localhost:3306/safe_cross" username="eng_web" cryptedPassword="true" password="TEF0dW5lczk4"> 
+      <temp:DBMetaData driverMajorVersion="5" driverMinorVersion="1" driverVersion="mysql-connector-java-5.1.48 ( Revision: 29734982609c32d3ab7e5cac2e6acee69ff6b4aa )" productVersion="8.0.18" identifierQuoteString="`" transactionLevel="Repeatable read" driverName="MySQL Connector Java" productName="MySQL"> 
+        <temp:Table type="TABLE" ignoreIndexes="false" name="crosswalk" refreshed="true"> 
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="oid" primaryKey="true" notNull="true"/>  
+          <temp:Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="VARCHAR" size="255" decimalDigits="0" name="traffic_light" primaryKey="false" notNull="false"/>  
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="location_oid" primaryKey="false" notNull="false"/> 
+        </temp:Table>  
+        <temp:Table type="TABLE" ignoreIndexes="false" name="group" refreshed="true"> 
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="oid" primaryKey="true" notNull="true"/>  
+          <temp:Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="VARCHAR" size="255" decimalDigits="0" name="groupname" primaryKey="false" notNull="false"/>  
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="module_oid" primaryKey="false" notNull="false"/> 
+        </temp:Table>  
+        <temp:Table type="TABLE" ignoreIndexes="false" name="group_module" refreshed="true"> 
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="group_oid" primaryKey="true" notNull="true"/>  
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="module_oid" primaryKey="true" notNull="true"/> 
+        </temp:Table>  
+        <temp:Table type="TABLE" ignoreIndexes="false" name="location" refreshed="true"> 
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="oid" primaryKey="true" notNull="true"/>  
+          <temp:Column sqlTypeId="8" indexed="unknown" autoIncrement="false" type="DOUBLE" size="22" decimalDigits="0" name="x" primaryKey="false" notNull="false"/>  
+          <temp:Column sqlTypeId="8" indexed="unknown" autoIncrement="false" type="DOUBLE" size="22" decimalDigits="0" name="y" primaryKey="false" notNull="false"/> 
+        </temp:Table>  
+        <temp:Table type="TABLE" ignoreIndexes="false" name="module" refreshed="true"> 
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="oid" primaryKey="true" notNull="true"/>  
+          <temp:Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="VARCHAR" size="255" decimalDigits="0" name="moduleid" primaryKey="false" notNull="false"/>  
+          <temp:Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="VARCHAR" size="255" decimalDigits="0" name="modulename" primaryKey="false" notNull="false"/> 
+        </temp:Table>  
+        <temp:Table type="TABLE" ignoreIndexes="false" name="pedestrian" refreshed="true"> 
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="oid" primaryKey="true" notNull="true"/>  
+          <temp:Column sqlTypeId="8" indexed="unknown" autoIncrement="false" type="DOUBLE" size="22" decimalDigits="0" name="distance" primaryKey="false" notNull="false"/>  
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="crosswalk_oid" primaryKey="false" notNull="false"/>  
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="location_oid" primaryKey="false" notNull="false"/> 
+        </temp:Table>  
+        <temp:Table type="TABLE" ignoreIndexes="false" name="user" refreshed="true"> 
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="oid" primaryKey="true" notNull="true"/>  
+          <temp:Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="VARCHAR" size="255" decimalDigits="0" name="username" primaryKey="false" notNull="false"/>  
+          <temp:Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="VARCHAR" size="255" decimalDigits="0" name="password" primaryKey="false" notNull="false"/>  
+          <temp:Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="VARCHAR" size="255" decimalDigits="0" name="email" primaryKey="false" notNull="false"/>  
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="group_oid" primaryKey="false" notNull="false"/> 
+        </temp:Table>  
+        <temp:Table type="TABLE" ignoreIndexes="false" name="user_group" refreshed="true"> 
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="user_oid" primaryKey="true" notNull="true"/>  
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="group_oid" primaryKey="true" notNull="true"/> 
+        </temp:Table>  
+        <temp:Table type="TABLE" ignoreIndexes="false" name="vehicle" refreshed="true"> 
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="oid" primaryKey="true" notNull="true"/>  
+          <temp:Column sqlTypeId="8" indexed="unknown" autoIncrement="false" type="DOUBLE" size="22" decimalDigits="0" name="distance" primaryKey="false" notNull="false"/>  
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="location_oid" primaryKey="false" notNull="false"/>  
+          <temp:Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="INT" size="10" decimalDigits="0" name="crosswalk_oid" primaryKey="false" notNull="false"/> 
+        </temp:Table> 
+      </temp:DBMetaData> 
+    </db:Database>  
     <Relationship id="rel13" name="Location_Vehicle" sourceEntity="ent5" targetEntity="ent2" db:database="db2" db:table="vehicle"> 
       <RelationshipRole1 id="role25" name="LocationToVehicle" maxCard="1"> 
         <db:JoinColumn attribute="att8" name="location_oid"/> 
@@ -327,7 +377,7 @@
               <LinkParameter id="par44" name="verde_traffic_light" sourceValue="verde" target="mfu7.att11"/> 
             </OKLink> 
           </InputCollectorUnit>  
-          <SelectorUnit gr:x="495" gr:y="180" id="seu6" name="Vehicles nearby" entity="ent2" distinctAttributes="role26.att9 role26.att10 att4"> 
+          <SelectorUnit gr:x="495" gr:y="180" id="seu6" name="All vehicles" entity="ent2" distinctAttributes="role26.att9 role26.att10 att4"> 
             <OKLink id="oln38" name="OKFlow38" to="lpu3"> 
               <LinkParameter id="par216" name="oid_Input Array" source="att4Array" target="lpu3.array"/>  
               <LinkParameter id="par218" name="VehicleToLocation.x_vehicle_x" source="role26$att9Array" target="lsa6"/>  
@@ -363,7 +413,9 @@
               <LinkParameter id="par96" name="Next Element (vehicle_y)_PASSING_y" sourceLinkParameter="par91" target="mathv18"/>  
               <LinkParameter id="par98" name="crosswalk_id_PASSING" sourceLinkParameter="par70" passing="true"/> 
             </OKLink>  
-            <KOLink id="kln18" name="KOFlow18" to="kocu6" automaticCoupling="true" gr:bendpoints="-1,225,-646,0"/> 
+            <KOLink id="kln18" name="KOFlow18" to="kocu6" gr:bendpoints="-1,225,-646,0"> 
+              <LinkParameter id="par92" name="Error updating Vehicle that was near a Crosswalk_message" sourceValue="Error updating Vehicle that was near a Crosswalk" target="ocp6"/> 
+            </KOLink> 
           </ModifyUnit>  
           <SwitchUnit gr:x="465" gr:y="420" id="switch4" name="Switch"> 
             <OKLink id="oln8" name="OKFlow8" to="mathu2" code="true" gr:bendpoints="0,-86,-140,-1"> 
@@ -396,7 +448,9 @@
               <KeyCondition id="kcond3" name="KeyCondition3" predicate="in" implied="false"/> 
             </Selector>  
             <OKLink id="oln53" name="OKFlow53" to="lpu3" automaticCoupling="true"/>  
-            <KOLink id="kln9" name="KOFlow9" to="kocu6" automaticCoupling="true" gr:bendpoints="-5,74,-860,9"/> 
+            <KOLink id="kln9" name="KOFlow9" to="kocu6" gr:bendpoints="-2,80,-867,0"> 
+              <LinkParameter id="par75" name="Error updating Vehicle not near Crosswalk_message" sourceValue="Error updating Vehicle not near Crosswalk" target="ocp6"/> 
+            </KOLink> 
           </ModifyUnit>  
           <MathUnit gr:x="535" gr:y="325" id="mathu2" name="Distance" resultType="float" defaultExpression="sqrt(sqr(x-crosswalk_x) + sqr(y-crosswalk_y))"> 
             <OKLink id="oln33" name="OKFlow33" to="mfu1"> 
@@ -443,14 +497,19 @@
               <LinkParameter id="par45" name="crosswalk_id_PASSING" sourceLinkParameter="par40" passing="true"/>  
               <LinkParameter id="par46" name="crosswalk_x_PASSING" sourceLinkParameter="par41" passing="true"/>  
               <LinkParameter id="par47" name="crosswalk_y_PASSING" sourceLinkParameter="par42" passing="true"/> 
-            </OKLink> 
+            </OKLink>  
+            <KOLink id="kln22" name="KOFlow22" to="kocu6" gr:bendpoints="-75,76,-1260,-294;-75,369,-1260,-1"> 
+              <LinkParameter id="par106" name="Error updating Traffic light to green_message" sourceValue="Error updating Traffic light to green" target="ocp6"/> 
+            </KOLink> 
           </ModifyUnit>  
           <ModifyUnit gr:x="1270" gr:y="315" id="mfu8" name="Traffic light red" entity="ent1"> 
             <Selector id="su15" defaultPolicy="fill" booleanOperator="and"> 
               <KeyCondition id="kcond9" name="KeyCondition9" predicate="in" implied="false"/> 
             </Selector>  
             <OKLink id="oln13" name="OKFlow13" to="lpu3" automaticCoupling="true"/>  
-            <KOLink id="kln19" name="KOFlow19" to="kocu6" automaticCoupling="true"/> 
+            <KOLink id="kln19" name="KOFlow19" to="kocu6"> 
+              <LinkParameter id="par111" name="Error setting traffic light red_message" sourceValue="Error setting traffic light red" target="ocp6"/> 
+            </KOLink> 
           </ModifyUnit>  
           <SwitchUnit gr:x="1075" gr:y="460" id="switch1" name="Switch"> 
             <Case value="true"/>  
@@ -469,7 +528,9 @@
               <KeyCondition id="kcond10" name="KeyCondition10" predicate="in" implied="false"/> 
             </Selector>  
             <OKLink id="oln20" name="OKFlow20" to="lpu3" automaticCoupling="true" gr:bendpoints="-63,-101,-48,169"/>  
-            <KOLink id="kln20" name="KOFlow20" to="kocu6" automaticCoupling="true" gr:bendpoints="0,100,-225,0"/> 
+            <KOLink id="kln20" name="KOFlow20" to="kocu6" gr:bendpoints="0,100,-225,0"> 
+              <LinkParameter id="par107" name="Error setting flashing traffic light_message" sourceValue="Error setting flashing traffic light" target="ocp6"/> 
+            </KOLink> 
           </ModifyUnit>  
           <MathUnit gr:x="1005" gr:y="325" id="mathu5" name="Too close?" resultType="boolean" defaultExpression="sqr(x-crosswalk_x) + sqr(y-crosswalk_y) &lt;= sqr(15)"> 
             <OKLink id="oln19" name="OKFlow19" to="switch1"> 
@@ -482,7 +543,7 @@
             <MathVariable id="mathv20" name="crosswalk_y"/> 
           </MathUnit>  
           <KOCollectorUnit gr:x="1410" gr:y="550" id="kocu6" name="KO"> 
-            <OutputCollectorParameter id="ocp6" name="message" value="Veh"/> 
+            <OutputCollectorParameter id="ocp6" name="message"/> 
           </KOCollectorUnit> 
         </OperationUnits> 
       </OperationModule>  
@@ -529,7 +590,9 @@
               <KeyCondition id="kcond6" name="KeyCondition1" predicate="in" implied="false"/> 
             </Selector>  
             <OKLink id="oln5" name="OKFlow5" to="lpu2" automaticCoupling="true" gr:bendpoints="165,-1,0,154"/>  
-            <KOLink id="kln1" name="KOFlow1" to="kocu4" automaticCoupling="true"/> 
+            <KOLink id="kln1" name="KOFlow1" to="kocu4"> 
+              <LinkParameter id="par72" name="Error updating Pedestrian without Crosswalk_message" sourceValue="Error updating Pedestrian close to Crosswalk" target="ocp14"/> 
+            </KOLink> 
           </ModifyUnit>  
           <SwitchUnit id="switch5" name="Switch" gr:x="440" gr:y="320"> 
             <OKLink id="oln39" name="OKFlow8" to="mathu3" code="true" gr:bendpoints="2,-72,-163,-2"> 
@@ -558,7 +621,7 @@
             <OutputCollectorParameter id="ocp10" name="crosswalk_x"/>  
             <OutputCollectorParameter id="ocp11" name="crosswalk_y"/> 
           </OKCollectorUnit>  
-          <SelectorUnit id="seu7" name="Pedestrians nearby" gr:x="460" gr:y="80" entity="ent3" distinctAttributes="att5 role28.att9 role28.att10"> 
+          <SelectorUnit id="seu7" name="All Pedestrians" gr:x="470" gr:y="80" entity="ent3" distinctAttributes="att5 role28.att9 role28.att10"> 
             <OKLink id="oln32" name="OKFlow32" to="lpu2"> 
               <LinkParameter id="par170" name="oid_Input Array" source="att5Array" target="lpu2.array"/>  
               <LinkParameter id="par171" name="PedestrianToLocation.x_Pedestrian_x" source="role28$att9Array" target="lsa3"/>  
@@ -573,7 +636,9 @@
               <KeyCondition id="kcond7" name="KeyCondition3" predicate="in" implied="false"/> 
             </Selector>  
             <OKLink id="oln35" name="OKFlow35" to="lpu2" automaticCoupling="true" gr:bendpoints="320,0,0,275"/>  
-            <KOLink id="kln5" name="KOFlow5" to="kocu4" automaticCoupling="true"/> 
+            <KOLink id="kln5" name="KOFlow5" to="kocu4"> 
+              <LinkParameter id="par73" name="Error updating Pedestrian not near any Crosswalk_message" sourceValue="Error updating Pedestrian not near any Crosswalk" target="ocp14"/> 
+            </KOLink> 
           </ModifyUnit>  
           <LoopUnit gr:x="985" gr:y="90" id="lpu2" name="Iterate Pedestrians"> 
             <OKLink id="oln12" name="OKFlow12" to="mathu4" code="next"> 
@@ -597,7 +662,7 @@
             </OKLink> 
           </LoopUnit>  
           <KOCollectorUnit gr:x="1180" gr:y="295" id="kocu4" name="KO"> 
-            <OutputCollectorParameter id="ocp14" name="message" value="Ped"/> 
+            <OutputCollectorParameter id="ocp14" name="message"/> 
           </KOCollectorUnit> 
         </OperationUnits> 
       </OperationModule>  
@@ -642,7 +707,7 @@
             <OutputCollectorParameter id="ocp20" name="message"/> 
           </OKCollectorUnit>  
           <KOCollectorUnit gr:x="880" gr:y="205" id="kocu5" name="KO"> 
-            <OutputCollectorParameter id="ocp13" name="message" value="Something went wrong on count nerby!"/> 
+            <OutputCollectorParameter id="ocp13" name="message"/> 
           </KOCollectorUnit> 
         </OperationUnits> 
       </OperationModule> 
@@ -689,7 +754,7 @@
           </KOLink> 
         </ModuleInstanceUnit>  
         <ModuleInstanceUnit gr:x="55" gr:y="270" id="miu10" action="true" moduleId="opm6" linkOrder="ln21 ln1"> 
-          <OKLink id="oln48" name="OKFlow16" to="dau2" gr:bendpoints="-1,-124,-431,-84;65,-124,-365,-84;317,-127,-108,-82"> 
+          <OKLink id="oln48" name="OKFlow16" to="dau2" gr:bendpoints="65,-124,-365,-84;317,-127,-108,-82"> 
             <LinkParameter id="par252" name="crosswalk_id_KeyCondition1 [oid]" source="ocp12" target="kcond2.att1"/> 
           </OKLink>  
           <Link id="ln21" name="Flow21" to="mssu9" type="transport" validate="true" gr:bendpoints="26,73,-399,-2"> 
