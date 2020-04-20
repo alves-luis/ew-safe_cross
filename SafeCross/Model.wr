@@ -374,7 +374,7 @@
               <LinkParameter id="par41" name="crosswalk_x_PASSING" source="icp7" passing="true"/>  
               <LinkParameter id="par42" name="crosswalk_y_PASSING" source="icp8" passing="true"/>  
               <LinkParameter id="par43" name="crosswalk_id_KeyCondition8 [oid]" source="icp9" target="kcond8.att1"/>  
-              <LinkParameter id="par44" name="verde_traffic_light" sourceValue="verde" target="mfu7.att11"/> 
+              <LinkParameter id="par44" name="verde_traffic_light" sourceValue="green" target="mfu7.att11"/> 
             </OKLink> 
           </InputCollectorUnit>  
           <SelectorUnit gr:x="495" gr:y="180" id="seu6" name="All vehicles" entity="ent2" distinctAttributes="role26.att9 role26.att10 att4"> 
