@@ -1,0 +1,9 @@
+steps:
+  - name: 'node:14.2.0-alpine3.10'
+    id: Install
+    entrypoint: npm
+    args: [ 'install' ]
+  - name: 'node:14.2.0-alpine3.10'
+    id: Test
+    entrypoint: npm
+    args: [ 'test' ]

@@ -4,7 +4,7 @@
   "description": "Authentication service for the SPWS backend",
   "main": "server.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha tests/test.js"
   },
   "author": "",
   "license": "ISC",
