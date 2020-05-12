@@ -1,0 +1,14 @@
+{
+  "name": "welcome-service",
+  "version": "1.0.0",
+  "description": "Authentication service for the SPWS backend",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
