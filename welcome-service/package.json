@@ -4,6 +4,7 @@
   "description": "Authentication service for the SPWS backend",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "mocha tests/test.js"
   },
   "author": "",

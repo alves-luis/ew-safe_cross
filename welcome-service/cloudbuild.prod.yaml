@@ -4,8 +4,15 @@ steps:
     entrypoint: npm
     args: [ 'install' ]
     dir: 'welcome-service'
+
   - name: 'node:10-alpine'
     id: Test
     entrypoint: npm
     args: [ 'test' ]
     dir: 'welcome-service'
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: Deploy
+    args: [ 'app', 'deploy']
+    dir: 'welcome-service'
+  timeout: '600s'

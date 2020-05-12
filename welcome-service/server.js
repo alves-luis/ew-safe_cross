@@ -7,12 +7,10 @@ app.get('/', (req, res) => {
   res.send('Hello World');
 });
 
-if (module === require.main) {
-  const PORT = process.env.PORT || 8080;
-  app.listen(PORT, () => {
-    console.log('Listening on port ' + PORT);
-    console.log('Press Ctrl+C to quit.');
-  });
-}
+const server = app.listen(8080, () => {
+  const host = server.address().address;
+  const port = server.address().port;
 
-module.exports = app;
+  console.log(`App listening at http://${host}:${port}`);
+});
+
