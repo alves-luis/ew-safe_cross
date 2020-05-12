@@ -3,7 +3,9 @@ steps:
     id: Install
     entrypoint: npm
     args: [ 'install' ]
+    dir: 'welcome-service'
   - name: 'node:14.2.0-alpine3.10'
     id: Test
     entrypoint: npm
     args: [ 'test' ]
+    dir: 'welcome-service'
