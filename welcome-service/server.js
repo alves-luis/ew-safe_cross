@@ -1,16 +1,33 @@
-'use strict';
-
+require('dotenv').config();
 const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const routes = require('./routes');
 
-const app = express();
-app.get('/', (req, res) => {
-  res.send('Hello World');
-});
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true
+};
 
-const server = app.listen(8080, () => {
-  const host = server.address().address;
-  const port = server.address().port;
+const host = process.env.DB_HOST;
+const port = process.env.DB_PORT;
+const database = process.env.DB_DATABASE;
+const username = process.env.DB_USERNAME;
+const password = process.env.DB_PASSWORD;
 
-  console.log(`App listening at http://${host}:${port}`);
-});
+const uri = `mongodb://${username}:${password}@${host}:${port}/${database}`;
+
+mongoose
+  .connect(uri, options)
+  .then(() => {
+    const app = express();
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use('/v1', routes);
+
+    app.listen(3000, () => {
+      console.log(`App started on port 3000`);
+    });
+  });
 

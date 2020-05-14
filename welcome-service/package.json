@@ -1,18 +1,19 @@
 {
   "name": "welcome-service",
-  "version": "1.0.0",
-  "description": "Authentication service for the SPWS backend",
-  "main": "server.js",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
     "start": "node server.js",
-    "test": "mocha tests/test.js"
+    "dev": "nodemon server.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "~4.16.1",
+    "mongoose": "^5.9.14",
+    "uuid": "^8.0.0"
   },
   "devDependencies": {
-    "mocha": "^7.1.2"
+    "nodemon": "^2.0.4"
   }
 }
