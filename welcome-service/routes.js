@@ -27,19 +27,33 @@ router.post('/welcome/vehicle', (_req, res) => {
 });
 
 router.get('/welcome/pedestrian/:id', async (req, res) => {
-  const pedestrian = await Pedestrian.findOne({ uid: req.params.id });
-  res.json({ 
-    'id': pedestrian.uid,
-    'creation_date': pedestrian.createdAt
-  });
+  try {
+    const pedestrian = await Pedestrian.findOne({ uid: req.params.id }).exec();
+    res.json({ 
+      'id': pedestrian.uid,
+      'creation_date': pedestrian.createdAt
+    });
+  } catch (err) {
+    res.status(404);
+    res.json({
+      'msg': "There isn't a Pedestrian with that id"
+    });
+  }
 });
 
 router.get('/welcome/vehicle/:id', async (req, res) => {
-  const vehicle = await Vehicle.findOne({ uid: req.params.id });
-  res.json({ 
-    'id': vehicle.uid,
-    'creation_date': vehicle.createdAt
-  });
+  try {
+    const vehicle = await Vehicle.findOne({ uid: req.params.id });
+    res.json({ 
+      'id': vehicle.uid,
+      'creation_date': vehicle.createdAt
+    });
+  } catch (err) {
+    res.status(404);
+    res.json({
+      'msg': "There isn't a Vehicle with that id"
+    });
+  }
 });
 
 module.exports = router;

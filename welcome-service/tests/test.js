@@ -31,6 +31,17 @@ describe('Pedestrian Routes', function() {
         done();
       });
   }).timeout(5000);
+  it("GET /welcome/pedestrian/id (doesn't exist)", function(done) {
+    chai
+      .request(app)
+      .get('/v1/welcome/pedestrian/333')
+      .send()
+      .then(function(res, _err) {
+        assert.equal(res.status, 404);
+        assert.exists(res.body.msg);
+        done();
+      });
+  }).timeout(5000);
 });
 
 describe('Vehicle Routes', function() {
@@ -56,6 +67,17 @@ describe('Vehicle Routes', function() {
         assert.equal(res.status, 200);
         assert.equal(res.body.id, id);
         assert.exists(res.body.creation_date);
+        done();
+      });
+  }).timeout(5000);
+  it("GET /welcome/vehicle/id (doesn't exist)", function(done) {
+    chai
+      .request(app)
+      .get('/v1/welcome/vehicle/333')
+      .send()
+      .then(function(res, _err) {
+        assert.equal(res.status, 404);
+        assert.exists(res.body.msg);
         done();
       });
   }).timeout(5000);
