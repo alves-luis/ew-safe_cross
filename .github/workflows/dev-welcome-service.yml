@@ -9,6 +9,14 @@ on:
 
 jobs:
   build-and-test:
+    services:
+      database:
+        image: mongo
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: mongoCI
+          MONGO_INITDB_ROOT_PASSWORD: mongoCI
     name: Build and Test
     runs-on: ubuntu-latest
     defaults:
@@ -24,6 +32,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
+      - name: Copy .env.ci
+        run: cp .env.ci .env
       - name: Install dependencies
         run: npm install
       - name: Run tests
