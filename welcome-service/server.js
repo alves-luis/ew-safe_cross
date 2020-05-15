@@ -17,7 +17,10 @@ const username = process.env.DB_USERNAME;
 const password = process.env.DB_PASSWORD;
 
 const uri = `mongodb://${username}:${password}@${host}:${port}/${database}`;
-const db = mongoose.connect(uri, options);
+mongoose.connect(uri, options).
+  catch(error => {
+    console.log(error);
+  });
 
 const app = express();
 

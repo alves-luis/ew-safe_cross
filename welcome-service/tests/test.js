@@ -24,7 +24,7 @@ describe('Pedestrian Routes', function() {
       .request(app)
       .get(`/v1/welcome/pedestrian/${id}`)
       .send()
-      .end(function(_err, res) {
+      .then(function(res, _err) {
         assert.equal(res.status, 200);
         assert.equal(res.body.id, id);
         assert.exists(res.body.creation_date);
@@ -52,7 +52,7 @@ describe('Vehicle Routes', function() {
       .request(app)
       .get(`/v1/welcome/vehicle/${id}`)
       .send()
-      .end(function(_err, res) {
+      .then(function(res, _err) {
         assert.equal(res.status, 200);
         assert.equal(res.body.id, id);
         assert.exists(res.body.creation_date);
