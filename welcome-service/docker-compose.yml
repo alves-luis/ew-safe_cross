@@ -2,9 +2,16 @@ version: '3.1'
 services:
   database:
     image: 'mongo'
-    restart: always
     environment: 
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: pass
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
     ports: 
       - '27017-27019:27017-27019'
+  welcome_service:
+    container_name: welcome-service
+    restart: always
+    build: .
+    ports:
+      - '3000:3000'
+    links: 
+      - database
