@@ -17,17 +17,18 @@ const username = process.env.DB_USERNAME;
 const password = process.env.DB_PASSWORD;
 
 const uri = `mongodb://${username}:${password}@${host}:${port}/${database}`;
+const db = mongoose.connect(uri, options);
 
-mongoose
-  .connect(uri, options)
-  .then(() => {
-    const app = express();
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
-    app.use('/v1', routes);
+const app = express();
 
-    app.listen(3000, () => {
-      console.log(`App started on port 3000`);
-    });
-  });
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/v1', routes);
 
+app.listen(3000, () => {
+  if (process.env.NODE_ENV != 'test')
+  console.log(`App started on port 3000`);
+});
+
+// For running tests
+module.exports = app;
