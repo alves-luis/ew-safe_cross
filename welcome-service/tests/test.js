@@ -24,11 +24,14 @@ describe('Pedestrian Routes', function() {
       .request(app)
       .get(`/v1/welcome/pedestrian/${id}`)
       .send()
-      .then(function(res, _err) {
+      .then(function(res) {
         assert.equal(res.status, 200);
         assert.equal(res.body.id, id);
         assert.exists(res.body.creation_date);
         done();
+      })
+      .catch(function(err) {
+        throw err;
       });
   }).timeout(5000);
   it("GET /welcome/pedestrian/id (doesn't exist)", function(done) {
@@ -36,10 +39,13 @@ describe('Pedestrian Routes', function() {
       .request(app)
       .get('/v1/welcome/pedestrian/333')
       .send()
-      .then(function(res, _err) {
+      .then(function(res) {
         assert.equal(res.status, 404);
         assert.exists(res.body.msg);
         done();
+      })
+      .catch(function(err) {
+        throw err;
       });
   }).timeout(5000);
 });
@@ -63,11 +69,14 @@ describe('Vehicle Routes', function() {
       .request(app)
       .get(`/v1/welcome/vehicle/${id}`)
       .send()
-      .then(function(res, _err) {
+      .then(function(res) {
         assert.equal(res.status, 200);
         assert.equal(res.body.id, id);
         assert.exists(res.body.creation_date);
         done();
+      })
+      .catch(function(err) {
+        throw err;
       });
   }).timeout(5000);
   it("GET /welcome/vehicle/id (doesn't exist)", function(done) {
@@ -75,10 +84,13 @@ describe('Vehicle Routes', function() {
       .request(app)
       .get('/v1/welcome/vehicle/333')
       .send()
-      .then(function(res, _err) {
+      .then(function(res) {
         assert.equal(res.status, 404);
         assert.exists(res.body.msg);
         done();
+      })
+      .catch(function(err) {
+        throw err;
       });
   }).timeout(5000);
 });
