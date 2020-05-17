@@ -1,47 +1,90 @@
 const chaiHttp = require('chai-http');
 const chai = require('chai');
 const app = require('../server');
+const fs = require('fs');
 
 chai.use(chaiHttp);
 const assert = chai.assert;
 
-describe('Pedestrian Routes', function() {
-  let id;
-  it('POST /welcome/pedestrian', function(done) {
+describe('Adding a single crosswalk and retrieving it', function() {
+  const lon = -69.34;
+  const lat = 27;
+  it('POST /crosswalks/', function(done) {
     chai
       .request(app)
-      .post('/v1/welcome/pedestrian')
-      .send()
+      .post('/v1/crosswalks/')
+      .send({'lon': lon, 'lat': lat})
       .end(function(_err, res) {
         assert.equal(res.status, 201);
-        assert.exists(res.body.id);
-        id = res.body.id;
+        assert.exists(res.body.uid);
+        assert.equal(res.body.lon, lon);
+        assert.equal(res.body.lat, lat);
         done();
       });
   }).timeout(5000);
-  it('GET /welcome/pedestrian/id', function(done) {
+  it('GET nearby /crosswalks/?lon=:lon&lat=:lat', function(done) {
     chai
       .request(app)
-      .get(`/v1/welcome/pedestrian/${id}`)
+      .get(`/v1/crosswalks/?lon=${lon}&lat=${lat}`)
       .send()
       .then(function(res) {
         assert.equal(res.status, 200);
-        assert.equal(res.body.id, id);
-        assert.exists(res.body.creation_date);
+        assert.equal(res.body.crosswalks.length, 1);
+        assert.equal(res.body.crosswalks[0].lon, lon);
+        assert.equal(res.body.crosswalks[0].lat, lat);
         done();
       })
       .catch(function(err) {
         throw err;
       });
   }).timeout(5000);
-  it("GET /welcome/pedestrian/id (doesn't exist)", function(done) {
+});
+
+describe('Adding an invalid single crosswalk and trying retrieving it', function() {
+  let lon = -197.46;
+  let lat = 25;
+  it('POST /crosswalks/ with invalid longitude', function(done) {
     chai
       .request(app)
-      .get('/v1/welcome/pedestrian/333')
+      .post('/v1/crosswalks/')
+      .send({'lon': lon, 'lat': lat})
+      .end(function(_err, res) {
+        assert.equal(res.status, 409);
+        done();
+      });
+  }).timeout(5000);
+  it(`GET nearby invalid longitude /crosswalks/?lon=${lon}&lat=${lat}`, function(done) {
+    chai
+      .request(app)
+      .get(`/v1/crosswalks/?lon=${lon}&lat=${lat}`)
       .send()
       .then(function(res) {
-        assert.equal(res.status, 404);
-        assert.exists(res.body.msg);
+        assert.equal(res.status, 400);
+        done();
+      })
+      .catch(function(err) {
+        throw err;
+      });
+  }).timeout(5000);
+  lon = -20.55;
+  lat = 92;
+  it('POST /crosswalks/ with invalid latitude', function(done) {
+    chai
+      .request(app)
+      .post('/v1/crosswalks/')
+      .send({'lon': lon, 'lat': lat})
+      .end(function(_err, res) {
+        assert.equal(res.status, 409);
+        done();
+      });
+  }).timeout(5000);
+  it(`GET nearby invalid longitude /crosswalks/?lon=${lon}&lat=${lat}`, function(done) {
+    chai
+      .request(app)
+      .get(`/v1/crosswalks/?lon=${lon}&lat=${lat}`)
+      .send()
+      .then(function(res) {
+        assert.equal(res.status, 400);
         done();
       })
       .catch(function(err) {

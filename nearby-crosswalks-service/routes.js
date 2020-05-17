@@ -16,7 +16,9 @@ router.get('/crosswalks/', (req, res) => {
       }
     }
   }).find((error, results) => {
-    if (error) console.log(error);
+    if (error) {
+      res.sendStatus(400);
+    }
     else {
       let crosswalks = []
       results.forEach((r) => {
@@ -27,7 +29,8 @@ router.get('/crosswalks/', (req, res) => {
         };
         crosswalks.push(crosswalk);
       });
-      res.json(crosswalks);
+      res.status(200);
+      res.json({ 'crosswalks': crosswalks });
     }
   });
 });
@@ -42,12 +45,10 @@ router.post('/crosswalks/', (req, res) => {
   });
   crosswalk.save((err) => {
     if (err) {
-      console.log(err);
       res.sendStatus(409);
     }
     else {
       res.status(201);
-      console.log(crosswalk);
       res.json({
         'uid': crosswalk.uid,
         'lon': crosswalk.location.coordinates[0],
