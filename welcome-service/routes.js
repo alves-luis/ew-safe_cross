@@ -28,7 +28,7 @@ router.post('/welcome/vehicle', (_req, res) => {
 
 router.get('/welcome/pedestrian/:id', async (req, res) => {
   try {
-    const pedestrian = await Pedestrian.findOne({ uid: req.params.id }).exec();
+    const pedestrian = await Pedestrian.findOne({ uid: req.params.id });
     res.json({ 
       'id': pedestrian.uid,
       'creation_date': pedestrian.createdAt
