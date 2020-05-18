@@ -16,6 +16,7 @@ services:
   welcome_service:
     image: 'ambystomatidae/welcome-service:latest'
     container_name: 'welcome_service'
+    env_file: ./welcome-service/.env.example
     ports:
       - '3000:3000'
     networks:
@@ -26,6 +27,7 @@ services:
   nearby_crosswalks_service:
     image: 'ambystomatidae/nearby-crosswalks-service:latest'
     container_name: 'nearby_crosswalks_service'
+    env_file: ./nearby-crosswalks-service/.env.example
     ports:
       - '3001:3000'
     networks:
