@@ -1,0 +1,41 @@
+version: '3'
+services:
+  database:
+    image: 'mongo'
+    container_name: 'database'
+    environment:
+      - MONGO_
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+    volumes:
+      - ./database-seeds:/docker-entrypoint-initdb.d:ro
+    networks:
+      - intra_backend
+    ports:
+      - '27017:27017'
+
+  welcome_service:
+    image: 'ambystomatidae/welcome-service:latest'
+    container_name: 'welcome_service'
+    ports:
+      - '3000:3000'
+    networks:
+      - intra_backend
+    depends_on: 
+      - database
+
+  nearby_crosswalks_service:
+    image: 'ambystomatidae/nearby-crosswalks-service:latest'
+    container_name: 'nearby_crosswalks_service'
+    ports:
+      - '3001:3000'
+    networks:
+      - intra_backend
+    depends_on:
+      - database
+
+networks:
+  intra_backend:
+    driver: bridge
+
+    
