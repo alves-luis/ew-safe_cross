@@ -5,6 +5,7 @@ const router = express.Router();
 router.get('/crosswalks/', (req, res) => {
   const lon = req.query.lon;
   const lat = req.query.lat;
+
   Crosswalk.find({
     location: {
       $near: {
@@ -15,24 +16,24 @@ router.get('/crosswalks/', (req, res) => {
         }
       }
     }
-  }).find((error, results) => {
-    if (error) {
-      res.sendStatus(400);
-    }
-    else {
-      let crosswalks = []
-      results.forEach((r) => {
+  })
+    .then(r => {
+      let crosswalks = [];
+      r.forEach((c) => {
         let crosswalk = {
-          'lon': r.location.coordinates[0],
-          'lat': r.location.coordinates[1],
-          'creation_date': r.createdAt
+          'lon': c.location.coordinates[0],
+          'lat': c.location.coordinates[1],
+          'creation_date': c.createdAt
         };
         crosswalks.push(crosswalk);
       });
       res.status(200);
-      res.json({ 'crosswalks': crosswalks });
-    }
-  });
+      res.json({ 'crosswalks': crosswalks});
+    })
+    .catch(err => {
+      console.log('Error:', err.message);
+      res.sendStatus(400);
+    });
 });
 
 router.post('/crosswalks/', (req, res) => {
