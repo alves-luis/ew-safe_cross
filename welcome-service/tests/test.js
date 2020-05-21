@@ -85,7 +85,6 @@ describe('Vehicle Routes', function() {
       .send()
       .then(function(res) {
         assert.equal(res.status, 404);
-        assert.exists(res.body.msg);
         done();
       })
       .catch(function(err) {
