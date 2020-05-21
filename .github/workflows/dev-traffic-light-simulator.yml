@@ -1,4 +1,4 @@
-name: dev-traffic-light-simulator
+name: Traffic-Light-Simulator - Test PR
 
 on:
   pull_request:

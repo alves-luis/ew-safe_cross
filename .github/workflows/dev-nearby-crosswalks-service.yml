@@ -1,4 +1,4 @@
-name: dev-nearby-crosswalks-service
+name: Nearby-Crosswalks-Service - Test PR
 
 on:
   pull_request:
