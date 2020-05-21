@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - la/test
-    paths:
-      - 'welcome-service/**'
 
 jobs:
   test:
