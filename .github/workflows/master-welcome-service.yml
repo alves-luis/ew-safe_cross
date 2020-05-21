@@ -3,7 +3,7 @@ name: Welcome-Service - Test, Build & Deploy
 on:
   push:
     branches:
-      - master
+      - la/test
     paths:
       - 'welcome-service/**'
 
