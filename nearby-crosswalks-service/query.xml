@@ -1,0 +1,7 @@
+<osm-script>
+  <query type="node">
+    <has-kv k="highway" v="crossing"/>
+    <bbox-query e="-8.381968" n="41.568518" s="41.507485" w="-8.459473"/>
+  </query>
+  <print/>
+</osm-script>
