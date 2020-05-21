@@ -21,24 +21,31 @@ router.post('/welcome/vehicle', (_req, res) => {
     if (err) {
       console.log(err);
     }
+    else {
+      res.status(201);
+      res.json({ 'id': vehicle.uid });
+    }
   });
-  res.status(201);
-  res.json({ 'id': vehicle.uid });
 });
 
-router.get('/welcome/pedestrian/:id', async (req, res) => {
-  try {
-    const pedestrian = await Pedestrian.findOne({ uid: req.params.id });
-    res.json({ 
-      'id': pedestrian.uid,
-      'creation_date': pedestrian.createdAt
+router.get('/welcome/pedestrian/:id', (req, res) => {
+  Pedestrian.findOne({ uid: req.params.id })
+    .then(p => {
+      if (p) {
+        res.status(200);
+        res.json({ 
+          'id': p.uid,
+          'creation_date': p.createdAt
+        });
+      }
+      else {
+        res.sendStatus(404);
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.sendStatus(404);
     });
-  } catch (err) {
-    res.status(404);
-    res.json({
-      'msg': "There isn't a Pedestrian with that id"
-    });
-  }
 });
 
 router.get('/welcome/vehicle/:id', async (req, res) => {
