@@ -9,10 +9,13 @@ router.post('/welcome/pedestrian', (_req, res) => {
   pedestrian.save((err) => {
     if (err) {
       console.log(err);
+      res.sendStatus(400);
+    }
+    else {
+      res.status(201);
+      res.json({ 'id': pedestrian.uid });
     }
   });
-  res.status(201);
-  res.json({ 'id': pedestrian.uid });
 });
 
 router.post('/welcome/vehicle', (_req, res) => {
@@ -20,40 +23,53 @@ router.post('/welcome/vehicle', (_req, res) => {
   vehicle.save((err) => {
     if (err) {
       console.log(err);
+      res.sendStatus(400);
+    }
+    else {
+      res.status(201);
+      res.json({ 'id': vehicle.uid });
     }
   });
-  res.status(201);
-  res.json({ 'id': vehicle.uid });
 });
 
-router.get('/welcome/pedestrian/:id', async (req, res) => {
-  try {
-    const pedestrian = await Pedestrian.findOne({ uid: req.params.id });
-    res.json({ 
-      'id': pedestrian.uid,
-      'creation_date': pedestrian.createdAt
+router.get('/welcome/pedestrian/:id', (req, res) => {
+  Pedestrian.findOne({ uid: req.params.id })
+    .then(p => {
+      if (p) {
+        res.status(200);
+        res.json({ 
+          'id': p.uid,
+          'creation_date': p.createdAt
+        });
+      }
+      else {
+        res.sendStatus(404);
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.sendStatus(404);
     });
-  } catch (err) {
-    res.status(404);
-    res.json({
-      'msg': "There isn't a Pedestrian with that id"
-    });
-  }
 });
 
 router.get('/welcome/vehicle/:id', async (req, res) => {
-  try {
-    const vehicle = await Vehicle.findOne({ uid: req.params.id });
-    res.json({ 
-      'id': vehicle.uid,
-      'creation_date': vehicle.createdAt
-    });
-  } catch (err) {
-    res.status(404);
-    res.json({
-      'msg': "There isn't a Vehicle with that id"
-    });
-  }
+  Vehicle.findOne({ uid: req.params.id })
+  .then(v => {
+    if (v) {
+      res.status(200);
+      res.json({ 
+        'id': v.uid,
+        'creation_date': v.createdAt
+      });
+    }
+    else {
+      res.sendStatus(404);
+    }
+  })
+  .catch(err => {
+    console.log(err);
+    res.sendStatus(404);
+  });
 });
 
 module.exports = router;

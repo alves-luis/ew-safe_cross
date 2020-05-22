@@ -1,4 +1,4 @@
-name: dev-crosswalks-service
+name: Crosswalks-Service - Test PR
 
 on:
   pull_request:
