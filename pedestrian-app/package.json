@@ -8,6 +8,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "geolib": "^3.2.1"
+    "colors": "^1.4.0",
+    "geolib": "^3.2.1",
+    "request": "^2.88.2"
   }
 }
