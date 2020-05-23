@@ -10,15 +10,11 @@ services:
       - ./database-seeds:/docker-entrypoint-initdb.d:ro
     networks:
       - intra_backend
-    ports:
-      - '27017:27017'
 
   welcome_service:
     image: 'ambystomatidae/welcome-service:latest'
     container_name: 'welcome_service'
     env_file: ./welcome-service/.env.example
-    ports:
-      - '3000:3000'
     networks:
       - intra_backend
     depends_on: 
@@ -28,12 +24,23 @@ services:
     image: 'ambystomatidae/nearby-crosswalks-service:latest'
     container_name: 'nearby_crosswalks_service'
     env_file: ./nearby-crosswalks-service/.env.example
-    ports:
-      - '3001:3000'
     networks:
       - intra_backend
     depends_on:
       - database
+
+  spws:
+    image: 'ambystomatidae/spws:latest'
+    container_name: 'spws'
+    env_file: ./spws/.env.example
+    ports:
+      - '3000:3000'
+    networks:
+      - intra_backend
+    depends_on: 
+      - database
+      - welcome_service
+      - nearby_crosswalks_service
 
 networks:
   intra_backend:
