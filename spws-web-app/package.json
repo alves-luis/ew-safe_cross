@@ -1,6 +1,6 @@
 {
-  "name": "map-vue",
-  "description": "A Vue.js project",
+  "name": "spws-web-app",
+  "description": "Web application for SPWS. Keep track of crosswalks' real-time status.",
   "version": "1.0.0",
   "license": "MIT",
   "private": true,
