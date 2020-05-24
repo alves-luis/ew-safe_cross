@@ -15,11 +15,13 @@ module.exports = class LocationSimulator{
         return true;
     }
 
-    constructor() {
-        var random = Math.floor(Math.random() * routes.length);
-        this.current_route = routes[random];
+    constructor(simulation) {
+        if (simulation === undefined) simulation = Math.floor(Math.random() * routes.length);
+        console.log(new Date().toISOString() + ": Chosen route = " + simulation)
+        this.current_route = routes[simulation];
         this.index = 0;
     }
+
 };
 
 
@@ -73,17 +75,17 @@ routes = [
         { latitude: 41.54582 , longitude: -8.42005 },
         { latitude: 41.54612 , longitude: -8.41924 }
 
-    ]// ,
+    ] //,
     // [
-    //     { latitude: 41.55639, longitude: -8.42819 },,
-    //     { latitude: 41.55689, longitude: -8.42729 },,
-    //     { latitude: 41.55713, longitude: -8.42622 },,
-    //     { latitude: 41.55744, longitude: -8.42481 },,
-    //     { latitude: 41.55773, longitude: -8.42381 },,
-    //     { latitude: 41.55816, longitude: -8.42298 },,
-    //     { latitude: 41.55858, longitude: -8.42234 },,
-    //     { latitude: 41.55897, longitude: -8.42176 },,
-    //     { latitude: 41.55965, longitude: -8.4207 },,
-    //     { latitude: 41.56012, longitude: -8.41998 }, 
+    //     { latitude: 41.55639, longitude: -8.42819 },
+    //     { latitude: 41.55689, longitude: -8.42729 },
+    //     { latitude: 41.55713, longitude: -8.42622 },
+    //     { latitude: 41.55744, longitude: -8.42481 },
+    //     { latitude: 41.55773, longitude: -8.42381 },
+    //     { latitude: 41.55816, longitude: -8.42298 },
+    //     { latitude: 41.55858, longitude: -8.42234 },
+    //     { latitude: 41.55897, longitude: -8.42176 },
+    //     { latitude: 41.55965, longitude: -8.4207 },
+    //     { latitude: 41.56012, longitude: -8.41998 },
     // ]
 ];
