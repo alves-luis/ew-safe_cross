@@ -26,7 +26,7 @@ module.exports = class LocationSimulator{
 
 
 routes = [
-    [   // Aptiv -> Hotel Joao XXI
+    [   // Aptiv -> Hotel Joao XXI - Simulação veículo 1
         { latitude: 41.53453 , longitude: -8.43728 },
         { latitude: 41.53461 , longitude: -8.43737 },
         { latitude: 41.53472 , longitude: -8.43733 },
@@ -75,17 +75,25 @@ routes = [
         { latitude: 41.54582 , longitude: -8.42005 },
         { latitude: 41.54612 , longitude: -8.41924 }
 
-    ] //,
-    // [
-    //     { latitude: 41.55639, longitude: -8.42819 },
-    //     { latitude: 41.55689, longitude: -8.42729 },
-    //     { latitude: 41.55713, longitude: -8.42622 },
-    //     { latitude: 41.55744, longitude: -8.42481 },
-    //     { latitude: 41.55773, longitude: -8.42381 },
-    //     { latitude: 41.55816, longitude: -8.42298 },
-    //     { latitude: 41.55858, longitude: -8.42234 },
-    //     { latitude: 41.55897, longitude: -8.42176 },
-    //     { latitude: 41.55965, longitude: -8.4207 },
-    //     { latitude: 41.56012, longitude: -8.41998 },
-    // ]
+    ],
+    [ // Gostinho da Manha -> SuperDecor Braga - Simulação pedestre 1
+        { latitude: 41.54788, longitude: -8.40729 },
+        { latitude: 41.54785, longitude: -8.40727 },
+        { latitude: 41.54780, longitude: -8.40724 },
+        { latitude: 41.54775, longitude: -8.40722 },
+        { latitude: 41.54770, longitude: -8.40718 },
+        { latitude: 41.54766, longitude: -8.40714 },
+        { latitude: 41.54767, longitude: -8.40709 },
+        { latitude: 41.54770, longitude: -8.40701 },
+        { latitude: 41.54773, longitude: -8.40693 },
+        { latitude: 41.54768, longitude: -8.40688 },
+        { latitude: 41.54769, longitude: -8.40680 },
+        { latitude: 41.54772, longitude: -8.40673 },
+        { latitude: 41.54774, longitude: -8.40666 },
+        { latitude: 41.54776, longitude: -8.40655 },
+        { latitude: 41.54777, longitude: -8.40645 },
+        { latitude: 41.54778, longitude: -8.40637 },
+        { latitude: 41.54776, longitude: -8.40626 },
+        { latitude: 41.54773, longitude: -8.40619 }        
+    ]
 ];

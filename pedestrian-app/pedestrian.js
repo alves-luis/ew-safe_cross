@@ -8,7 +8,7 @@ const colors = require('colors');
 const axios = require('axios')
 
 // Setup ---------------------------------------------------------
-
+max_dist = 20 // mudar para veiculos
 // Information
 let data = {
     id: 0,
@@ -21,7 +21,7 @@ let data = {
         longitude: 0
     },
     nearby_crosswalks: [
-        {
+        { // simulação veiculo 1
             id: 1,
             latitude: 41.5390993, 
             longitude: -8.4337006
@@ -31,6 +31,11 @@ let data = {
             latitude: 41.5445975, 
             longitude: -8.4256079
         },
+        {   // simulação pedestre 1
+            id: 3,
+            latitude: 41.5476900,
+            longitude: -8.4069275
+        }
         
     ],
     nearest_crosswalk: {
@@ -46,11 +51,14 @@ var simulation;
 let location_simulator; 
 
 if (args.length !== 0) {
-    if (typeof args[0] === 'number'){
-        simulation = args[0]
+    if (parseInt(args[0]) !== NaN && (parseInt(args[0]) === 0 || parseInt(args[0]) === 1)){
+        simulation = parseInt(args[0]);
         location_simulator = new LocationSimulator(simulation);
     } 
-    else process.exit(1);
+    else { 
+        console.log("Please, choose '0' or '1' as parameter.".red)
+        process.exit(1); 
+    }
 }
 else {
     location_simulator = new LocationSimulator();
@@ -59,20 +67,14 @@ else {
 
 // Login ---------------------------------------------------------
 function login() {
-    // axios.post("http://localhost:3000/api/v1/signup/pedestrian")
-    //     .then(response => {
-    //         data.id = response.data.id;
-    //     })
-    //     .catch(error => {
-    //         console.log(error.red)
-    //     })
-
     request.post("http://localhost:3000/api/v1/signup/pedestrian", (err, res, body) => {
-        if(err) return console.log(err);
-        
-        data.id = JSON.parse(res.body).id;
-
-        main();
+        if(err) {
+            console.log(err);
+        }
+        else {
+            data.id = JSON.parse(res.body).id;
+            main();
+        }
     });
 }
 
@@ -83,44 +85,44 @@ function main() {
 
     // Evaluate current location -------------------------------------
     data.current_location = location_simulator.getCurrentLocation();
-    requestNearestCrosswalksLocation();
+    sendCurrentLocation();
     check_nearest_crosswalk();
     
 
     // Send periodic location to SPWS --------------------------------
     setInterval(() => {
-        sendLocation();
+        updateLocation();
     }, 500)
 
 
     // Request nearest crosswalks to SPWS --------------------------------
     setInterval(() => {
         console.log(new Date().toISOString() + ": Request crosswalks");
-        requestNearestCrosswalksLocation();
-    }, 30000)
+        sendCurrentLocation();
+    }, 5000)
 }
 
 
 
 function check_nearest_crosswalk() {
     let current_nearest_crosswalk = data.nearest_crosswalk;
-    console.log(new Date().toISOString() + ': Calculating nearest crosswalk...');
+    console.log(`${new Date().toISOString()}: Checking nearest crosswalk (under ${max_dist}m)...`);
 
-    // Verify if nearest crosswalk is too far away now (>100m)
+    // Verify if nearest crosswalk is too far away now (>10m)
     let to_current_crosswalk = geolib.getDistance(data.nearest_crosswalk, data.current_location);
 
-    if (to_current_crosswalk > 100 && data.nearest_crosswalk.id !== 0) {
+    if (to_current_crosswalk > max_dist && data.nearest_crosswalk.id !== 0) {
         console.log( `${new Date().toISOString()}: Too far away from crosswalk #${data.nearest_crosswalk.id} now`.green);
         data.nearest_crosswalk.id = 0;
     }
 
 
-    // Verify for each nearby crosswalk which one is the closest and maximum 100m away
+    // Verify for each nearby crosswalk which one is the closest and maximum 10m away
     data.nearby_crosswalks.forEach( crosswalk => {
         let to_new_crosswalk = geolib.getDistance(crosswalk, data.current_location);
         to_current_crosswalk = geolib.getDistance(data.nearest_crosswalk, data.current_location);
 
-        if((to_new_crosswalk < to_current_crosswalk || data.nearest_crosswalk.id === 0) && to_new_crosswalk < 100 ) data.nearest_crosswalk = crosswalk;
+        if((to_new_crosswalk < to_current_crosswalk || data.nearest_crosswalk.id === 0) && to_new_crosswalk < max_dist ) data.nearest_crosswalk = crosswalk;
     });
 
 
@@ -132,9 +134,9 @@ function check_nearest_crosswalk() {
             method: 'POST',
             url: `http://localhost:3000/api/v1/pedestrian/${data.id}/near/${data.nearest_crosswalk.id}`,
         }).then( response => {
-            console.log(response);
+            //console.log(response);
         }).catch( error => {
-            console.log(error);
+            //console.log(error);
         });
     }
 }
@@ -143,10 +145,9 @@ function check_nearest_crosswalk() {
 
 
 
-function sendLocation() {
+function updateLocation() {
     data.last_location  = data.current_location;
     data.current_location = location_simulator.getCurrentLocation();   
-    console.log(new Date().toISOString() + `: Sending location to SPWS - Currently at (${data.current_location.latitude}, ${data.current_location.longitude})...`);
 
     // axios({
     //     method: 'POST',
@@ -172,19 +173,21 @@ function sendLocation() {
 }
 
 
-function requestNearestCrosswalksLocation() {
-    lat = data.current_location.latitude,
-    lon = data.current_location.longitude
+function sendCurrentLocation() {
+    console.log(new Date().toISOString() + `: Sending location to SPWS - Currently at (${data.current_location.latitude}, ${data.current_location.longitude})...`);
 
     axios({
         method: 'POST',
         url: `http://localhost:3000/api/v1/pedestrian/${data.id}/location`,
-        data: {lon: lon, lat: lat}
+        data: {
+            lon: data.current_location.longitude, 
+            lat: data.current_location.latitude
+        }
     }).then( response => {
         console.log(new Date().toISOString() + `: Got ${response.data.crosswalks.length} new crosswalks near my current location.`);
         //data.nearby_crosswalks = response.data.crosswalks
     }).catch(error => {
-        console.log(error);
+        //console.log(error);
     })
 
 }
