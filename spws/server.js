@@ -1,16 +1,17 @@
-'use strict';
-
+require('dotenv').config();
 const express = require('express');
+const routes = require('./routes/routes');
 
 const app = express();
-app.get('/', (req, res) => {
-  res.send('Hello World');
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/api', routes);
+
+app.listen(3000, () => {
+  if (process.env.NODE_ENV != 'test')
+    console.log(`App started on port 3000`);
 });
 
-const server = app.listen(8080, () => {
-  const host = server.address().address;
-  const port = server.address().port;
-
-  console.log(`App listening at http://${host}:${port}`);
-});
-
+// For running tests
+module.exports = app;
