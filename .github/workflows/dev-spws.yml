@@ -1,4 +1,4 @@
-name: dev-spws
+name: SPWS - Test PR
 
 on:
   pull_request:

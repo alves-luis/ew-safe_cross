@@ -1,4 +1,4 @@
-name: dev-welcome-service
+name: Welcome-Service - Test PR
 
 on:
   pull_request:
