@@ -29,6 +29,13 @@ services:
     depends_on:
       - database
 
+
+  spws_web_app:
+    image: 'ambystomatidae/spws-web-app:latest'
+    container_name: 'spws_web_app'
+    ports:
+      - '8080:8080'
+
   spws:
     image: 'ambystomatidae/spws:latest'
     container_name: 'spws'
