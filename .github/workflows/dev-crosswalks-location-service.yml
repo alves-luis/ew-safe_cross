@@ -1,11 +1,11 @@
-name: Nearby-Crosswalks-Service - Test PR
+name: Crosswalks-Location-Service - Test PR
 
 on:
   pull_request:
     branches:
       - dev
     paths:
-      - 'nearby-crosswalks-service/**'
+      - 'crosswalks-location-service/**'
 
 jobs:
   build-and-test:
@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: './nearby-crosswalks-service'
+        working-directory: './crosswalks-location-service'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

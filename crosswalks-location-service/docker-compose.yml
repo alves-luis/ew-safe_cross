@@ -7,8 +7,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: mongo
     ports: 
       - '27017-27019:27017-27019'
-  nearby_crosswalks_service:
-    container_name: nearby_crosswalks_service
+  crosswalks-location-service:
+    container_name: crosswalks-location-service
     restart: always
     build: .
     ports:

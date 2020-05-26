@@ -1,5 +1,5 @@
 {
-  "name": "nearby-crosswalks-service",
+  "name": "crosswalks-location-service",
   "version": "0.0.0",
   "private": true,
   "scripts": {

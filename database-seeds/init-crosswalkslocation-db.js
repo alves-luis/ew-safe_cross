@@ -1,4 +1,4 @@
-db = db.getSiblingDB('nearbycrosswalks');
+db = db.getSiblingDB('crosswalkslocation');
 db.createUser(
   {
     user: 'admin',
@@ -6,7 +6,7 @@ db.createUser(
     roles: [
       {
         role: 'readWrite',
-        db: 'nearbycrosswalks'
+        db: 'crosswalkslocation'
       }
     ]
   }
