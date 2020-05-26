@@ -2,25 +2,37 @@ const express = require('express');
 const Crosswalk = require('./models/Crosswalk');
 const router = express.Router();
 
+// Get all crosswalks within defined range
 router.get('/crosswalks/', (req, res) => {
   const lon = req.query.lon;
   const lat = req.query.lat;
+  const range = req.query.range;
 
-  Crosswalk.find({
-    location: {
-      $near: {
-        $maxDistance: parseInt(process.env.MAX_DISTANCE),
-        $geometry: {
-          type: 'Point',
-          coordinates: [lon, lat]
+  let conditions;
+
+  if (lon && lat) {
+    conditions = {
+      location: {
+        $near: {
+          $maxDistance: parseInt(range ? range : process.env.MAX_DISTANCE),
+          $geometry: {
+            type: 'Point',
+            coordinates: [lon, lat]
+          }
         }
       }
-    }
-  })
+    };
+  }
+  else {
+    conditions = {};
+  }
+
+  Crosswalk.find(conditions)
     .then(r => {
       let crosswalks = [];
       r.forEach((c) => {
         let crosswalk = {
+          'id': c.uid,
           'lon': c.location.coordinates[0],
           'lat': c.location.coordinates[1],
           'creation_date': c.createdAt
