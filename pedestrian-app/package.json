@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "description": "",
+  "description": "Simulation for the pedestrian application",
   "main": "pedestrian.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "colors": "^1.4.0",
+    "dotenv": "^8.2.0",
     "geolib": "^3.2.1",
     "request": "^2.88.2"
   }

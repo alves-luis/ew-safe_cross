@@ -6,9 +6,15 @@ const geolib = require('geolib')
 const request = require('request');
 const colors = require('colors');
 const axios = require('axios')
+require('dotenv').config()
 
 // Setup ---------------------------------------------------------
-max_dist = 20 // mudar para veiculos
+
+// Environment variables
+MAX_DISTANCE = process.env.MAX_DISTANCE || 20  // m
+UPDATE_LOCATION_RATE = process.env.UPDATE_LOCATION_RATE || 2000 // ms
+REQUEST_NEARBY_CROSSWALKS_RATE = process.env.REQUEST_NEARBY_CROSSWALKS_RATE || 30000 // ms
+
 // Information
 let data = {
     id: 0,
@@ -39,9 +45,10 @@ let data = {
         
     ],
     nearest_crosswalk: {
-        id: 0
-        // latitude: 0, 
-        // longitude: 0
+        id: 0,
+        latitude: 0, 
+        longitude: 0,
+        exchange: {}
     }
 }
 
@@ -65,6 +72,7 @@ else {
 }
 
 
+
 // Login ---------------------------------------------------------
 function login() {
     request.post("http://localhost:3000/api/v1/signup/pedestrian", (err, res, body) => {
@@ -85,44 +93,43 @@ function main() {
 
     // Evaluate current location -------------------------------------
     data.current_location = location_simulator.getCurrentLocation();
-    sendCurrentLocation();
+    requestNearbyCrosswalks();
     check_nearest_crosswalk();
     
-
-    // Send periodic location to SPWS --------------------------------
+    // Update current location --------------------------------
     setInterval(() => {
         updateLocation();
-    }, 500)
-
+    }, UPDATE_LOCATION_RATE);
 
     // Request nearest crosswalks to SPWS --------------------------------
     setInterval(() => {
-        console.log(new Date().toISOString() + ": Request crosswalks");
-        sendCurrentLocation();
-    }, 5000)
+        requestNearbyCrosswalks();
+    }, REQUEST_NEARBY_CROSSWALKS_RATE);
 }
 
 
 
 function check_nearest_crosswalk() {
     let current_nearest_crosswalk = data.nearest_crosswalk;
-    console.log(`${new Date().toISOString()}: Checking nearest crosswalk (under ${max_dist}m)...`);
+    console.log(`${new Date().toISOString()}: Checking nearest crosswalk (under ${MAX_DISTANCE}m)...`);
 
-    // Verify if nearest crosswalk is too far away now (>10m)
+    // Verify if nearest crosswalk is too far away now
     let to_current_crosswalk = geolib.getDistance(data.nearest_crosswalk, data.current_location);
-
-    if (to_current_crosswalk > max_dist && data.nearest_crosswalk.id !== 0) {
+    if (to_current_crosswalk > MAX_DISTANCE && data.nearest_crosswalk.id !== 0) {
         console.log( `${new Date().toISOString()}: Too far away from crosswalk #${data.nearest_crosswalk.id} now`.green);
         data.nearest_crosswalk.id = 0;
+        // data.nearest_crosswalk.exchange = {};
     }
 
 
-    // Verify for each nearby crosswalk which one is the closest and maximum 10m away
+    // Verify for each nearby crosswalk which one is the closest and max MAX_DISTANCEm away
     data.nearby_crosswalks.forEach( crosswalk => {
         let to_new_crosswalk = geolib.getDistance(crosswalk, data.current_location);
         to_current_crosswalk = geolib.getDistance(data.nearest_crosswalk, data.current_location);
 
-        if((to_new_crosswalk < to_current_crosswalk || data.nearest_crosswalk.id === 0) && to_new_crosswalk < max_dist ) data.nearest_crosswalk = crosswalk;
+        if((to_new_crosswalk < to_current_crosswalk || data.nearest_crosswalk.id === 0) && to_new_crosswalk < MAX_DISTANCE ){
+            data.nearest_crosswalk = crosswalk;
+        } 
     });
 
 
@@ -134,7 +141,8 @@ function check_nearest_crosswalk() {
             method: 'POST',
             url: `http://localhost:3000/api/v1/pedestrian/${data.id}/near/${data.nearest_crosswalk.id}`,
         }).then( response => {
-            //console.log(response);
+            // console.log(response);
+            // update exchange -> data.nearest_crosswalk.exchange = ...
         }).catch( error => {
             //console.log(error);
         });
@@ -143,38 +151,26 @@ function check_nearest_crosswalk() {
 
 
 
-
-
 function updateLocation() {
     data.last_location  = data.current_location;
     data.current_location = location_simulator.getCurrentLocation();   
 
-    // axios({
-    //     method: 'POST',
-    //     url: ``,
-    //     data: {lon: lon, lat: lat}
-    // }).then( response => {
-    //     console.log(new Date().toISOString() + `: Got ${response.data.crosswalks.length} new crosswalks near my current location.`);
-    //     //data.nearby_crosswalks = response.data.crosswalks
-    // }).catch(error => {
-    //     console.log(error);
-    // });
-
-
+    // Verify if simulation is over
     let valid = location_simulator.setNextLocation();
-    if(!valid) { 
-        console.log(`${new Date().toISOString()}: Trip is over. Shutting down...`.blue); 
-        process.exit();
-        // send that i'm done to server
+    if(!valid) shutdown();
+
+
+    if(data.nearest_crosswalk.id !== 0) {
+        check_crosswalk_crossed();
+        update_exchange();
     }
-    
-    if(data.nearest_crosswalk.id !== 0) check_crosswalk_crossed();
     check_nearest_crosswalk();
 }
 
 
-function sendCurrentLocation() {
-    console.log(new Date().toISOString() + `: Sending location to SPWS - Currently at (${data.current_location.latitude}, ${data.current_location.longitude})...`);
+
+function requestNearbyCrosswalks() {
+    console.log(new Date().toISOString() + `: Requesting SPWS for nearby crosswalks - Currently at (${data.current_location.latitude}, ${data.current_location.longitude})...`);
 
     axios({
         method: 'POST',
@@ -192,6 +188,8 @@ function sendCurrentLocation() {
 
 }
 
+
+
 function check_crosswalk_crossed() {
     center = geolib.getCenter([data.current_location, data.last_location]);
     distance = geolib.getDistance(data.current_location, data.last_location);
@@ -201,3 +199,17 @@ function check_crosswalk_crossed() {
     }
 }
 
+
+
+function update_exchange() {
+    console.log(`${new Date().toISOString()}: Updating exchange...`.blue);
+    // more stuff: push information to exchange
+}
+
+
+
+function shutdown() {
+    console.log(`${new Date().toISOString()}: Trip is over. Shutting down...`.blue); 
+    // send that i'm done to server
+    process.exit();  
+}
