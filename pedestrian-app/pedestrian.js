@@ -75,7 +75,7 @@ else {
 
 // Login ---------------------------------------------------------
 function login() {
-    request.post("http://localhost:3000/api/v1/signup/pedestrian", (err, res, body) => {
+    request.post("http://localhost:3000/api/v1/pedestrian/signup", (err, res, body) => {
         if(err) {
             console.log(err);
         }
