@@ -9,14 +9,14 @@ services:
     volumes:
       - ./database-seeds:/docker-entrypoint-initdb.d:ro
     networks:
-      - intra_backend
+      - private
 
   welcome_service:
     image: 'ambystomatidae/welcome-service:latest'
     container_name: 'welcome_service'
     env_file: ./welcome-service/.env.example
     networks:
-      - intra_backend
+      - private
     depends_on: 
       - database
 
@@ -27,7 +27,7 @@ services:
     ports:
       - '3001:3000'
     networks:
-      - intra_backend
+      - private
     depends_on:
       - database
 
@@ -37,6 +37,8 @@ services:
     container_name: 'spws_web_app'
     ports:
       - '8080:8080'
+    networks:
+      - public
 
   spws:
     image: 'ambystomatidae/spws:latest'
@@ -45,14 +47,26 @@ services:
     ports:
       - '3000:3000'
     networks:
-      - intra_backend
+      - private
+      - public
     depends_on: 
       - database
       - welcome_service
       - crosswalks_location_service
 
+  rabbit:
+    image: 'rabbitmq:3.8.3-management-alpine'
+    ports:
+      - '5672:5672' #amqp
+      - '15672:15672' #http
+    networks:
+      - private
+      - public
+
 networks:
-  intra_backend:
+  private:
+    driver: bridge
+  public:
     driver: bridge
 
     
