@@ -1,11 +1,11 @@
-name: Nearby-Crosswalks-Service - Test, Build & Deploy
+name: Crosswalks-Location-Service - Test, Build & Deploy
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'nearby-crosswalks-service/**'
+      - 'crosswalks-location-service/**'
 
 jobs:
   test:
@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: './nearby-crosswalks-service'
+        working-directory: './crosswalks-location-service'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -44,10 +44,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     env:
-      REPOSITORY: ${{ secrets.NEARBY_CROSSWALKS_SERVICE_REPO }}
+      REPOSITORY: ${{ secrets.CROSSWALKS_LOCATION_SERVICE_REPO }}
     defaults:
       run:
-        working-directory: './nearby-crosswalks-service'
+        working-directory: './crosswalks-location-service'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
