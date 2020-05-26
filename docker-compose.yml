@@ -24,6 +24,8 @@ services:
     image: 'ambystomatidae/nearby-crosswalks-service:latest'
     container_name: 'nearby_crosswalks_service'
     env_file: ./nearby-crosswalks-service/.env.example
+    ports:
+      - '3001:3000'
     networks:
       - intra_backend
     depends_on:

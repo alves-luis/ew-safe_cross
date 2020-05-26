@@ -4,7 +4,7 @@ const router = express.Router();
 
 const welcome_service = process.env.WELCOME_SERVICE_HOSTNAME;
 
-router.post('/signup/pedestrian', (req, res) => {
+router.post('/pedestrian/signup', (req, res) => {
   axios.post(`http://${welcome_service}/v1/welcome/pedestrian/`)
     .then((response) => {
       if (response.status != 201) {
@@ -21,7 +21,7 @@ router.post('/signup/pedestrian', (req, res) => {
     });
 });
 
-router.post('/signup/vehicle', (req, res) => {
+router.post('/vehicle/signup', (req, res) => {
   axios.post(`http://${welcome_service}/v1/welcome/vehicle/`)
     .then((response) => {
       if (response.status != 201) {
