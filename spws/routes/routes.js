@@ -5,7 +5,6 @@ const router = express.Router();
 router.use('/v1/crosswalks', require('./crosswalks'));
 
 // Routes associated with clients
-router.use('/v1/pedestrian', require('./clients'));
-router.use('/v1/vehicle', require('./clients'));
+router.use('/v1', require('./clients'));
 
 module.exports = router;
