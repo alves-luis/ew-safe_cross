@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios').default;
 const router = express.Router();
 
-const nearby_crosswalks = process.env.NEARBY_CROSSWALKS_SERVICE_HOSTNAME;
+const crosswalks_location = process.env.CROSSWALKS_LOCATION_SERVICE_HOSTNAME;
 
 router.get('/', (req, res) => {
   const lon = req.query.lon;
@@ -11,10 +11,10 @@ router.get('/', (req, res) => {
 
   let url;
   if (lon && lat && range) {
-    url = `http://${nearby_crosswalks}/v1/crosswalks?range=${range}&lon=${lon}&lat=${lat}`;
+    url = `http://${crosswalks_location}/v1/crosswalks?range=${range}&lon=${lon}&lat=${lat}`;
   }
   else {
-    url = `http://${nearby_crosswalks}/v1/crosswalks/`;
+    url = `http://${crosswalks_location}/v1/crosswalks/`;
   }
 
   axios.get(url).then((response) => {

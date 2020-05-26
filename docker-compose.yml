@@ -20,10 +20,10 @@ services:
     depends_on: 
       - database
 
-  nearby_crosswalks_service:
-    image: 'ambystomatidae/nearby-crosswalks-service:latest'
-    container_name: 'nearby_crosswalks_service'
-    env_file: ./nearby-crosswalks-service/.env.example
+  crosswalks_location_service:
+    image: 'ambystomatidae/crosswalks-location-service:latest'
+    container_name: 'crosswalks_location_service'
+    env_file: ./crosswalks-location-service/.env.example
     ports:
       - '3001:3000'
     networks:
@@ -49,7 +49,7 @@ services:
     depends_on: 
       - database
       - welcome_service
-      - nearby_crosswalks_service
+      - crosswalks_location_service
 
 networks:
   intra_backend:
