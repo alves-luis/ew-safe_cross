@@ -137,15 +137,16 @@ function check_nearest_crosswalk() {
     if (current_nearest_crosswalk != data.nearest_crosswalk) {
         console.log(`${new Date().toISOString()}: Closer to crosswalk #${data.nearest_crosswalk.id}`.green);
 
-        axios({
-            method: 'POST',
-            url: `http://localhost:3000/api/v1/pedestrian/${data.id}/near/${data.nearest_crosswalk.id}`,
-        }).then( response => {
-            // console.log(response);
-            // update exchange -> data.nearest_crosswalk.exchange = ...
-        }).catch( error => {
-            //console.log(error);
-        });
+        // VAI PASSAR A SUBSCREVER
+        // axios({
+        //     method: 'POST',
+        //     url: `http://localhost:3000/api/v1/pedestrian/${data.id}/near/${data.nearest_crosswalk.id}`,
+        // }).then( response => {
+        //     // console.log(response);
+        //     // update exchange -> data.nearest_crosswalk.exchange = ...
+        // }).catch( error => {
+        //     //console.log(error);
+        // });
     }
 }
 
@@ -170,22 +171,20 @@ function updateLocation() {
 
 
 function requestNearbyCrosswalks() {
-    console.log(new Date().toISOString() + `: Requesting SPWS for nearby crosswalks - Currently at (${data.current_location.latitude}, ${data.current_location.longitude})...`);
+    lon = data.current_location.longitude;
+    lat = data.current_location.latitude;
 
+    console.log(`${new Date().toISOString()}: Requesting SPWS for nearby crosswalks - Currently at (${lat}, ${lon})...`);
+      
     axios({
-        method: 'POST',
-        url: `http://localhost:3000/api/v1/pedestrian/${data.id}/location`,
-        data: {
-            lon: data.current_location.longitude, 
-            lat: data.current_location.latitude
-        }
+        method: 'GET',
+        url: `http://localhost:3000/api/v1/crosswalks?lat=${lat}&lon=${lon}&range=${5000}`,
     }).then( response => {
         console.log(new Date().toISOString() + `: Got ${response.data.crosswalks.length} new crosswalks near my current location.`);
         //data.nearby_crosswalks = response.data.crosswalks
     }).catch(error => {
         //console.log(error);
     })
-
 }
 
 
