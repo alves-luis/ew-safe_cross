@@ -1,0 +1,18 @@
+{
+  "name": "crosswalks-current-status-service",
+  "version": "1.0.0",
+  "description": "Micro-service that deals with current status of a Crosswalk",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "mocha tests/test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "mocha": "^7.1.2"
+  }
+}
