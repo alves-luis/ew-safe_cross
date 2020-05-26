@@ -34,11 +34,29 @@
             </div>
 
         </l-map>
-        <crosswalk class="col-lg-5"
-                   v-if="active_crosswalk.id"
-                   :crosswalk="active_crosswalk"
-                   @back="active_crosswalk.id=0">
-        </crosswalk>
+        <div class="col-lg-5">
+            <crosswalk v-if="active_crosswalk.id"
+                        :crosswalk="active_crosswalk"
+                        @back="reset()">
+            </crosswalk>
+            <div v-else>
+                <div class="px-2">
+                    <div class="card vld-parent">
+                        <h5 class="card-header">Crosswalk Search</h5>
+                        <div class="card-body">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Crosswalk ID" v-model="search_id">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-primary float-right ml-1" type="button" @click="search()">Search</button>
+                                </div>
+                            </div> 
+                            <p class="text-danger" v-if="!has_found">There is no crosswalk with that ID.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 
 </template>
@@ -87,7 +105,9 @@
                 active_crosswalk: {
                     id: 0,
                     location: {}
-                }
+                },
+                search_id: "",
+                has_found: true
             };
         },
         methods: {
@@ -98,6 +118,21 @@
                 this.active_crosswalk.current_pedestrians = [];
                 this.map_settings.zoom = 17;
                 this.center = crosswalk.location;
+            },
+            search() {
+                var filtered = this.crosswalks.filter( crosswalk => crosswalk.id == this.search_id);
+                if(filtered.length > 0) { 
+                    this.setActiveCrosswalk(filtered[0]);
+                    this.search_id = "";
+                    this.has_found = true;
+                }
+                else {
+                    this.has_found = false;
+                }
+            },
+            reset() {
+                this.active_crosswalk.id = 0
+                this.map_settings.zoom = 14
             }
         },
         components: {
