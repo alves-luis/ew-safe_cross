@@ -1,11 +1,11 @@
-name: Crosswalks-Service - Test PR
+name: Crosswalks-Logger-Service - Test PR
 
 on:
   pull_request:
     branches:
       - dev
     paths:
-      - 'crosswalks-service/**'
+      - 'crosswalks-logger-service/**'
 
 jobs:
   build-and-test:
@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: './crosswalks-service'
+        working-directory: './crosswalks-logger-service'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

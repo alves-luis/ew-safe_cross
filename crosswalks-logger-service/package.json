@@ -1,7 +1,7 @@
 {
-  "name": "welcome-service",
+  "name": "crosswalks-logger-service",
   "version": "1.0.0",
-  "description": "Authentication service for the SPWS backend",
+  "description": "Micro-service that deals with storing data about clients entering a Crosswalk",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
