@@ -1,20 +1,18 @@
 <template>
     <div>
+        <div class="header text-center p-1">
+            <h5>SafeCross</h5>
+        </div>
         <div class="container-fluid px-5 pt-1">
-            <div class="card">
-                <h5 class="card-header text-center header">SafeCross</h5>
-                <div class="card-body">
-
-                    <app-map :crosswalks="crosswalks" :center="center" class="map"></app-map>
-                    <hr>
-                    <h2>How it works</h2>
-                    <p>
-                        Don't know how it works? Just click on a crosswalk (the blue marker) and analyze
-                        the real time information about it. As you select one crosswalk the pedestrians are represented
-                        by the yellow markers as the vehicles by the green ones.
-                    </p>
-                </div>
-            </div>
+            <app-map :crosswalks="crosswalks" :center="center" class="map mt-3"></app-map>
+            <hr>
+            <h2 class="text-center">How it works</h2>
+            <p>
+                Don't know how it works? Just click on a crosswalk (the blue marker) and analyze
+                the real time information about it. As you select one crosswalk the pedestrians are represented
+                by the yellow markers as the vehicles by the green ones.
+            </p>
+            
         </div>
     </div>
 
@@ -55,6 +53,11 @@
     }
 
     .header {
+        background-color:rgb(41, 41, 41);
+    }
+
+    .header h5 {
+        color: aliceblue;
         font-size: 48px;
     }
 </style>
