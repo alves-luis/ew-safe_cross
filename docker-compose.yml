@@ -8,6 +8,8 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
     volumes:
       - ./database-seeds:/docker-entrypoint-initdb.d:ro
+    ports:
+      - '27018:27017'
     networks:
       - private
 
@@ -55,10 +57,14 @@ services:
       - crosswalks_location_service
 
   rabbit:
-    image: 'rabbitmq:3.8.3-management-alpine'
+    build:
+      context: ./
+      dockerfile: rabbit.Dockerfile
+    container_name: 'rabbit'
     ports:
       - '5672:5672' #amqp
       - '15672:15672' #http
+      - '15674:15674' #web-stomp
     networks:
       - private
       - public
