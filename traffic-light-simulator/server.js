@@ -33,7 +33,7 @@ function sendInformation () {
     const key = `${crosswalk.id}.light.update`;
     console.log(key);
     var msg = JSON.stringify(crosswalkTL);
-    channel.publish(exchange, '', Buffer.from(msg));
+    channel.publish(exchange, key, Buffer.from(msg));
     console.log(" [x] Sent %s", msg);
   });
   iter=(++iter)%3;
