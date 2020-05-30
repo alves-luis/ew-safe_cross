@@ -17,7 +17,7 @@ services:
     env_file: ./welcome-service/.env.example
     networks:
       - private
-    depends_on: 
+    depends_on:
       - database
 
   crosswalks_location_service:
@@ -49,10 +49,23 @@ services:
     networks:
       - private
       - public
-    depends_on: 
+    depends_on:
       - database
       - welcome_service
       - crosswalks_location_service
+
+  traffic_light_simulator:
+    build:
+      context: ./traffic-light-simulator
+      dockerfile: Dockerfile
+    container_name: 'traffic_light_simulator'
+    ports:
+      - '8082:8082'
+    depends_on:
+      - crosswalks_location_service
+      - rabbit
+    networks:
+      - private
 
   rabbit:
     image: 'rabbitmq:3.8.3-management-alpine'
@@ -68,5 +81,3 @@ networks:
     driver: bridge
   public:
     driver: bridge
-
-    
