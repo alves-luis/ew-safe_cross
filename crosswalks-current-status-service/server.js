@@ -60,6 +60,7 @@ async function updateCountInCrosswalk(crosswalkId, incValue, clientField) {
     await CrosswalkStatus.findOneAndUpdate(
       { uid: crosswalkId },
       { $inc: increment },
+      { upsert: true, new: true },
     );
   } catch (err) {
     if (incValue < 0) {
@@ -68,6 +69,24 @@ async function updateCountInCrosswalk(crosswalkId, incValue, clientField) {
       console.log(`Could not increase ${clientField} to ${crosswalkId}`);
     }
     console.log(err);
+  }
+}
+
+/**
+ * Given the id, and the new light, update DB
+ * @param {string} crosswalkId
+ * @param {string} light
+ */
+async function updateLightInCrosswalk(crosswalkId, light) {
+  const filter = { uid: crosswalkId };
+  const update = { uid: crosswalkId, light };
+  try {
+    await CrosswalkStatus.findOneAndUpdate(filter, update, {
+      upsert: true,
+      new: true,
+    });
+  } catch (err) {
+    console.log(`Could not update Crosswalk Status Light ${err}`);
   }
 }
 
@@ -145,6 +164,46 @@ function consumeClient(con, client, action) {
   });
 }
 
+/**
+ * Activates a consumer with key: *.light.update
+ * @param {amqp.connection} con
+ */
+function consumeLightStatus(con) {
+  con.createChannel((err, ch) => {
+    if (err) {
+      console.log(err);
+      throw err;
+    }
+
+    const exchange = 'private';
+    const key = '*.light.update';
+
+    ch.assertExchange(exchange, 'topic', { durable: true });
+
+    ch.assertQueue(
+      '',
+      { exclusive: true, autoDelete: true, durable: true },
+      (err2, q) => {
+        if (err2) {
+          console.log(`Could not assert queue to consume ${key}`);
+        }
+
+        ch.bindQueue(q.queue, exchange, key);
+
+        console.log(`Now consuming key (${key})`);
+        ch.consume(q.queue, (msg) => {
+          const update = JSON.parse(msg.content.toString());
+          updateLightInCrosswalk(update.crosswalk_id, update.light).then(() => {
+            console.log(`consumed: ${JSON.stringify(update)}`);
+            ch.ack(msg);
+            produceCrosswalkStatusShort(con, update.crosswalk_id);
+          });
+        });
+      },
+    );
+  });
+}
+
 const rabbit = `${process.env.RABBIT_HOSTNAME}`;
 amqp.connect(`amqp://${rabbit}`, (err, con) => {
   if (err) {
@@ -156,4 +215,5 @@ amqp.connect(`amqp://${rabbit}`, (err, con) => {
   consumeClient(con, 'pedestrian', 'far');
   consumeClient(con, 'vehicle', 'near');
   consumeClient(con, 'vehicle', 'far');
+  consumeLightStatus(con);
 });
