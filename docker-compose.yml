@@ -68,6 +68,22 @@ services:
     networks:
       - private
       - public
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 5s
+      timeout: 15s
+      retries: 1
+
+  crosswalks_current_status_service:
+    image: 'ambystomatidae/crosswalks-current-status-service:latest'
+    container_name: 'crosswalks_current_status_service'
+    env_file: './crosswalks-current-status-service/.env.example'
+    restart: on-failure
+    networks:
+      - private
+    depends_on:
+      - database
+      - rabbit
 
 networks:
   private:
