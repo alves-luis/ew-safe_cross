@@ -1,14 +1,9 @@
-const express = require('express');
-const app = express();
 const fetch = require("node-fetch");
 const amqp = require('amqplib/callback_api');
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-var crosswalks = [{id:1, lon:12, lat:24 ,creation_date:'1313'}] ;
+var crosswalks = [];
 var channel;
-var exchange = 'traffic_light'
+var exchange = 'private'
 var iter = 0;
 const colors = ["green","yellow","red"];
 
@@ -31,21 +26,23 @@ function sendInformation () {
   //Give signal color
   crosswalks.forEach(crosswalk => {
     const crosswalkTL = {
-        id: crosswalk.id,
+        crosswalk_id: crosswalk.id,
         light: colors[iter%3],
     }
     //send information to the queue
+    const key = `${crosswalk.id}.light.update`;
+    console.log(key);
     var msg = JSON.stringify(crosswalkTL);
     channel.publish(exchange, '', Buffer.from(msg));
     console.log(" [x] Sent %s", msg);
   });
-  iter++;
+  iter=(++iter)%3;
 };
 
 
 //Starts connection with rabbitmq
 function startConnection(){
-  amqp.connect('amqp://ew-safe_cross_rabbit_1', (connError, connection) => {
+  amqp.connect('amqp://rabbit', (connError, connection) => {
     if(connError){
       throw connError;
     }
@@ -68,16 +65,8 @@ function simulate(){
   setInterval(sendInformation,5000);
 }
 
-const server = app.listen(8082, () => {
-  const host = server.address().address;
-  const port = server.address().port;
 
-  console.log(`App listening at http://${host}:${port}`);
-
+  console.log(`App started`);
   //waiting for the other services to start
   setTimeout(getCrosswalks,5000);
   setTimeout(simulate,30000);
-
-});
-
-module.exports = app;
