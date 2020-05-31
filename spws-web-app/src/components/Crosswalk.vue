@@ -13,9 +13,9 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <h5 class="card-title">Real-Time Status</h5>
-                        <p class="card-text"># pedestrians: {{ current_pedestrians.length }} </p>
-                        <p class="card-text"># vehicles:  {{ current_vehicles.length }}</p>
-                        <p class="card-text">Traffic light: </p>
+                        <p class="card-text"># pedestrians: {{ crosswalk.current_pedestrians.length }} </p>
+                        <p class="card-text"># vehicles:  {{ crosswalk.current_vehicles.length }}</p>
+                        <p class="card-text">Traffic light: {{ light }}</p>
                     </li>
                     <li class="list-group-item">
                         <h5 class="card-title">Today's Total Status</h5>
@@ -35,7 +35,6 @@
     import Loading from 'vue-loading-overlay';
     import 'vue-loading-overlay/dist/vue-loading.css';
     import Stomp from 'stompjs';
-    //import WebSocket from 'ws';
 
     export default {
         name: "Crosswalk",
@@ -44,50 +43,39 @@
         },
         data() {
             return {
-                current_pedestrians: [],
-                current_vehicles: [],
+                light: "",
                 isLoading: true,
                 stompClient: undefined,
                 webSocket: undefined,
-                exchange_id: undefined
+                pedestrian_exchange_id: undefined,
+                crosswalk_exchange_id: undefined
             }
         },
-        created() {
+        mounted() {
             // Stomp
             this.webSocket = new WebSocket('ws://localhost:15674/ws');
             this.stompClient = Stomp.over(this.webSocket);
-            this.stompClient.connect('guest', 'guest', () => console.log('Success--'), () => console.log('Error--'));
-
+            this.stompClient.connect('guest', 'guest', () => console.log('Success'), () => console.log('Error'));
 
             // Request crosswalk data
             this.isLoading = true;
-            fetch(`/crosswalk/${this.$options.propsData.crosswalk.id}`)
+            fetch(`/crosswalk/${this.crosswalk.id}`)
                 .then((response) => response.json())
                 .then((obj) => {
                     this.crosswalk.current_vehicles = [];
                     this.crosswalk.current_pedestrians = [];
+
                     this.crosswalk.id = obj.crosswalk.id;
                     this.crosswalk.location = L.latLng(obj.crosswalk.latitude, obj.crosswalk.longitude);
-                    if (obj.crosswalk.current_pedestrians) {
-                        obj.crosswalk.current_pedestrians.forEach(pedestrian => {
-                            this.crosswalk.current_pedestrians.push({
-                                id: pedestrian.id,
-                                location: L.latLng(pedestrian.latitude, pedestrian.longitude)
-                            })
-                        });
-                    }
-                    if (obj.crosswalk.current_vehicles) {
-                        obj.crosswalk.current_vehicles.forEach(vehicle => {
-                            this.crosswalk.current_vehicles.push({
-                                id: vehicle.id,
-                                location: L.latLng(vehicle.latitude, vehicle.longitude)
-                            })
-                        });
-                    }
-                    this.current_pedestrians = this.crosswalk.current_pedestrians;
-                    this.current_vehicles = this.crosswalk.current_vehicles;
 
                     this.isLoading = false;
+
+                    // Set interval to remove old pins
+                    var vm = this;
+                    setInterval(function(){
+                        vm.crosswalk.current_pedestrians = vm.crosswalk.current_pedestrians.filter(p => new Date() - p.date < 2500)
+                        //vm.crosswalk.current_vehicles = vm.crosswalk.current_vehicles.filter(v => new Date() - v.date < 2000)
+                    }, 2500);
 
                     this.subscribeExchange();                  
                 });
@@ -97,16 +85,44 @@
         },
         methods: {
             subscribeExchange() {
-                this.exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.pedestrian.location`, this.processExchangeResponse, this.processExchangeError);
+                this.pedestrian_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.pedestrian.location`, this.processPedestrianExchange, this.processExchangeError);
+                this.crosswalk_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.crosswalk.short`, this.processCrosswalkExchange, this.processExchangeError);
+                console.log("asdfsadfasdfasdf asdf asdf sadf ", this.crosswalk_exchange_id)
+                //this.pedestrian_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.vehicle.location`, this.processExchangeResponse, this.processExchangeError);
             },
 
-            processExchangeResponse(msg) {
+            processPedestrianExchange(msg) {
                 var data = JSON.parse(msg.body);
+
+                // Add or update pedestrians nearby
                 var index = this.crosswalk.current_pedestrians.findIndex(element => element.id == data.id)
-                this.crosswalk.current_pedestrians.splice(index, 1, {
-                    id: data.id,
-                    location: L.latLng(data.latitude, data.longitude)
-                })
+                // this.crosswalk.current_pedestrians.splice(index, 1, {
+                //     id: data.id,
+                //     location: L.latLng(data.latitude, data.longitude),
+                //     date: new Date()
+                // })    
+                if(index != -1) {
+                    this.crosswalk.current_pedestrians[index] = {
+                        id: data.id,
+                        location: L.latLng(data.latitude, data.longitude),
+                        date: new Date()
+                    }
+                }
+                else {
+                    this.crosswalk.current_pedestrians.push( {
+                        id: data.id,
+                        location: L.latLng(data.latitude, data.longitude),
+                        date: new Date()
+                    })
+                }
+                       
+            },
+
+            processCrossalkExchange(msg) {
+                var data = JSON.parse(msg.body);
+
+                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", data);
+                       
             },
 
             processExchangeError(error) {
@@ -114,7 +130,7 @@
             },
 
             close() {                
-                this.exchange_id.unsubscribe();
+                this.pedestrian_exchange_id.unsubscribe();
                 this.webSocket.close();
                 this.$emit('back');
             }

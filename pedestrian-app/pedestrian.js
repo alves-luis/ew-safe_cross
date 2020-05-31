@@ -131,8 +131,8 @@ function check_nearest_crosswalk() {
     let to_current_crosswalk = geolib.getDistance(data.nearest_crosswalk, data.current_location);
     if (to_current_crosswalk > MAX_DISTANCE && data.nearest_crosswalk.id !== 0) {
         console.log( `${new Date().toISOString()}: Too far away from crosswalk #${data.nearest_crosswalk.id} now`.green);
+        send_crosswalk_far_exchange(data.nearest_crosswalk.id)
         data.nearest_crosswalk.id = 0;
-        // data.nearest_crosswalk.exchange = {};
     }
 
 
@@ -150,17 +150,9 @@ function check_nearest_crosswalk() {
     // If nearest crosswalk has changed -> alert SPWS
     if (current_nearest_crosswalk != data.nearest_crosswalk) {
         console.log(`${new Date().toISOString()}: Closer to crosswalk #${data.nearest_crosswalk.id}`.green);
-
-        // VAI PASSAR A SUBSCREVER
-        // axios({
-        //     method: 'POST',
-        //     url: `http://localhost:3000/api/v1/pedestrian/${data.id}/near/${data.nearest_crosswalk.id}`,
-        // }).then( response => {
-        //     // console.log(response);
-        //     // update exchange -> data.nearest_crosswalk.exchange = ...
-        // }).catch( error => {
-        //     //console.log(error);
-        // });
+        send_crosswalk_far_exchange(current_nearest_crosswalk.id); // tem que estar aqui? para apenas uma nearest acho que sim
+        send_crosswalk_near_exchange(data.nearest_crosswalk.id);
+        subscribe_crosswalk_exchange(data.nearest_crosswalk.id);
     }
 }
 
@@ -177,8 +169,9 @@ function updateLocation() {
 
     if(data.nearest_crosswalk.id !== 0) {
         check_crosswalk_crossed();
-        update_exchange(data.nearest_crosswalk.id);
+        send_location_exchange(data.nearest_crosswalk.id);
     }
+    
     check_nearest_crosswalk();
 }
 
@@ -214,7 +207,7 @@ function check_crosswalk_crossed() {
 
 
 
-function update_exchange(crossalk_id) {
+function send_location_exchange(crosswalk_id) {
     console.log(`${new Date().toISOString()}: Updating exchange...`.blue);
     
     body = {
@@ -223,10 +216,40 @@ function update_exchange(crossalk_id) {
         longitude: data.current_location.longitude
     }
     
-    client.send(`/exchange/public/${crossalk_id}.pedestrian.location`, {}, JSON.stringify(body));
+    client.send(`/exchange/public/${crosswalk_id}.pedestrian.location`, {}, JSON.stringify(body));
 }
 
 
+function send_crosswalk_near_exchange(crosswalk_id) {
+    console.log(`${new Date().toISOString()}: Saying I'm near to crossalk #${crosswalk_id} exchange...`.blue);
+    
+    body = { 
+        ped_id: data.id, 
+        crosswalk_id: crosswalk_id 
+    }
+
+    client.send(`/exchange/private/${crosswalk_id}.pedestrian.near`, {}, JSON.stringify(body));
+}
+
+
+function send_crosswalk_far_exchange(crosswalk_id) {
+    console.log(`${new Date().toISOString()}: Saying I'm far from crossalk #${crosswalk_id} exchange...`.blue);
+    
+    body = { 
+        ped_id: data.id, 
+        crosswalk_id: crosswalk_id 
+    }
+
+    client.send(`/exchange/private/${crosswalk_id}.pedestrian.far`, {}, JSON.stringify(body));
+}
+
+function subscribe_crosswalk_exchange(crosswalk_id) {
+    client.subscribe(`/exchange/public/${crosswalk_id}.crosswalk.short`, (msg) => {
+        console.log(msg);
+    }, (error) => {
+        console.log(error);
+    });
+}
 
 function shutdown() {
     console.log(`${new Date().toISOString()}: Trip is over. Shutting down...`.blue); 
