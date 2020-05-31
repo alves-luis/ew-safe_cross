@@ -44,6 +44,7 @@
                     <div class="card vld-parent">
                         <h5 class="card-header">Crosswalk Search</h5>
                         <div class="card-body">
+                            <p class="card-text">Enter the crosswalk ID: </p>
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Crosswalk ID" v-model="search_id">
                                 <div class="input-group-btn">
@@ -104,7 +105,9 @@
                 },
                 active_crosswalk: {
                     id: 0,
-                    location: {}
+                    location: {},
+                    current_pedestrians: [],
+                    current_vehicles: []
                 },
                 search_id: "",
                 has_found: true
@@ -114,8 +117,8 @@
             setActiveCrosswalk(crosswalk) {
                 this.active_crosswalk.id = crosswalk.id;
                 this.active_crosswalk.location = crosswalk.location;
-                this.active_crosswalk.current_vehicles = [];
-                this.active_crosswalk.current_pedestrians = [];
+                //this.active_crosswalk.current_vehicles = [];
+                //this.active_crosswalk.current_pedestrians = [];
                 this.map_settings.zoom = 17;
                 this.center = crosswalk.location;
             },

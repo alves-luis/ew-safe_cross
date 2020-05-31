@@ -24,7 +24,7 @@
                     </li>
                 </ul>
 
-                <button class="btn btn-primary float-right" type="button" @click="$emit('back')">Back</button>
+                <button class="btn btn-primary float-right" type="button" @click="close">Back</button>
             </div>
         </div>
     </div>
@@ -34,6 +34,8 @@
 <script>
     import Loading from 'vue-loading-overlay';
     import 'vue-loading-overlay/dist/vue-loading.css';
+    import Stomp from 'stompjs';
+    //import WebSocket from 'ws';
 
     export default {
         name: "Crosswalk",
@@ -45,9 +47,19 @@
                 current_pedestrians: [],
                 current_vehicles: [],
                 isLoading: true,
+                stompClient: undefined,
+                webSocket: undefined,
+                exchange_id: undefined
             }
         },
         created() {
+            // Stomp
+            this.webSocket = new WebSocket('ws://localhost:15674/ws');
+            this.stompClient = Stomp.over(this.webSocket);
+            this.stompClient.connect('guest', 'guest', () => console.log('Success--'), () => console.log('Error--'));
+
+
+            // Request crosswalk data
             this.isLoading = true;
             fetch(`/crosswalk/${this.$options.propsData.crosswalk.id}`)
                 .then((response) => response.json())
@@ -74,11 +86,38 @@
                     }
                     this.current_pedestrians = this.crosswalk.current_pedestrians;
                     this.current_vehicles = this.crosswalk.current_vehicles;
+
                     this.isLoading = false;
+
+                    this.subscribeExchange();                  
                 });
         },
         components: {
             Loading
+        },
+        methods: {
+            subscribeExchange() {
+                this.exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.pedestrian.location`, this.processExchangeResponse, this.processExchangeError);
+            },
+
+            processExchangeResponse(msg) {
+                var data = JSON.parse(msg.body);
+                var index = this.crosswalk.current_pedestrians.findIndex(element => element.id == data.id)
+                this.crosswalk.current_pedestrians.splice(index, 1, {
+                    id: data.id,
+                    location: L.latLng(data.latitude, data.longitude)
+                })
+            },
+
+            processExchangeError(error) {
+                console.log(error);
+            },
+
+            close() {                
+                this.exchange_id.unsubscribe();
+                this.webSocket.close();
+                this.$emit('back');
+            }
         }
     }
 </script>

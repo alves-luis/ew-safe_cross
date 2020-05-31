@@ -20,7 +20,7 @@
 
 <script>
     import Map from "./components/Map";
-
+    
     export default {
         components: {
             'app-map': Map

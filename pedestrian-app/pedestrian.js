@@ -1,12 +1,11 @@
-// const express = require('express')
-// const app = express()
-// const port = 3000
 const LocationSimulator = require('./location_simulator')
 const geolib = require('geolib')
-const request = require('request');
-const colors = require('colors');
+const request = require('request')
+const colors = require('colors')
 const axios = require('axios')
 require('dotenv').config()
+const Stomp = require('stompjs')
+const WebSocket = require('ws')
 
 // Setup ---------------------------------------------------------
 
@@ -70,6 +69,21 @@ if (args.length !== 0) {
 else {
     location_simulator = new LocationSimulator();
 }
+
+
+// STOMP
+const ws = new WebSocket('ws://localhost:15674/ws');
+const client = Stomp.over(ws);
+
+var on_connect = function() {
+    console.log('connected');
+};
+
+var on_error =  function() {
+    console.log('error');
+};
+
+client.connect('guest', 'guest', on_connect, on_error);
 
 
 
@@ -163,7 +177,7 @@ function updateLocation() {
 
     if(data.nearest_crosswalk.id !== 0) {
         check_crosswalk_crossed();
-        update_exchange();
+        update_exchange(data.nearest_crosswalk.id);
     }
     check_nearest_crosswalk();
 }
@@ -200,9 +214,16 @@ function check_crosswalk_crossed() {
 
 
 
-function update_exchange() {
+function update_exchange(crossalk_id) {
     console.log(`${new Date().toISOString()}: Updating exchange...`.blue);
-    // more stuff: push information to exchange
+    
+    body = {
+        id: data.id,
+        latitude: data.current_location.latitude,
+        longitude: data.current_location.longitude
+    }
+    
+    client.send(`/exchange/public/${crossalk_id}.pedestrian.location`, {}, JSON.stringify(body));
 }
 
 
@@ -212,3 +233,4 @@ function shutdown() {
     // send that i'm done to server
     process.exit();  
 }
+
