@@ -1,18 +1,21 @@
 const fetch = require("node-fetch");
 const amqp = require('amqplib/callback_api');
 
-const crosswalks = [];
-const channel = null;
+var crosswalks = [];
+var channel = null;
 const exchange = 'private'
-const iter = 0;
+var iter = 0;
 const colors = ["green","yellow","red"];
 const crosswalk_location = process.env.CROSSWALKS_LOCATION_SERVICE_HOSTNAME;
 const rabbit = process.env.RABBIT_HOSTNAME;
 
 
-//Get all crosswalk in the system
+/**
+ * Gets all the crosswalks from crosswalks_location_service
+ */
 async function getCrosswalks () {
-  await fetch('http://${crosswalks_location}/v1/crosswalks/')
+  const url = `http://${crosswalk_location}/v1/crosswalks/`;
+  await fetch(url)
     .then( async (response) => {
         const resp = await response.json();
         crosswalks=crosswalks.concat(resp.crosswalks);
@@ -23,7 +26,9 @@ async function getCrosswalks () {
 };
 
 
-// For each crosswalk, adds the light color and publishes to the queue
+/**
+ * For each crosswalk, adds the light color and publishes it to the queue
+ */
 function sendInformation () {
   //Give signal color
   crosswalks.forEach(crosswalk => {
@@ -33,7 +38,6 @@ function sendInformation () {
     }
     //send information to the queue
     const key = `${crosswalk.id}.light.update`;
-    console.log(key);
     const msg = JSON.stringify(crosswalkTL);
     channel.publish(exchange, key, Buffer.from(msg));
     console.log(" [x] Sent %s", msg);
@@ -43,9 +47,13 @@ function sendInformation () {
 };
 
 
-//Starts connection with rabbitmq
+
+/**
+ * Starts connection with rabbitmq
+ */
 function startConnection(){
-  amqp.connect('amqp://${rabbit}', (connError, connection) => {
+  const url=`amqp://${rabbit}`
+  amqp.connect(url, (connError, connection) => {
     if(connError){
       throw connError;
     }
@@ -63,14 +71,7 @@ function startConnection(){
 };
 
 
-function simulate(){
+  console.log(`App started`);
   getCrosswalks();
   startConnection();
   setTimeout(sendInformation,5000);
-}
-
-
-  console.log(`App started`);
-  
-  //waiting for the other services to start
-  setTimeout(simulate,5000);

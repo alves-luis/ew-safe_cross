@@ -56,17 +56,6 @@ services:
       - welcome_service
       - crosswalks_location_service
 
-  traffic_light_simulator:
-    build:
-      context: ./traffic-light-simulator
-      dockerfile: Dockerfile
-    container_name: 'traffic_light_simulator'
-    depends_on:
-      - crosswalks_location_service
-      - rabbit
-    networks:
-      - private
-
   rabbit:
     build:
       context: ./
@@ -95,6 +84,19 @@ services:
     depends_on:
       - database
       - rabbit
+
+  traffic_light_simulator:
+    build:
+      context: ./traffic-light-simulator
+      dockerfile: Dockerfile
+    container_name: 'traffic_light_simulator'
+    env_file: ./traffic-light-simulator/.env.example
+    restart: on-failure
+    depends_on:
+      - crosswalks_location_service
+      - rabbit
+    networks:
+      - private
 
 networks:
   private:

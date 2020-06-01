@@ -1,3 +1,4 @@
 .env
 pedestrian-app/node_modules/
 pedestrian-app/package-lock.json
+.DS_Store
