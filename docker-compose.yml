@@ -8,6 +8,8 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
     volumes:
       - ./database-seeds:/docker-entrypoint-initdb.d:ro
+    ports:
+      - '27018:27017'
     networks:
       - private
 
@@ -66,13 +68,33 @@ services:
       - private
 
   rabbit:
-    image: 'rabbitmq:3.8.3-management-alpine'
+    build:
+      context: ./
+      dockerfile: rabbit.Dockerfile
+    container_name: 'rabbit'
     ports:
       - '5672:5672' #amqp
       - '15672:15672' #http
+      - '15674:15674' #web-stomp
     networks:
       - private
       - public
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 5s
+      timeout: 15s
+      retries: 1
+
+  crosswalks_current_status_service:
+    image: 'ambystomatidae/crosswalks-current-status-service:latest'
+    container_name: 'crosswalks_current_status_service'
+    env_file: './crosswalks-current-status-service/.env.example'
+    restart: on-failure
+    networks:
+      - private
+    depends_on:
+      - database
+      - rabbit
 
 networks:
   private:
