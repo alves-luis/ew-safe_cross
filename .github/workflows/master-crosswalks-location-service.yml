@@ -1,7 +1,7 @@
 name: Crosswalks-Location-Service - Test, Build & Deploy
 
 on:
-  push:
+  pull_request:
     branches:
       - master
     paths:
