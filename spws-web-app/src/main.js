@@ -18,12 +18,6 @@ import createMockServer from "./mock/server";
 createMockServer();
 
 
-// Stomp
-import VueStomp from "vue-stomp"
-
-Vue.use(VueStomp, "http://localhost:15674/ws");
-
-
 new Vue({
   el: '#app',
   render: h => h(App)
