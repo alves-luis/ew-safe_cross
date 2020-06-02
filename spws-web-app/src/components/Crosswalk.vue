@@ -77,18 +77,17 @@
                         //vm.crosswalk.current_vehicles = vm.crosswalk.current_vehicles.filter(v => new Date() - v.date < 2000)
                     }, 2500);
 
-                    this.subscribeExchange();                  
+                    this.subscribeExchanges();                  
                 });
         },
         components: {
             Loading
         },
         methods: {
-            subscribeExchange() {
-                this.pedestrian_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.pedestrian.location`, this.processPedestrianExchange, this.processExchangeError);
-                this.crosswalk_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.crosswalk.short`, this.processCrosswalkExchange, this.processExchangeError);
-                console.log("asdfsadfasdfasdf asdf asdf sadf ", this.crosswalk_exchange_id)
-                //this.pedestrian_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.vehicle.location`, this.processExchangeResponse, this.processExchangeError);
+            subscribeExchanges() {
+                this.crosswalk_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.status.short`, this.processCrosswalkExchange, (error) => console.log(error));
+                this.pedestrian_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.pedestrian.location`, this.processPedestrianExchange, (error) => console.log(error));
+                //this.vehicle_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.vehicle.location`, this.processExchangeResponse, this.processExchangeError);
             },
 
             processPedestrianExchange(msg) {
@@ -118,19 +117,14 @@
                        
             },
 
-            processCrossalkExchange(msg) {
+            processCrosswalkExchange(msg) {
                 var data = JSON.parse(msg.body);
-
-                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", data);
-                       
-            },
-
-            processExchangeError(error) {
-                console.log(error);
+                this.light = data.light;                     
             },
 
             close() {                
                 this.pedestrian_exchange_id.unsubscribe();
+                this.crosswalk_exchange_id.unsubscribe();
                 this.webSocket.close();
                 this.$emit('back');
             }

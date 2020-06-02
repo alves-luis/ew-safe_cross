@@ -47,7 +47,8 @@ let data = {
         id: 0,
         latitude: 0, 
         longitude: 0,
-        exchange: {}
+        light: 'green',
+        exchange_id: 0
     }
 }
 
@@ -150,9 +151,9 @@ function check_nearest_crosswalk() {
     // If nearest crosswalk has changed -> alert SPWS
     if (current_nearest_crosswalk != data.nearest_crosswalk) {
         console.log(`${new Date().toISOString()}: Closer to crosswalk #${data.nearest_crosswalk.id}`.green);
-        send_crosswalk_far_exchange(current_nearest_crosswalk.id); // tem que estar aqui? para apenas uma nearest acho que sim
+        if(current_nearest_crosswalk.id != 0) send_crosswalk_far_exchange(current_nearest_crosswalk.id); // tem que estar aqui? para apenas uma nearest acho que sim
+        subscribe_crosswalk_exchange(data.nearest_crosswalk.id); // tem que subscrever a crosswalk primeiro
         send_crosswalk_near_exchange(data.nearest_crosswalk.id);
-        subscribe_crosswalk_exchange(data.nearest_crosswalk.id);
     }
 }
 
@@ -201,7 +202,8 @@ function check_crosswalk_crossed() {
     distance = geolib.getDistance(data.current_location, data.last_location);
 
     if(geolib.isPointWithinRadius(data.nearest_crosswalk, center, distance/2)){
-        console.log(`${new Date().toISOString()}: Crosswalk #${data.nearest_crosswalk.id} crossed`.green)
+        // TODO: Prettier feedback
+        console.log(`${new Date().toISOString()}: Crosswalk #${data.nearest_crosswalk.id} crossed with ${data.nearest_crosswalk.light} light.`.green)
     }
 }
 
@@ -241,11 +243,14 @@ function send_crosswalk_far_exchange(crosswalk_id) {
     }
 
     client.send(`/exchange/private/${crosswalk_id}.pedestrian.far`, {}, JSON.stringify(body));
+    data.nearest_crosswalk.exchange_id.unsubscribe();
 }
 
 function subscribe_crosswalk_exchange(crosswalk_id) {
-    client.subscribe(`/exchange/public/${crosswalk_id}.crosswalk.short`, (msg) => {
-        console.log(msg);
+    data.nearest_crosswalk.exchange_id = client.subscribe(`/exchange/public/${crosswalk_id}.status.short`, (msg) => {
+        var json = JSON.parse(msg.body);
+        data.nearest_crosswalk.light = json.light;
+        //console.log(data);
     }, (error) => {
         console.log(error);
     });
