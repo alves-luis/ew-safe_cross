@@ -27,8 +27,7 @@
         },
         data() {
             return {
-                crosswalks: [],
-                //center: undefined
+                crosswalks: []
             }
         },
         beforeCreate() {
@@ -41,7 +40,6 @@
                         location: L.latLng(crosswalk.latitude, crosswalk.longitude)
                     })
                 })
-                //this.center = this.crosswalks[0].location;
             });
         }
     }
