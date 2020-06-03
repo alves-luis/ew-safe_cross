@@ -94,12 +94,7 @@
                 var data = JSON.parse(msg.body);
 
                 // Add or update pedestrians nearby
-                var index = this.crosswalk.current_pedestrians.findIndex(element => element.id == data.id)
-                // this.crosswalk.current_pedestrians.splice(index, 1, {
-                //     id: data.id,
-                //     location: L.latLng(data.latitude, data.longitude),
-                //     date: new Date()
-                // })    
+                var index = this.crosswalk.current_pedestrians.findIndex(element => element.id == data.id)    
                 if(index != -1) {
                     this.crosswalk.current_pedestrians[index] = {
                         id: data.id,
