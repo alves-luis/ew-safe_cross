@@ -21,11 +21,6 @@
             </div>
             
             <div v-else>
-                <!-- <l-marker :lat-lng="active_crosswalk.location"
-                          :key="active_crosswalk.id"
-                          :icon="markers.crosswalkIcon">
-                </l-marker> -->
-                
                 <l-marker v-for="pedestrian in active_crosswalk.current_pedestrians"
                           :key="pedestrian.id"
                           :lat-lng="pedestrian.location"
