@@ -36,6 +36,10 @@
     import 'vue-loading-overlay/dist/vue-loading.css';
     import Stomp from 'stompjs';
 
+    let URL = process.env.VUE_APP_URL;
+    let PORT = process.env.VUE_APP_PORT;
+    let PATH = process.env.VUE_APP_PATH;
+    
     export default {
         name: "Crosswalk",
         props: {
@@ -53,7 +57,7 @@
         },
         mounted() {
             // Stomp
-            this.webSocket = new WebSocket('ws://localhost:15674/ws');
+            this.webSocket = new WebSocket(`ws://${URL}:${PORT}/${PATH}`);
             this.stompClient = Stomp.over(this.webSocket);
             this.stompClient.connect('guest', 'guest', () => console.log('Success'), () => console.log('Error'));
 
