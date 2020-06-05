@@ -17,6 +17,8 @@ const publishNewCrossalk = async (crosswalkId) => {
     ch.publish(exchange, key, Buffer.from(JSON.stringify(msg)));
 
     console.log('published new crosswalk with id ' + crosswalkId);
+    ch.close();
+    con.close();
   } catch (error) {
     console.log(error, 'Unable to connect to rabbit');
     process.exit(1);
