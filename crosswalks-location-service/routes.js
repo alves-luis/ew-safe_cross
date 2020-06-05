@@ -1,6 +1,7 @@
 const express = require('express');
 const Crosswalk = require('./models/Crosswalk');
 const router = express.Router();
+const publishNewCrosswalk = require('./rabbit');
 
 // Get all crosswalks within defined range
 router.get('/crosswalks/', (req, res) => {
@@ -61,6 +62,7 @@ router.post('/crosswalks/', (req, res) => {
       res.sendStatus(409);
     }
     else {
+      publishNewCrosswalk(crosswalk.uid);
       res.status(201);
       res.json({
         'uid': crosswalk.uid,
