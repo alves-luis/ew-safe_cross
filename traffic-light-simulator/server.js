@@ -95,10 +95,8 @@ function startConnection(){
         sendInformation();
     });
   });
-
 };
 
-
-  console.log(`App started`);
-  getCrosswalks();
-  startConnection();
+console.log(`App started`);
+getCrosswalks();
+startConnection();

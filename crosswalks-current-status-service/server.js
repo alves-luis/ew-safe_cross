@@ -109,7 +109,9 @@ function produceCrosswalkStatusShort(con, crosswalkId) {
     ch.assertExchange(exchange, 'topic', { durable: true });
 
     getCrosswalkCurrentStatus(crosswalkId).then((statusMsg) => {
-      console.log(`Published ${statusMsg}`);
+      console.log(
+        `Published ${statusMsg} with key ${key} to exchange ${exchange}`,
+      );
       ch.publish(exchange, key, Buffer.from(statusMsg));
     });
   });
@@ -204,16 +206,25 @@ function consumeLightStatus(con) {
   });
 }
 
-const rabbit = `${process.env.RABBIT_HOSTNAME}`;
-amqp.connect(`amqp://${rabbit}`, (err, con) => {
-  if (err) {
-    console.log(err);
-    throw err;
-  }
+/**
+ * Function that starts the callbacks
+ */
+function start() {
+  const rabbit = `${process.env.RABBIT_HOSTNAME}`;
+  amqp.connect(`amqp://${rabbit}`, (err, con) => {
+    if (err) {
+      console.log(err);
+      throw err;
+    }
 
-  consumeClient(con, 'pedestrian', 'near');
-  consumeClient(con, 'pedestrian', 'far');
-  consumeClient(con, 'vehicle', 'near');
-  consumeClient(con, 'vehicle', 'far');
-  consumeLightStatus(con);
-});
+    consumeClient(con, 'pedestrian', 'near');
+    consumeClient(con, 'pedestrian', 'far');
+    consumeClient(con, 'vehicle', 'near');
+    consumeClient(con, 'vehicle', 'far');
+    consumeLightStatus(con);
+  });
+}
+
+start();
+
+module.exports = () => start();
