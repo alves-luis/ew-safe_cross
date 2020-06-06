@@ -1,7 +1,7 @@
 <template>
     <div class="px-2">
-        <div class="card vld-parent">
-            <h5 class="card-header">Crosswalk #{{ crosswalk.id }}</h5>
+        <div class="card vld-parent border border-secondary rounded">
+            <h5 class="card-header bg-dark text-white ">Crosswalk #{{ crosswalk.id }}</h5>
             <loading :active.sync="isLoading"
                      :can-cancel="false"
                      :is-full-page="false"
@@ -24,7 +24,9 @@
                     </li>
                 </ul>
 
-                <button class="btn btn-primary float-right" type="button" @click="close">Back</button>
+                <button class="btn btn-secundary btn-sm float-right border" type="button" @click="close">Back</button>
+
+
             </div>
         </div>
     </div>
