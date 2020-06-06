@@ -36,4 +36,33 @@ router.get('/:id', (req, res) => {
   // TODO
 });
 
+router.post('/', (req, res) => {
+  const lon = req.body.lon;
+  const lat = req.body.lat;
+  const payload = {
+    lon: lon,
+    lat: lat
+  };
+  const url = `http://${crosswalks_location}/v1/crosswalks/`;
+
+  axios.post(url, payload).then((response) => {
+    if (response.status != 201) {
+      res.sendStatus(response.status);
+    }
+    else {
+      res.status(201);
+      res.json(response.data);
+    }
+  })
+  .catch((err) => {
+    if (err.response.status != 409) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+    else {
+      res.sendStatus(err.response.status);
+    }
+  });
+});
+
 module.exports = router;
