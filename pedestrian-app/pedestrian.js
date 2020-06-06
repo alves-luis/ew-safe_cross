@@ -83,45 +83,11 @@ const client = Stomp.over(ws);
 client.connect(RMQ_USERNAME, RMQ_PASSWORD, () => console.log('Connected.'), () => console.log('Error.'.red));
 
 
-// Login ---------------------------------------------------------
-function login() {
-    request.post("http://localhost:3000/api/v1/pedestrian/signup", (err, res, body) => {
-        if(err) {
-            console.log(err);
-        }
-        else {
-            data.id = JSON.parse(res.body).id;
-            main();
-        }
-    });
-}
-
-login();
-
-function main() {
-    console.log(`${new Date().toISOString()}: Registered as Pedestrian with ID = ${data.id}`.blue);
-
-    // Evaluate current location -------------------------------------
-    data.current_location = location_simulator.getCurrentLocation();
-    requestNearbyCrosswalks();
-    checkNearestCrosswalks();
-    
-    // Update current location --------------------------------
-    setInterval(() => {
-        updateLocation();
-    }, UPDATE_LOCATION_RATE);
-
-    // Request nearest crosswalks to SPWS --------------------------------
-    setInterval(() => {
-        requestNearbyCrosswalks();
-    }, REQUEST_NEARBY_CROSSWALKS_RATE);
-}
-
+// Functions -------------------------------
 
 
 function checkNearestCrosswalks() {
-    //let current_nearest_crosswalk = data.nearest_crosswalk;
-    console.log(`${new Date().toISOString()}: Checking nearest crosswalk (under ${MAX_DISTANCE}m)...`);
+    console.log(`${new Date().toISOString()}: Checking nearest crosswalks (under ${MAX_DISTANCE}m)...`);
 
     // Verify if nearest crosswalks are too far away now
     data.nearest_crosswalks.forEach(crosswalk => {
@@ -131,13 +97,11 @@ function checkNearestCrosswalks() {
             sendCrosswalkFarExchange(crosswalk.id)
             data.nearest_crosswalks.delete(crosswalk.id);
         }
-    })
-    
+    })   
 
     // Verify for each nearby crosswalk which ones are closer than MAX_DISTANCE
     data.nearby_crosswalks.forEach( crosswalk => {
         let to_new_crosswalk = geolib.getDistance(crosswalk, data.current_location);
-        //to_current_crosswalk = geolib.getDistance(data.nearest_crosswalk, data.current_location);
 
         if(to_new_crosswalk < MAX_DISTANCE && data.nearest_crosswalks.get(crosswalk.id) === undefined) {
             console.log(`${new Date().toISOString()}: Close to crosswalk #${crosswalk.id}`.green);               
@@ -147,15 +111,6 @@ function checkNearestCrosswalks() {
             sendCrosswalkNearExchange(crosswalk.id);
         } 
     });
-
-    // If nearest crosswalk has changed -> alert SPWS
-    // if (current_nearest_crosswalk != data.nearest_crosswalk) {
-    //     console.log(`${new Date().toISOString()}: Close to crosswalk #${data.nearest_crosswalk.id}`.green);
-        
-    //     if(current_nearest_crosswalk.id != 0) sendCrosswalkFarExchange(current_nearest_crosswalk.id); // tem que estar aqui? para apenas uma nearest acho que sim
-    //     subscribeCrosswalkExchange(data.nearest_crosswalk.id); // tem que subscrever a crosswalk primeiro
-    //     sendCrosswalkNearExchange(data.nearest_crosswalk.id);
-    // }
 }
 
 
@@ -186,10 +141,10 @@ function requestNearbyCrosswalks() {
       
     axios({
         method: 'GET',
-        url: `http://localhost:3000/api/v1/crosswalks?lat=${lat}&lon=${lon}&range=${5000}`,
+        url: `http://localhost:3000/api/v1/crosswalks?lat=${lat}&lon=${lon}&range=${2000}`,
     }).then( response => {
         console.log(new Date().toISOString() + `: Got ${response.data.crosswalks.length} new crosswalks near my current location.`);
-        //data.nearby_crosswalks = response.data.crosswalks
+        data.nearby_crosswalks = response.data.crosswalks
     }).catch(error => {
         console.log(error);
     })
@@ -222,6 +177,7 @@ function sendLocationExchange(crosswalk_id) {
 }
 
 
+
 function sendCrosswalkNearExchange(crosswalk_id) {
     console.log(`${new Date().toISOString()}: Saying I'm near to crosswalk #${crosswalk_id} exchange...`.blue);
     
@@ -232,6 +188,7 @@ function sendCrosswalkNearExchange(crosswalk_id) {
 
     client.send(`/exchange/private/${crosswalk_id}.pedestrian.near`, {}, JSON.stringify(body));
 }
+
 
 
 function sendCrosswalkFarExchange(crosswalk_id) {
@@ -246,6 +203,8 @@ function sendCrosswalkFarExchange(crosswalk_id) {
     data.nearest_crosswalks.get(crosswalk_id).exchange_id.unsubscribe();
 }
 
+
+
 function subscribeCrosswalkExchange(crosswalk_id) {
     let crosswalk = data.nearest_crosswalks.get(crosswalk_id)
     
@@ -258,9 +217,51 @@ function subscribeCrosswalkExchange(crosswalk_id) {
     });
 }
 
+
+
 function shutdown() {
     console.log(`${new Date().toISOString()}: Trip is over. Shutting down...`.blue); 
     // send that i'm done to server
     process.exit();  
 }
 
+
+
+
+// MAIN ---------------------------------------------------------
+
+function login() {
+    request.post("http://localhost:3000/api/v1/pedestrian/signup", (err, res, body) => {
+        if(err) {
+            console.log(err);
+        }
+        else {
+            data.id = JSON.parse(res.body).id;
+            main();
+        }
+    });
+}
+
+
+
+function main() {
+    console.log(`${new Date().toISOString()}: Registered as Pedestrian with ID = ${data.id}`.blue);
+
+    // Evaluate current location -------------------------------------
+    data.current_location = location_simulator.getCurrentLocation();
+    requestNearbyCrosswalks();
+    checkNearestCrosswalks();
+    
+    // Update current location --------------------------------
+    setInterval(() => {
+        updateLocation();
+    }, UPDATE_LOCATION_RATE);
+
+    // Request nearest crosswalks to SPWS --------------------------------
+    setInterval(() => {
+        requestNearbyCrosswalks();
+    }, REQUEST_NEARBY_CROSSWALKS_RATE);
+}
+
+
+login();

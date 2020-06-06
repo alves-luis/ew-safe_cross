@@ -13,9 +13,9 @@ Vue.component('l-circle', LCircle);
 Vue.component('l-popup', LPopup);
 
 // Mock
-import createMockServer from "./mock/server";
+//import createMockServer from "./mock/server";
 
-createMockServer();
+//createMockServer();
 
 
 new Vue({

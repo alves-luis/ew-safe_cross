@@ -63,26 +63,28 @@
 
             // Request crosswalk data
             this.isLoading = true;
-            fetch(`/crosswalk/${this.crosswalk.id}`)
-                .then((response) => response.json())
-                .then((obj) => {
-                    this.crosswalk.current_vehicles = [];
-                    this.crosswalk.current_pedestrians = [];
+            fetch(`http://localhost:3000/api/v1/crosswalks/${this.crosswalk.id}`)
+            .then((response) => response.json())
+            .then((obj) => {
+                console.log(obj)
+                this.crosswalk.current_vehicles = [];
+                this.crosswalk.current_pedestrians = [];
 
-                    this.crosswalk.id = obj.crosswalk.id;
-                    this.crosswalk.location = L.latLng(obj.crosswalk.latitude, obj.crosswalk.longitude);
+                this.crosswalk.id = obj.crosswalk.id;
+                this.crosswalk.location = L.latLng(obj.crosswalk.latitude, obj.crosswalk.longitude);
 
-                    this.isLoading = false;
+                this.isLoading = false;
 
-                    // Set interval to remove old pins
-                    var vm = this;
-                    setInterval(function(){
-                        vm.crosswalk.current_pedestrians = vm.crosswalk.current_pedestrians.filter(p => new Date() - p.date < 2500)
-                        //vm.crosswalk.current_vehicles = vm.crosswalk.current_vehicles.filter(v => new Date() - v.date < 2000)
-                    }, 2500);
+                // Set interval to remove old pins
+                var vm = this;
+                setInterval(function(){
+                    vm.crosswalk.current_pedestrians = vm.crosswalk.current_pedestrians.filter(p => new Date() - p.date < 2500)
+                    //vm.crosswalk.current_vehicles = vm.crosswalk.current_vehicles.filter(v => new Date() - v.date < 2000)
+                }, 2500);
 
-                    this.subscribeExchanges();                  
-                });
+                this.subscribeExchanges();                  
+            })
+            .catch(error => console.log(error));
         },
         components: {
             Loading
@@ -118,7 +120,7 @@
 
             processCrosswalkExchange(msg) {
                 var data = JSON.parse(msg.body);
-                this.light = data.light;                     
+                this.light = data.light;  
             },
 
             close() {                
