@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "cross-env": "^7.0.2",
+    "dotenv-webpack": "^1.8.0",
     "http-server": "^0.12.3",
     "leaflet": "^1.6.0",
     "miragejs": "^0.1.38",
+    "stompjs": "^2.3.3",
     "vue": "^2.5.11",
     "vue-loading-overlay": "^3.3.2",
     "vue-material": "^1.0.0-beta-13",
