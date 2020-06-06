@@ -13,6 +13,11 @@ const WebSocket = require('ws')
 MAX_DISTANCE = process.env.MAX_DISTANCE || 20  // m
 UPDATE_LOCATION_RATE = process.env.UPDATE_LOCATION_RATE || 2000 // ms
 REQUEST_NEARBY_CROSSWALKS_RATE = process.env.REQUEST_NEARBY_CROSSWALKS_RATE || 30000 // ms
+WS_URL = process.env.WS_URL
+WS_PORT = process.env.WS_PORT
+WS_PATH = process.env.WS_PATH
+RMQ_USERNAME = process.env.RMQ_USERNAME
+RMQ_PASSWORD = process.env.RMQ_PASSWORD
 
 // Information
 let data = {
@@ -72,10 +77,10 @@ else {
 
 
 // STOMP
-const ws = new WebSocket('ws://localhost:15674/ws');
+const ws = new WebSocket(`ws://${WS_URL}:${WS_PORT}/${WS_PATH}`);
 const client = Stomp.over(ws);
 
-client.connect('guest', 'guest', () => console.log('Connected.'), () => console.log('Error.'.red));
+client.connect(RMQ_USERNAME, RMQ_PASSWORD, () => console.log('Connected.'), () => console.log('Error.'.red));
 
 
 // Login ---------------------------------------------------------

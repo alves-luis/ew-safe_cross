@@ -1,5 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: './src/main.js',
@@ -56,7 +57,10 @@ module.exports = {
   performance: {
     hints: false
   },
-  devtool: '#eval-source-map'
+  devtool: '#eval-source-map',
+  plugins: [
+    new Dotenv()
+  ]
 }
 
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
@@ -82,6 +86,7 @@ if (process.env.NODE_ENV === 'production') {
     ),
     new webpack.LoaderOptionsPlugin({
       minimize: true
-    })
+    }),
+    new Dotenv()
   ])
 }

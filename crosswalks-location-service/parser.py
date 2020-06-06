@@ -9,5 +9,5 @@ osm = ET.parse('crosswalks.xml').getroot()
 for node in osm:
   lat = node.get('lat')
   lon = node.get('lon')
-  r = requests.post('http://localhost:3000/v1/crosswalks/', json={'lon': lon, 'lat': lat})
+  r = requests.post('http://localhost:3000/api/v1/crosswalks', json={'lon': lon, 'lat': lat})
   print(f"Status code: {r.status_code}")
