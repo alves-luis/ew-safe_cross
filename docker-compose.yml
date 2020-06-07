@@ -98,6 +98,20 @@ services:
     networks:
       - private
 
+  crosswalks_logger_service:
+    build:
+      context: ./crosswalks-logger-service
+      dockerfile: Dockerfile
+    container_name: 'crosswalks_logger_service'
+    env_file: ./crosswalks-logger-service/.env.example
+    restart: on-failure
+    depends_on:
+      - crosswalks_location_service
+      - rabbit
+      - database
+    networks:
+      - private
+
 networks:
   private:
     driver: bridge
