@@ -1,6 +1,7 @@
 const express = require('express');
 const Crosswalk = require('./models/Crosswalk');
 const router = express.Router();
+const rabbit = require('./rabbit');
 
 // Get all crosswalks within defined range
 router.get('/crosswalks/', (req, res) => {
@@ -67,6 +68,7 @@ router.post('/crosswalks/', (req, res) => {
         'lon': crosswalk.location.coordinates[0],
         'lat': crosswalk.location.coordinates[1]
       });
+      rabbit.publish(crosswalk.uid);
     }
   });
 });

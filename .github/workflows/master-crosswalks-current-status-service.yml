@@ -1,11 +1,11 @@
-name: Welcome-Service - Test, Build & Deploy
+name: Crosswalks-Current-Status-Service - Test, Build & Deploy
 
 on:
   pull_request:
     branches:
       - master
     paths:
-      - 'welcome-service/**'
+      - 'crosswalks-current-status-service/**'
 
 jobs:
   test:
@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: './welcome-service'
+        working-directory: './crosswalks-current-status-service'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -44,10 +44,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     env:
-      REPOSITORY: ${{ secrets.WELCOME_SERVICE_REPO }}
+      REPOSITORY: ${{ secrets.CROSSWALKS_CURRENT_STATUS_SERVICE_REPO }}
     defaults:
       run:
-        working-directory: './welcome-service'
+        working-directory: './crosswalks-current-status-service'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

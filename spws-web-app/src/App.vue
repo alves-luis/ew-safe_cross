@@ -4,7 +4,7 @@
             <h5>SafeCross</h5>
         </div>
         <div class="container-fluid px-5 pt-1">
-            <app-map :crosswalks="crosswalks" :center="center" class="map mt-3"></app-map>
+            <app-map :crosswalks="crosswalks" class="map mt-3"></app-map>
             <hr>
             <h2 class="text-center">How it works</h2>
             <p>
@@ -20,15 +20,14 @@
 
 <script>
     import Map from "./components/Map";
-
+    
     export default {
         components: {
             'app-map': Map
         },
         data() {
             return {
-                crosswalks: [],
-                center: undefined
+                crosswalks: []
             }
         },
         beforeCreate() {
@@ -41,7 +40,6 @@
                         location: L.latLng(crosswalk.latitude, crosswalk.longitude)
                     })
                 })
-                this.center = this.crosswalks[0].location;
             });
         }
     }

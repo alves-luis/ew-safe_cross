@@ -79,7 +79,7 @@ function updateCrosswalks() {
  */
 function startConnection(){
   const url=`amqp://${rabbit}`
-  amqp.connect('amqp://rabbit', function(error0, connection) {
+  amqp.connect(url, function(error0, connection) {
     if (error0) {
       throw error0;
     }
@@ -91,14 +91,12 @@ function startConnection(){
         durable: true
       });
       channel = ch;
-        updateCrosswalks();
-        sendInformation();
+      updateCrosswalks();
+      sendInformation();
     });
   });
-
 };
 
-
-  console.log(`App started`);
-  getCrosswalks();
-  startConnection();
+console.log(`App started`);
+getCrosswalks();
+startConnection();
