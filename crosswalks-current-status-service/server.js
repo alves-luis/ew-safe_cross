@@ -95,16 +95,9 @@ async function updateLightInCrosswalk(crosswalkId, light) {
  * @param {amqp.connection} con
  * @param {string} crosswalkId
  */
-function produceCrosswalkStatusShort(con, crosswalkId) {
-  con.createChannel((err, ch) => {
+function produceCrosswalkStatusShort(ch, crosswalkId) {
     const exchange = 'public';
     const key = `${crosswalkId}.status.short`;
-
-    if (err) {
-      console.log(`Could not create Channel to produce to ${key}`);
-      console.log(err);
-      throw err;
-    }
 
     ch.assertExchange(exchange, 'topic', { durable: true });
 
@@ -114,7 +107,6 @@ function produceCrosswalkStatusShort(con, crosswalkId) {
       );
       ch.publish(exchange, key, Buffer.from(statusMsg));
     });
-  });
 }
 
 /**
@@ -157,7 +149,7 @@ function consumeClient(con, client, action) {
             () => {
               console.log(`consumed: ${JSON.stringify(who)}`);
               ch.ack(msg);
-              produceCrosswalkStatusShort(con, who.crosswalk_id);
+              produceCrosswalkStatusShort(ch, who.crosswalk_id);
             },
           );
         });
@@ -198,7 +190,7 @@ function consumeLightStatus(con) {
           updateLightInCrosswalk(update.crosswalk_id, update.light).then(() => {
             console.log(`consumed: ${JSON.stringify(update)}`);
             ch.ack(msg);
-            produceCrosswalkStatusShort(con, update.crosswalk_id);
+            produceCrosswalkStatusShort(ch, update.crosswalk_id);
           });
         });
       },
