@@ -33,7 +33,7 @@ function sendInformation () {
   //Give signal color
   crosswalks.forEach(crosswalk => {
     const crosswalkTL = {
-        crosswalk_id: crosswalk.crosswalk_id,
+        crosswalk_id: crosswalk.id,
         light: colors[iter%3],
     }
     //send information to the queue
