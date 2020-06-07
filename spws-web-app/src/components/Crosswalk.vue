@@ -1,5 +1,5 @@
 <template>
-    <div class="px-2">
+    <div class="p-3">
         <div class="card vld-parent border border-secondary rounded">
             <h5 class="card-header bg-dark text-white ">Crosswalk #{{ crosswalk.id }}</h5>
             <loading :active.sync="isLoading"
@@ -134,8 +134,10 @@
 </script>
 
 <style scoped>
-    .info {
-        height: 45vh;
-        width: 45vw;
+
+    .card-body {
+        padding: 0.9rem 0.5rem !important;
+        font-size: 0.9rem;
     }
+
 </style>

@@ -29,11 +29,26 @@
 
             <l-control position="bottomleft">                
                 <div v-if="legend" class="popup p-3 rounded">
-                    <p>Crosswalk</p>
-                    <p>Pedestrian</p>
-                    <p>Vehicle</p>
-                    <p>Pedestrian range</p>
-                    <p>Vehicle range</p>
+                    <p class="legend">
+                        <img src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png" style="height: 1.5em">
+                        <span class="pl-2">Crosswalk</span>
+                    </p>
+                    <p class="legend">
+                        <img src="assets/pedestrian.png" style="height: 1.5em">
+                        <span class="pl-2">Pedestrian</span>
+                    </p>
+                    <p class="legend">
+                        <img src="assets/vehicle.png" style="height: 1.5em">
+                        <span class="pl-2">Vehicle</span>
+                    </p>
+                    <p class="legend">
+                        <img src="assets/pedestrian_range.png" style="height: 1.5em">
+                        <span class="pl-2">Pedestrian range</span>
+                    </p>
+                    <p class="legend">
+                        <img src="assets/vehicle_range.png" style="height: 1.5em">
+                        <span class="pl-2">Vehicle range</span>
+                    </p>
                 </div>
                 <button @click="legend=!legend">
                     Legend
@@ -65,14 +80,15 @@
                 </l-marker>
                 <l-circle
                     :lat-lng="active_crosswalk.location"
-                    :radius="circle.pedestrian.radius"
-                    :color="circle.pedestrian.color"
-                    />
-                <l-circle
-                    :lat-lng="active_crosswalk.location"
                     :radius="circle.vehicle.radius"
                     :color="circle.vehicle.color"
-                    />
+                />
+                <l-circle
+                    :lat-lng="active_crosswalk.location"
+                    :radius="circle.pedestrian.radius"
+                    :color="circle.pedestrian.color"
+                />
+                
             </div>
 
             <l-control position="topright" v-if="active_crosswalk.id != 0">
@@ -98,23 +114,23 @@
                 map_settings: {
                     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                     attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors</a>',
-                    minZoom: 5,
+                    minZoom: 10,
                     maxZoom: 18,
-                    zoom: 11,
+                    zoom: 13,
                     center: [41.547, -8.406]
                 },               
                 markers: {
                     vehicleIcon: new L.Icon({
-                        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-                        iconSize: [19, 30],
-                        iconAnchor: [10, 30],
-                        popupAnchor: [1, -30]
+                        iconUrl: './assets/vehicle.png',
+                        iconSize: [12, 12],
+                        iconAnchor: [6, 6],
+                        popupAnchor: [1, -12]
                     }),
                     pedestrianIcon: new L.Icon({
-                        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
-                        iconSize: [19, 30],
-                        iconAnchor: [10, 30],
-                        popupAnchor: [1, -30]
+                        iconUrl: './assets/pedestrian.png',
+                        iconSize: [12, 12],
+                        iconAnchor: [6, 6],
+                        popupAnchor: [1, -12]
                     }),
                     crosswalkIcon: new L.Icon({
                         iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
@@ -179,7 +195,11 @@
 
 <style scoped>
 
-.popup {
-    background-color: white;
-}
+    .popup {
+        background-color: white;
+    }
+
+    .legend {
+        font-size: 0.9rem;
+    }
 </style>
