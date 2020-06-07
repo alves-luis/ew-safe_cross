@@ -2,8 +2,8 @@ const fetch = require("node-fetch");
 const amqp = require('amqplib/callback_api');
 
 var crosswalks = [];
-var channel = null;
-const exchange = 'private'
+let channel;
+const exchange = 'private';
 var iter = 0;
 const colors = ["green","yellow","red"];
 const crosswalk_location = process.env.CROSSWALKS_LOCATION_SERVICE_HOSTNAME;
@@ -37,15 +37,42 @@ function sendInformation () {
         light: colors[iter%3],
     }
     //send information to the queue
-    const key = `${crosswalk.id}.light.update`;
+    const key = `${crosswalk.crosswalk_id}.light.update`;
     const msg = JSON.stringify(crosswalkTL);
     channel.publish(exchange, key, Buffer.from(msg));
     console.log(" [x] Sent %s", msg);
   });
   iter=(++iter)%3;
-  setTimeout(sendInformation,5000)
+  setTimeout(sendInformation,5000);
 };
 
+/**
+ * Receives new crosswalks to generate a traffic light color
+ */
+function updateCrosswalks() {
+
+  const key = `*.new`;
+
+  channel.assertQueue(
+    '',
+    {exclusive: true, autoDelete: true, durable: true },
+    (error2, q) => {
+      if (error2) {
+        console.log(`Could not assert queue to consume ${key}`);
+      }
+
+      channel.bindQueue(q.queue, exchange, key);
+      console.log(` Now consuming key (${key})`);
+      channel.consume(q.queue, function(msg) {
+        const message = JSON.parse(msg.content.toString())
+        const data = {id: message.crosswalk_id};
+        crosswalks.push(data);
+        console.log(" New crosswalk added '%s'", data.id);
+    }, {
+      noAck: true
+    });
+  });
+};
 
 
 /**
@@ -53,25 +80,24 @@ function sendInformation () {
  */
 function startConnection(){
   const url=`amqp://${rabbit}`
-  amqp.connect(url, (connError, connection) => {
-    if(connError){
-      throw connError;
+  amqp.connect(url, function(error0, connection) {
+    if (error0) {
+      throw error0;
     }
-    //Create Channel
-    connection.createChannel((channelError, ch) => {
-      if(channelError){
-        throw channelError;
+    connection.createChannel(function(error1, ch) {
+      if (error1) {
+        throw error1;
       }
       ch.assertExchange(exchange, 'topic', {
         durable: true
       });
       channel = ch;
+      updateCrosswalks();
+      sendInformation();
     });
   });
 };
 
-
-  console.log(`App started`);
-  getCrosswalks();
-  startConnection();
-  setTimeout(sendInformation,5000);
+console.log(`App started`);
+getCrosswalks();
+startConnection();
