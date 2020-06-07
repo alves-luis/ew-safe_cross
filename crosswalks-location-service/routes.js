@@ -62,13 +62,13 @@ router.post('/crosswalks/', (req, res) => {
       res.sendStatus(409);
     }
     else {
-      publishNewCrosswalk(crosswalk.uid);
       res.status(201);
       res.json({
         'uid': crosswalk.uid,
         'lon': crosswalk.location.coordinates[0],
         'lat': crosswalk.location.coordinates[1]
       });
+      publishNewCrosswalk(crosswalk.uid);
     }
   });
 });
