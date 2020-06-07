@@ -26,26 +26,6 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.get('/v1/:id/light', (req, res) => {
-  const id = req.params.id;
-  getCrosswalkCurrentStatus(id)
-    .then((st) => {
-      const status = JSON.parse(st);
-      if (status.light) {
-        res.status(200);
-        res.json({
-          'light': status.light
-        });
-      }
-      else {
-        res.sendStatus(404);
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      res.sendStatus(500);
-    })
-});
 
 /**
  * Retrieves the current status of the crosswalk
@@ -70,6 +50,26 @@ async function getCrosswalkCurrentStatus(crosswalkId) {
   };
   return JSON.stringify(status);
 }
+
+app.get('/v1/:id/light', (req, res) => {
+  const { id } = req.params;
+  getCrosswalkCurrentStatus(id)
+    .then((st) => {
+      const status = JSON.parse(st);
+      if (status.light) {
+        res.status(200);
+        res.json({
+          light: status.light,
+        });
+      } else {
+        res.sendStatus(404);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+});
 
 /**
  * Update the crosswalk status given those params
@@ -122,17 +122,17 @@ async function updateLightInCrosswalk(crosswalkId, light) {
  * @param {string} crosswalkId
  */
 function produceCrosswalkStatusShort(ch, crosswalkId) {
-    const exchange = 'public';
-    const key = `${crosswalkId}.status.short`;
+  const exchange = 'public';
+  const key = `${crosswalkId}.status.short`;
 
-    ch.assertExchange(exchange, 'topic', { durable: true });
+  ch.assertExchange(exchange, 'topic', { durable: true });
 
-    getCrosswalkCurrentStatus(crosswalkId).then((statusMsg) => {
-      console.log(
-        `Published ${statusMsg} with key ${key} to exchange ${exchange}`,
-      );
-      ch.publish(exchange, key, Buffer.from(statusMsg));
-    });
+  getCrosswalkCurrentStatus(crosswalkId).then((statusMsg) => {
+    console.log(
+      `Published ${statusMsg} with key ${key} to exchange ${exchange}`,
+    );
+    ch.publish(exchange, key, Buffer.from(statusMsg));
+  });
 }
 
 /**
@@ -241,8 +241,9 @@ function start() {
     consumeClient(con, 'vehicle', 'far');
     consumeLightStatus(con);
     app.listen(3000, () => {
-      if (process.env.NODE_ENV != 'test')
+      if (process.env.NODE_ENV !== 'test') {
         console.log('App started on port 3000');
+      }
     });
   });
 }
