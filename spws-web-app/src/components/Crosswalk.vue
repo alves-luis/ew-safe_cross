@@ -66,14 +66,12 @@
             fetch(`http://localhost:3000/api/v1/crosswalks/${this.crosswalk.id}`)
             .then((response) => response.json())
             .then((obj) => {
-                console.log(obj)
                 this.crosswalk.current_vehicles = [];
                 this.crosswalk.current_pedestrians = [];
 
-                this.crosswalk.id = obj.crosswalk.id;
-                this.crosswalk.location = L.latLng(obj.crosswalk.latitude, obj.crosswalk.longitude);
+                this.light = obj.light
+                // faltam 2 dados
 
-                this.isLoading = false;
 
                 // Set interval to remove old pins
                 var vm = this;
@@ -82,7 +80,10 @@
                     //vm.crosswalk.current_vehicles = vm.crosswalk.current_vehicles.filter(v => new Date() - v.date < 2000)
                 }, 2500);
 
-                this.subscribeExchanges();                  
+                this.subscribeExchanges();          
+                
+                this.isLoading = false;
+
             })
             .catch(error => console.log(error));
         },
