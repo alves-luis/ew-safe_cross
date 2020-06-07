@@ -33,7 +33,7 @@ function sendInformation () {
   //Give signal color
   crosswalks.forEach(crosswalk => {
     const crosswalkTL = {
-        crosswalk_id: crosswalk.crosswalk_id,
+        crosswalk_id: crosswalk.id,
         light: colors[iter%3],
     }
     //send information to the queue
@@ -65,8 +65,9 @@ function updateCrosswalks() {
       console.log(` Now consuming key (${key})`);
       channel.consume(q.queue, function(msg) {
         const message = JSON.parse(msg.content.toString())
-        crosswalks.push(message);
-        console.log(" New crosswalk added '%s'", message.crosswalk_id);
+        const data = {id: message.crosswalk_id};
+        crosswalks.push(data);
+        console.log(" New crosswalk added '%s'", data.id);
     }, {
       noAck: true
     });

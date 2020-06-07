@@ -1,11 +1,19 @@
 const amqp = require('amqplib');
 
-const publishNewCrossalk = async (crosswalkId) => {
-  try {
+var ch = null;
+
+async function init() {
+  if (ch == null) {
     const rabbit = `${process.env.RABBIT_HOSTNAME}`;
-    console.log(rabbit);
     const con = await amqp.connect(`amqp://${rabbit}`);
-    const ch = await con.createChannel();
+    ch = await con.createChannel();
+  }
+  return ch;
+}
+
+async function publishNewCrossalk(crosswalkId) {
+  try {
+    const ch = await init();
     const exchange = 'private';
     const key = `${crosswalkId}.new`;
 
@@ -17,12 +25,11 @@ const publishNewCrossalk = async (crosswalkId) => {
     ch.publish(exchange, key, Buffer.from(JSON.stringify(msg)));
 
     console.log('published new crosswalk with id ' + crosswalkId);
-    ch.close();
-    con.close();
   } catch (error) {
     console.log(error, 'Unable to connect to rabbit');
-    process.exit(1);
   }
 }
 
-module.exports = publishNewCrossalk;
+module.exports = {
+  publish: publishNewCrossalk
+}
