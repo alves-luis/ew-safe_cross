@@ -12,16 +12,20 @@ const crosswalksHistorySchema = new Schema(
       unique: true,
       required: true,
     },
-    pedestrian_id: {
+    client_id: {
       type: String,
       required:true,
     },
-    timestamp: {
+    client: {
+      type: String,
+      required:true,
+    },
+    createdAt: {
       type: Date,
       required:true,
     },
   },
-  { timestamps: true },
+  { timestamps: false },
 );
 
 const CrosswalksHistory = mongoose.model(
