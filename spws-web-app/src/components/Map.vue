@@ -29,7 +29,7 @@
 
             <l-control position="bottomleft">                
                 <div v-if="legend" class="popup p-3 rounded">
-                    <p class="legend">
+                    <p class="legend pl-2">
                         <img src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png" style="height: 1.5em">
                         <span class="pl-2">Crosswalk</span>
                     </p>
