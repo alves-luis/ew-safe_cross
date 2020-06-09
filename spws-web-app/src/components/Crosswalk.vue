@@ -1,7 +1,7 @@
 <template>
     <div class="p-3">
         <div class="card vld-parent border border-secondary rounded">
-            <h5 class="card-header bg-dark text-white ">Crosswalk #{{ crosswalk.id }}</h5>
+            <h5 class="card-header bg-dark text-white ">Crosswalk #{{ crosswalk_id }}</h5>
             <loading :active.sync="isLoading"
                      :can-cancel="false"
                      :is-full-page="false"
@@ -44,6 +44,7 @@
     import Loading from 'vue-loading-overlay';
     import 'vue-loading-overlay/dist/vue-loading.css';
     import Stomp from 'stompjs';
+    import truncate from 'truncate';
 
     let URL = process.env.VUE_APP_URL;
     let PORT = process.env.VUE_APP_PORT;
@@ -138,6 +139,11 @@
                 this.crosswalk_exchange_id.unsubscribe();
                 this.webSocket.close();
                 this.$emit('back');
+            }
+        },
+        computed: {
+            crosswalk_id() {
+                return truncate(this.crosswalk.id, 8)
             }
         }
     }
