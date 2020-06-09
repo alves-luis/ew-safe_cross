@@ -104,15 +104,19 @@ async function getInfo(id){
   let numVeh = 0;
   const day = 86400000;
   const today = new Date(Date.now());
-  const yesterdar = new Date(Date.now() - day);
-  const filter = { "crosswalk_id": id, "history.crossedAt": {$gte: yesterdar , $lt: today}};
+  const yesterday = new Date(Date.now() - day);
+  const filter = { "crosswalk_id": id, "history.crossedAt": {$gte: yesterday , $lt: today}};
   try{
-    crosswalkHistory = await CrosswalksHistory.find(filter, function (err, docs) {});
-    console.log("CROSSWALK HISTORY");
+  //  crosswalkHistory = await CrosswalksHistory.findOne(filter,"history.id history.kind");
+    crosswalkHistory = await CrosswalksHistory.aggregate([
+      {$match: {crosswalk_id: id}},
+      {$project: {history:1}},
+      {$unwind: '$history'},
+      {$match: {"history.crossedAt": {$gte: yesterday , $lt: today}}},
+      {$group: {_id:'$history.client.id'}},
+    ])
+    console.log("É ISTO QUE QUEREMOS");
     console.log(crosswalkHistory);
-    //const crosswalkHistory2 = await crosswalkHistory.distint("id");
-    //console.log("GET INFO DISTINT");
-    //console.log(crosswalkHistory2);
     crosswalkHistory.forEach(crosswalk => {
       console.log("Crosswalk HISTORY");
       console.log(crosswalk.history);
@@ -126,9 +130,6 @@ async function getInfo(id){
           numVeh++;
         }
       });
-
-
-
     });
   }
   catch (error){
@@ -145,9 +146,11 @@ async function getInfo(id){
 
 function simulator(){
 
-  const info1={ped_id:11, crosswalk_id:'a362db8a-cfb5-4040-94e2-39ffa6cd96cc' };
-  const info3={ped_id:11, crosswalk_id:'a362db8a-cfb5-4040-94e2-39ffa6cd96cc' };
+  const info1={ped_id:11, crosswalk_id:'8e1d9202-8c15-4bc9-a07a-6ac16ca8d51b' };
+  const info3={ped_id:11, crosswalk_id:'8e1d9202-8c15-4bc9-a07a-6ac16ca8d51b' };
   const info2={veh_id:44, crosswalk_id:'8e1d9202-8c15-4bc9-a07a-6ac16ca8d51b' };
+  const info4={veh_id:45, crosswalk_id:'8e1d9202-8c15-4bc9-a07a-6ac16ca8d51b' };
+  const info5={ped_id:6, crosswalk_id:'8e1d9202-8c15-4bc9-a07a-6ac16ca8d51b' };
 
 
   const exchange = 'private';
@@ -167,10 +170,14 @@ function simulator(){
       const msg1 = JSON.stringify(info1);
       const msg2 = JSON.stringify(info2);
       const msg3 = JSON.stringify(info3);
+      const msg4 = JSON.stringify(info4);
+      const msg5 = JSON.stringify(info5);
 
       ch.publish(exchange, key1, Buffer.from(msg1));
       ch.publish(exchange, key1, Buffer.from(msg2));
       ch.publish(exchange, key1, Buffer.from(msg3));
+      ch.publish(exchange, key1, Buffer.from(msg4));
+      ch.publish(exchange, key1, Buffer.from(msg5));
       console.log(" MANDEIII Sent %s", msg1);
     });
   });
@@ -178,8 +185,7 @@ function simulator(){
 
 
 function seeInfo(){
-  console.log(getInfo('2c4d9202-8c15-4bc9-a07a-6ac16ca8d51b'));
-  console.log(getInfo('8e1d9202-8c15-4bc9-a07a-6ac16ca8d51b'));
+  console.log(getInfo('a362db8a-cfb5-4040-94e2-39ffa6cd96cc'));
 }
 
 
