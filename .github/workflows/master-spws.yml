@@ -1,21 +1,21 @@
-name: Crosswalks-Current-Status-Service - Build & Deploy
+name: SPWS - Build & Deploy
 
 on:
   pull_request:
     branches:
       - master
     paths:
-      - 'crosswalks-current-status-service/**'
+      - 'spws/**'
 
 jobs:
   docker:
     name: Publish - Docker Hub
     runs-on: ubuntu-latest
     env:
-      REPOSITORY: ${{ secrets.CROSSWALKS_CURRENT_STATUS_SERVICE_REPO }}
+      REPOSITORY: ${{ secrets.SPWS_REPO }}
     defaults:
       run:
-        working-directory: './crosswalks-current-status-service'
+        working-directory: './spws'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
