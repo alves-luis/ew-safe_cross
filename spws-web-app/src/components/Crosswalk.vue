@@ -1,7 +1,7 @@
 <template>
-    <div class="px-2">
-        <div class="card vld-parent">
-            <h5 class="card-header">Crosswalk #{{ crosswalk.id }}</h5>
+    <div class="p-3">
+        <div class="card vld-parent border border-secondary rounded">
+            <h5 class="card-header bg-dark text-white ">Crosswalk #{{ crosswalk.id }}</h5>
             <loading :active.sync="isLoading"
                      :can-cancel="false"
                      :is-full-page="false"
@@ -15,7 +15,14 @@
                         <h5 class="card-title">Real-Time Status</h5>
                         <p class="card-text"># pedestrians: {{ crosswalk.current_pedestrians.length }} </p>
                         <p class="card-text"># vehicles:  {{ crosswalk.current_vehicles.length }}</p>
-                        <p class="card-text">Traffic light: {{ light }}</p>
+                        <div>
+                            <span class="card-text">Traffic light: </span>
+                            <div class="traffic rounded">
+                                <span class="dot dot-green" :class="{active: light=='green'}"></span>
+                                <span class="dot dot-yellow" :class="{active: light=='yellow'}"></span>
+                                <span class="dot dot-red" :class="{active: light=='red'}"></span> 
+                            </div>                                                
+                        </div>                      
                     </li>
                     <li class="list-group-item">
                         <h5 class="card-title">Today's Total Status</h5>
@@ -24,7 +31,9 @@
                     </li>
                 </ul>
 
-                <button class="btn btn-primary float-right" type="button" @click="close">Back</button>
+                <button class="btn btn-secundary btn-sm float-right border" type="button" @click="close">Back</button>
+
+
             </div>
         </div>
     </div>
@@ -135,8 +144,42 @@
 </script>
 
 <style scoped>
-    .info {
-        height: 45vh;
-        width: 45vw;
+
+    .card-body {
+        padding: 0.9rem 0.5rem !important;
+        font-size: 0.9rem;
     }
+
+    .dot {
+        height: 1rem;
+        width: 1rem;
+        border-radius: 50%;
+        display: inline-block;
+        opacity: 20%;
+    }
+
+    .dot-green {
+        background-color: green;
+    }
+
+    .dot-yellow {
+        background-color: yellow;
+    }
+
+    .dot-red {
+        background-color: red;
+    }  
+
+    .active {
+        opacity: 100% !important;
+        border-style: solid;
+        border-width: 1px;
+    }
+
+    .traffic {
+        display: inline-block;
+        background: dimgray;
+        padding: 0.4em 1em 0 1em;
+    }
+
 </style>
