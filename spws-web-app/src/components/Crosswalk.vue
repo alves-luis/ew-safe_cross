@@ -108,7 +108,7 @@
             subscribeExchanges() {
                 this.crosswalk_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.status.short`, this.processCrosswalkExchange, (error) => console.log(error));
                 this.pedestrian_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.pedestrian.location`, this.processPedestrianExchange, (error) => console.log(error));
-                this.vehicle_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.vehicle.location`, this.processExchangeResponse, this.processExchangeError);
+                this.vehicle_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.vehicle.location`, this.processVehicleResponse, this.processExchangeError);
             },
 
             processPedestrianExchange(msg) {
@@ -131,6 +131,28 @@
                     })
                 }
                        
+            },
+
+            processVehicleExchange(msg) {
+                var data = JSON.parse(msg.body);
+
+                // Add or update vehicles nearby
+                var index = this.crosswalk.current_vehicles.findIndex(element => element.id == data.id)    
+                if(index != -1) {
+                    this.crosswalk.current_vehicles[index] = {
+                        id: data.id,
+                        location: L.latLng(data.latitude, data.longitude),
+                        date: new Date()
+                    }
+                }
+                else {
+                    this.crosswalk.current_vehicles.push( {
+                        id: data.id,
+                        location: L.latLng(data.latitude, data.longitude),
+                        date: new Date()
+                    })
+                }
+                      
             },
 
             processCrosswalkExchange(msg) {
