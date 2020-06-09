@@ -12,18 +12,22 @@ const crosswalksHistorySchema = new Schema(
       unique: true,
       required: true,
     },
-    client_id: {
-      type: String,
-      required:true,
-    },
-    client: {
-      type: String,
-      required:true,
-    },
-    createdAt: {
-      type: Date,
-      required:true,
-    },
+    history: [{
+      client: {
+        id:{
+          type: String,
+          required:true,
+        },
+        kind:{
+          type: String,
+          required:true,
+        },
+      },
+      crossedAt:{
+        type: Date,
+        required:true,
+      },
+    }],
   },
   { timestamps: false },
 );

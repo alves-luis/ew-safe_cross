@@ -72,18 +72,23 @@ function consumeInformation (client) {
  * Given a message, adds the information to the database
  */
 async function addCrosswalkHistory(message){
+
   let client = 'vehicle';
   let client_id = message.veh_id;
   if("ped_id" in message){
     client = 'pedestrian';
     client_id = message.ped_id;
   }
-  const crosswalkHistory = new CrosswalksHistory({crosswalk_id: message.crosswalk_id, client_id: client_id ,client: client, createdAt: new Date(Date.now())});
+  const update = {$push: {history: { client: { id: client_id, kind: client }, crossedAt:Date.now()}}};
+  console.log("UPDATE");
+  console.log(update);
   try{
-    await crosswalkHistory.save(function (err, data) {
-      if (err) throw err;
-      console.log("New info added");
+    const crosswalkHistory = await CrosswalksHistory.findOneAndUpdate({crosswalk_id: message.crosswalk_id}, update, {
+      new: true,
+      upsert: true
     });
+    console.log("ADICIONADO");
+    console.log(crosswalkHistory);
   }
   catch (error){
     console.log(error);
@@ -97,16 +102,33 @@ async function getInfo(id){
   let crosswalkHistory = [];
   let numPed = 0;
   let numVeh = 0;
-  const filter = { crosswalk_id: id, createdAt: {$gte: new Date(Date.now() - 86400000), $lt: new Date(Date.now())}};
+  const day = 86400000;
+  const today = new Date(Date.now());
+  const yesterdar = new Date(Date.now() - day);
+  const filter = { "crosswalk_id": id, "history.crossedAt": {$gte: yesterdar , $lt: today}};
   try{
     crosswalkHistory = await CrosswalksHistory.find(filter, function (err, docs) {});
+    console.log("CROSSWALK HISTORY");
+    console.log(crosswalkHistory);
+    //const crosswalkHistory2 = await crosswalkHistory.distint("id");
+    //console.log("GET INFO DISTINT");
+    //console.log(crosswalkHistory2);
     crosswalkHistory.forEach(crosswalk => {
-      if(crosswalk.client == 'pedestrian'){
-        numPed++;
-      }
-      else{
-        numVeh++;
-      }
+      console.log("Crosswalk HISTORY");
+      console.log(crosswalk.history);
+      crosswalk.history.forEach(function(info){
+        console.log("Crosswalk Client");
+        console.log(info.client.kind);
+        if(info.client.kind == 'pedestrian'){
+          numPed++;
+        }
+        else{
+          numVeh++;
+        }
+      });
+
+
+
     });
   }
   catch (error){
@@ -120,10 +142,11 @@ async function getInfo(id){
 /**
  * Simulator
  */
- /*
+
 function simulator(){
 
-  const info1={ped_id:11, crosswalk_id:'2c4d9202-8c15-4bc9-a07a-6ac16ca8d51b' };
+  const info1={ped_id:11, crosswalk_id:'a362db8a-cfb5-4040-94e2-39ffa6cd96cc' };
+  const info3={ped_id:11, crosswalk_id:'a362db8a-cfb5-4040-94e2-39ffa6cd96cc' };
   const info2={veh_id:44, crosswalk_id:'8e1d9202-8c15-4bc9-a07a-6ac16ca8d51b' };
 
 
@@ -141,12 +164,13 @@ function simulator(){
         durable: true
       });
       const key1 = `1.pedestrian.near`;
-      const key2 = `1.vehicle.near`;
       const msg1 = JSON.stringify(info1);
       const msg2 = JSON.stringify(info2);
+      const msg3 = JSON.stringify(info3);
 
       ch.publish(exchange, key1, Buffer.from(msg1));
-      ch.publish(exchange, key2, Buffer.from(msg2));
+      ch.publish(exchange, key1, Buffer.from(msg2));
+      ch.publish(exchange, key1, Buffer.from(msg3));
       console.log(" MANDEIII Sent %s", msg1);
     });
   });
@@ -157,7 +181,7 @@ function seeInfo(){
   console.log(getInfo('2c4d9202-8c15-4bc9-a07a-6ac16ca8d51b'));
   console.log(getInfo('8e1d9202-8c15-4bc9-a07a-6ac16ca8d51b'));
 }
-*/
+
 
 
 app.get('/v1/crosswalks/:id', (req, res) => {
@@ -188,6 +212,8 @@ const server = app.listen(3000, () => {
   console.log(`App listening at http://${host}:${port}`);
   consumeInformation('pedestrian');
   consumeInformation('vehicle');
+  setTimeout(simulator,5000);
+  setTimeout(seeInfo,8000);
 });
 
 module.exports = () => start();
