@@ -24,12 +24,6 @@ library.add(faSearch, faMapMarkedAlt, faInfoCircle)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 
-// Mock
-import createMockServer from "./mock/server";
-
-createMockServer();
-
-
 new Vue({
   el: '#app',
   render: h => h(App)

@@ -224,6 +224,20 @@ function consumeLightStatus(con) {
   });
 }
 
+function createPublicExchange(con) {
+  con.createChannel((err, ch) => {
+    if (err) {
+      console.log(err);
+      throw err;
+    }
+
+    const exchange = 'public';
+
+    ch.assertExchange(exchange, 'topic', { durable: true });
+    ch.close();
+  })
+}
+
 /**
  * Function that starts the callbacks
  */
@@ -234,6 +248,8 @@ function start() {
       console.log(err);
       throw err;
     }
+
+    createPublicExchange(con);
 
     consumeClient(con, 'pedestrian', 'near');
     consumeClient(con, 'pedestrian', 'far');

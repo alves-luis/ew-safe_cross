@@ -44,16 +44,18 @@
             }
         },
         beforeCreate() {
-            fetch("/crosswalk")
+            fetch("http://localhost:3000/api/v1/crosswalks")
             .then((response) => response.json())
             .then((crosswalks) => {
                 crosswalks.crosswalks.forEach(crosswalk => {
                     this.crosswalks.push({
                         id: crosswalk.id,
-                        location: L.latLng(crosswalk.latitude, crosswalk.longitude)
+                        location: L.latLng(crosswalk.lat, crosswalk.lon)
                     })
                 })
-            });
+            })
+            .catch(err => console.log(err));
+            
         }
     }
 </script>
