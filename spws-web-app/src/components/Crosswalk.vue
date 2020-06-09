@@ -25,9 +25,9 @@
                         </div>                      
                     </li>
                     <li class="list-group-item">
-                        <h5 class="card-title">Today's Total Status</h5>
-                        <p class="card-text">Total # pedestrians:</p>
-                        <p class="card-text">Total # vehicles: </p>
+                        <h5 class="card-title">Last 24h' Status</h5>
+                        <p class="card-text">Total # pedestrians: {{ total_pedestrians }}</p>
+                        <p class="card-text">Total # vehicles: {{ total_vehicles }}</p>
                     </li>
                 </ul>
 
@@ -49,7 +49,9 @@
     let URL = process.env.VUE_APP_URL;
     let PORT = process.env.VUE_APP_PORT;
     let PATH = process.env.VUE_APP_PATH;
-    
+    let PEDESTRIAN_UPDATE = parseInt(process.env.VUE_APP_PEDESTRIAN_UPDATE);
+    let VEHCILE_UPDATE = parseInt(process.env.VUE_APP_VEHICLE_UPDATE);
+
     export default {
         name: "Crosswalk",
         props: {
@@ -58,6 +60,8 @@
         data() {
             return {
                 light: "",
+                total_pedestrians: 0,
+                total_vehicles: 0,
                 isLoading: true,
                 stompClient: undefined,
                 webSocket: undefined,
@@ -79,16 +83,16 @@
                 this.crosswalk.current_vehicles = [];
                 this.crosswalk.current_pedestrians = [];
 
-                this.light = obj.light
-                // faltam 2 dados
-
+                this.light = obj.light;
+                this.total_pedestrians = obj.num_pedestrians;
+                this.total_vehicles = obj.num_vehicles;
 
                 // Set interval to remove old pins
                 var vm = this;
                 setInterval(function(){
-                    vm.crosswalk.current_pedestrians = vm.crosswalk.current_pedestrians.filter(p => new Date() - p.date < 2500)
-                    //vm.crosswalk.current_vehicles = vm.crosswalk.current_vehicles.filter(v => new Date() - v.date < 2000)
-                }, 2500);
+                    vm.crosswalk.current_pedestrians = vm.crosswalk.current_pedestrians.filter(p => new Date() - p.date < PEDESTRIAN_UPDATE + 1000)
+                    vm.crosswalk.current_vehicles = vm.crosswalk.current_vehicles.filter(v => new Date() - v.date < VEHCILE_UPDATE + 1000)
+                }, 1000);
 
                 this.subscribeExchanges();          
                 
@@ -104,7 +108,7 @@
             subscribeExchanges() {
                 this.crosswalk_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.status.short`, this.processCrosswalkExchange, (error) => console.log(error));
                 this.pedestrian_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.pedestrian.location`, this.processPedestrianExchange, (error) => console.log(error));
-                //this.vehicle_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.vehicle.location`, this.processExchangeResponse, this.processExchangeError);
+                this.vehicle_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.vehicle.location`, this.processExchangeResponse, this.processExchangeError);
             },
 
             processPedestrianExchange(msg) {
@@ -161,7 +165,7 @@
         width: 1rem;
         border-radius: 50%;
         display: inline-block;
-        opacity: 20%;
+        opacity: 0.2;
     }
 
     .dot-green {
@@ -177,7 +181,7 @@
     }  
 
     .active {
-        opacity: 100% !important;
+        opacity: 1 !important;
         border-style: solid;
         border-width: 1px;
     }

@@ -43,7 +43,7 @@ services:
       context: ./spws-web-app
       dockerfile: Dockerfile
     container_name: 'spws_web_app'
-    env_file: ./spws-web-app/.env
+    env_file: ./spws-web-app/.env.example
     ports:
       - '8080:8080'
     networks:

@@ -23,36 +23,14 @@ RMQ_PASSWORD = process.env.RMQ_PASSWORD
 let data = {
     id: 0,
     current_location: {
-        latitude: 41.54958, 
-        longitude: -8.43351
+        latitude: 0, 
+        longitude: 0
     },
     last_location: {
         latitude: 0, 
         longitude: 0
     },
-    nearby_crosswalks: [
-        { // simulação veiculo 1
-            id: 1,
-            latitude: 41.5390993, 
-            longitude: -8.4337006
-        },
-        {
-            id: 2, 
-            latitude: 41.5445975, 
-            longitude: -8.4256079
-        },
-        {   // simulação pedestre 1
-            id: 3,
-            latitude: 41.5476900,
-            longitude: -8.4069275
-        },
-        {   // simulação pedestre 1
-            id: 4,
-            latitude: 41.5476850,
-            longitude: -8.4067275
-        }
-        
-    ],
+    nearby_crosswalks: [],
     nearest_crosswalks: new Map()
 }
 
@@ -155,10 +133,16 @@ function requestNearbyCrosswalks() {
 function checkCrosswalkCrossed(crosswalk) {
     center = geolib.getCenter([data.current_location, data.last_location]);
     distance = geolib.getDistance(data.current_location, data.last_location);
-
+    
     if(geolib.isPointWithinRadius(crosswalk, center, distance/2)){
-        // TODO: Prettier feedback
-        console.log(`${new Date().toISOString()}: Crosswalk #${crosswalk.id} crossed with ${crosswalk.light} light.`.green)
+        to_print = `${new Date().toISOString()}: \nCrosswalk #${crosswalk.id} crossed.\n`.green
+        to_print += `Crosswalk info: \n\t`.green
+        to_print += `Light: ${crosswalk.light} \n\t`.green
+        if(crosswalk.light !== 'red') to_print += `Pay attention to traffic light!\n\t`.red
+        to_print += `Vehicles nearby: ${crosswalk.nearby_vehicles}\n\t`.green
+        if(crosswalk.nearby_vehicles > 0 && crosswalk.light !== 'red')  to_print += `You could have been run over!`.red
+        
+        console.log(to_print)
     }
 }
 
@@ -210,7 +194,11 @@ function subscribeCrosswalkExchange(crosswalk_id) {
     
     crosswalk.exchange_id = client.subscribe(`/exchange/public/${crosswalk_id}.status.short`, (msg) => {
         var json = JSON.parse(msg.body);
+
         crosswalk.light = json.light;
+        crosswalk.nearby_vehicles = json.num_vehs;
+        crosswalk.nearby_pedestrians = json.num_peds;
+
         data.nearest_crosswalks.set(crosswalk_id, crosswalk)
     }, (error) => {
         console.log(error);
