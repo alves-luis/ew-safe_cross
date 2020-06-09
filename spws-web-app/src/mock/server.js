@@ -21,6 +21,12 @@ const createMockServer = () => {
                 latitude: 41.5476900,
                 longitude: -8.4069275
             });
+
+            server.schema.crosswalks.create({
+                id: 4,
+                latitude: 41.52683882729225,
+                longitude: -8.432178497314455
+            });
         },
     });
 };

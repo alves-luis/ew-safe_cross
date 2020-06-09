@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-        <l-map class="col-lg-7"
+        <l-map
                :maxZoom="map_settings.maxZoom"
                :minZoom="map_settings.minZoom"
                :zoom="map_settings.zoom"
@@ -10,6 +10,51 @@
             <l-tile-layer :url="map_settings.url"
                           :attribution="map_settings.attribution">
             </l-tile-layer>
+
+            <l-control position="topleft">
+                <button @click="search=!search">
+                    <font-awesome-icon icon="search" />
+                </button>
+                <div v-if="search">
+                    <div class="input-group">
+                        <input type="text" class="mt-1" placeholder="Crosswalk ID" v-model="search_id">
+                        <div class="input-group-btn">
+                            <button class="btn btn-primary btn-sm ml-1" type="button" @click="searchCrosswalk()"><font-awesome-icon icon="search" /></button>
+                        </div>
+                    </div> 
+                    <p class="text-danger" v-if="!has_found">There is no crosswalk with that ID.</p>
+                </div>
+            </l-control>
+
+
+            <l-control position="bottomleft">                
+                <div v-if="legend" class="popup p-3 rounded">
+                    <p class="legend pl-2">
+                        <img src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png" style="height: 1.5em">
+                        <span class="pl-2">Crosswalk</span>
+                    </p>
+                    <p class="legend">
+                        <img src="assets/pedestrian.png" style="height: 1.5em">
+                        <span class="pl-2">Pedestrian</span>
+                    </p>
+                    <p class="legend">
+                        <img src="assets/vehicle.png" style="height: 1.5em">
+                        <span class="pl-2">Vehicle</span>
+                    </p>
+                    <p class="legend">
+                        <img src="assets/pedestrian_range.png" style="height: 1.5em">
+                        <span class="pl-2">Pedestrian range</span>
+                    </p>
+                    <p class="legend">
+                        <img src="assets/vehicle_range.png" style="height: 1.5em">
+                        <span class="pl-2">Vehicle range</span>
+                    </p>
+                </div>
+                <button @click="legend=!legend">
+                    Legend
+                </button>
+            </l-control>
+
 
             <div v-if="!active_crosswalk.id">
                 <l-marker v-for="crosswalk in crosswalks"
@@ -35,41 +80,25 @@
                 </l-marker>
                 <l-circle
                     :lat-lng="active_crosswalk.location"
-                    :radius="circle.pedestrian.radius"
-                    :color="circle.pedestrian.color"
-                    />
-                <l-circle
-                    :lat-lng="active_crosswalk.location"
                     :radius="circle.vehicle.radius"
                     :color="circle.vehicle.color"
-                    />
+                />
+                <l-circle
+                    :lat-lng="active_crosswalk.location"
+                    :radius="circle.pedestrian.radius"
+                    :color="circle.pedestrian.color"
+                />
+                
             </div>
 
-        </l-map>
-        <div class="col-lg-5">
-            <crosswalk v-if="active_crosswalk.id != 0"
-                        :crosswalk="active_crosswalk"
-                        @back="reset()">
-            </crosswalk>
-            <div v-else>
-                <div class="px-2">
-                    <div class="card vld-parent">
-                        <h5 class="card-header">Crosswalk Search</h5>
-                        <div class="card-body">
-                            <p class="card-text">Enter the crosswalk ID: </p>
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Crosswalk ID" v-model="search_id">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-primary float-right ml-1" type="button" @click="search()">Search</button>
-                                </div>
-                            </div> 
-                            <p class="text-danger" v-if="!has_found">There is no crosswalk with that ID.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
+            <l-control position="topright" v-if="active_crosswalk.id != 0">
+                <crosswalk :crosswalk="active_crosswalk"
+                            @back="reset()">
+                </crosswalk>
+            </l-control>
+            
+
+        </l-map>        
     </div>
 
 </template>
@@ -85,23 +114,23 @@
                 map_settings: {
                     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                     attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors</a>',
-                    minZoom: 5,
+                    minZoom: 10,
                     maxZoom: 18,
-                    zoom: 11,
+                    zoom: 13,
                     center: [41.547, -8.406]
                 },               
                 markers: {
                     vehicleIcon: new L.Icon({
-                        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-                        iconSize: [19, 30],
-                        iconAnchor: [10, 30],
-                        popupAnchor: [1, -30]
+                        iconUrl: './assets/vehicle.png',
+                        iconSize: [12, 12],
+                        iconAnchor: [6, 6],
+                        popupAnchor: [1, -12]
                     }),
                     pedestrianIcon: new L.Icon({
-                        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
-                        iconSize: [19, 30],
-                        iconAnchor: [10, 30],
-                        popupAnchor: [1, -30]
+                        iconUrl: './assets/pedestrian.png',
+                        iconSize: [12, 12],
+                        iconAnchor: [6, 6],
+                        popupAnchor: [1, -12]
                     }),
                     crosswalkIcon: new L.Icon({
                         iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
@@ -126,8 +155,10 @@
                     current_pedestrians: [],
                     current_vehicles: []
                 },
+                has_found: true,
+                legend: false,
                 search_id: "",
-                has_found: true
+                search: false
             };
         },
         methods: {
@@ -138,7 +169,7 @@
                 this.active_crosswalk.current_pedestrians = [];
                 this.map_settings.center = crosswalk.location;
             },
-            search() {
+            searchCrosswalk() {
                 var filtered = this.crosswalks.filter( crosswalk => crosswalk.id == this.search_id);
                 if(filtered.length > 0) { 
                     this.setActiveCrosswalk(filtered[0]);
@@ -164,4 +195,11 @@
 
 <style scoped>
 
+    .popup {
+        background-color: white;
+    }
+
+    .legend {
+        font-size: 0.9rem;
+    }
 </style>
