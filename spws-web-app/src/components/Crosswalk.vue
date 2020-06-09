@@ -84,8 +84,8 @@
                 this.crosswalk.current_pedestrians = [];
 
                 this.light = obj.light;
-                this.total_pedestrians = obj.num_pedestrians;
-                this.total_vehicles = obj.num_vehicles;
+                this.total_pedestrians = obj.num_ped;
+                this.total_vehicles = obj.num_veh;
 
                 // Set interval to remove old pins
                 var vm = this;
