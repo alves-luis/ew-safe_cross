@@ -1,21 +1,21 @@
-name: Crosswalks-Current-Status-Service - Build & Deploy
+name: Traffic Light Simulator - Build & Deploy
 
 on:
   pull_request:
     branches:
       - master
     paths:
-      - 'crosswalks-current-status-service/**'
+      - 'traffic-light-simulator/**'
 
 jobs:
   docker:
     name: Publish - Docker Hub
     runs-on: ubuntu-latest
     env:
-      REPOSITORY: ${{ secrets.CROSSWALKS_CURRENT_STATUS_SERVICE_REPO }}
+      REPOSITORY: ${{ secrets.TRAFFIC_LIGHT_SIMULATOR_REPO }}
     defaults:
       run:
-        working-directory: './crosswalks-current-status-service'
+        working-directory: './traffic-light-simulator'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
