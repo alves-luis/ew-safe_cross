@@ -10,8 +10,8 @@ const WebSocket = require('ws')
 // Setup ---------------------------------------------------------
 
 // Environment variables
-MAX_DISTANCE = process.env.MAX_DISTANCE || 20  // m
-UPDATE_LOCATION_RATE = process.env.UPDATE_LOCATION_RATE || 2000 // ms
+MAX_DISTANCE = process.env.MAX_DISTANCE || 40  // m
+UPDATE_LOCATION_RATE = process.env.UPDATE_LOCATION_RATE || 1000 // ms
 REQUEST_NEARBY_CROSSWALKS_RATE = process.env.REQUEST_NEARBY_CROSSWALKS_RATE || 30000 // ms
 WS_URL = process.env.WS_URL
 WS_PORT = process.env.WS_PORT
@@ -138,9 +138,10 @@ function checkCrosswalkCrossed(crosswalk) {
         to_print = `${new Date().toISOString()}: \nCrosswalk #${crosswalk.id} crossed.\n`.green
         to_print += `Crosswalk info: \n\t`.green
         to_print += `Light: ${crosswalk.light} \n\t`.green
-        if(crosswalk.light !== 'red') to_print += `Pay attention to traffic light!\n\t`.red
-        to_print += `Vehicles nearby: ${crosswalk.nearby_vehicles}\n\t`.green
-        if(crosswalk.nearby_vehicles > 0 && crosswalk.light !== 'red')  to_print += `You could have been run over!`.red
+        if(crosswalk.light === 'yellow') to_print += `Try to be more careful, the light was yellow!\n\t`.yellow
+        else if(crosswalk.light === 'red') to_print += `STOP! Pay attention to traffic light! Real lives are at stake!\n\t`.red
+        to_print += `Pedestrians nearby: ${crosswalk.nearby_pedestrians}\n\t`.green
+        if(crosswalk.nearby_pedestrians > 0 && crosswalk.light !== 'red') to_print += `You could have been run over!`.red
         
         console.log(to_print)
     }
