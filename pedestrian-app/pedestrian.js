@@ -209,7 +209,10 @@ function subscribeCrosswalkExchange(crosswalk_id) {
 
 function shutdown() {
     console.log(`${new Date().toISOString()}: Trip is over. Shutting down...`.blue); 
-    // send that i'm done to server
+    
+    data.nearest_crosswalks.forEach( crosswalk => {
+        sendCrosswalkFarExchange(crosswalk.id)
+    });
     process.exit();  
 }
 
