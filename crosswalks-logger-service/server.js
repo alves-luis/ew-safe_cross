@@ -113,14 +113,11 @@ async function getInfo(id){
       {$project: {history:1}},
       {$unwind: '$history'},
       {$match: {"history.crossedAt": {$gte: yesterday , $lt: today}}},
-      {$group: {_id:'$history.client.id'}},
-    ])
+      {$group: {_id: { id: '$history.client.id', type: '$history.client.kind' }}},
+    ]);
     console.log("É ISTO QUE QUEREMOS");
     console.log(crosswalkHistory);
-    crosswalkHistory.forEach(crosswalk => {
-      console.log("Crosswalk HISTORY");
-      console.log(crosswalk.history);
-      crosswalk.history.forEach(function(info){
+      crosswalkHistory.forEach(function(info){
         console.log("Crosswalk Client");
         console.log(info.client.kind);
         if(info.client.kind == 'pedestrian'){
@@ -130,7 +127,6 @@ async function getInfo(id){
           numVeh++;
         }
       });
-    });
   }
   catch (error){
     console.log(error);
@@ -185,7 +181,7 @@ function simulator(){
 
 
 function seeInfo(){
-  console.log(getInfo('a362db8a-cfb5-4040-94e2-39ffa6cd96cc'));
+  console.log(getInfo('8e1d9202-8c15-4bc9-a07a-6ac16ca8d51b'));
 }
 
 
