@@ -133,15 +133,14 @@ async function getInfo(id){
     console.log(error);
   }
   const result = {num_ped: numPed, num_veh: numVeh}
-  console.log(result);
-  return JSON.stringify(result);
+  return result;
 }
 
 
 app.get('/v1/crosswalks/:id', (req, res) => {
   const id = req.params.id;
   getInfo(id).then((st) => {
-      const status = JSON.parse(st);
+      const status = st;
       if (status.num_ped!= undefined && status.num_veh!= undefined) {
         res.status(200);
         res.json({
@@ -159,16 +158,12 @@ app.get('/v1/crosswalks/:id', (req, res) => {
 });
 
 
-
-
 const server = app.listen(3000, () => {
   const host = server.address().address;
   const port = server.address().port;
 
   console.log(`App listening at http://${host}:${port}`);
   startConnection();
-  setTimeout(simulator,5000);
-  setTimeout(seeInfo,8000);
 });
 
 module.exports = () => start();
