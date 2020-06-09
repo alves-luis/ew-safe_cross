@@ -115,7 +115,6 @@ services:
     env_file: ./crosswalks-logger-service/.env.example
     restart: on-failure
     depends_on:
-      - crosswalks_location_service
       - rabbit
       - database
     networks:
