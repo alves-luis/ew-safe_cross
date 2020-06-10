@@ -1,0 +1,32 @@
+name: SPWS Web App - Build & Deploy
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'spws-web-app/**'
+
+jobs:
+  docker:
+    name: Publish - Docker Hub
+    runs-on: ubuntu-latest
+    env:
+      REPOSITORY: ${{ secrets.SPWS_WEB_APP_REPO }}
+    defaults:
+      run:
+        working-directory: './spws-web-app'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Get version
+        run: echo ::set-output name=VERSION::$(cat .version)
+        id: version
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USER }}
+             -p ${{ secrets.DOCKER_PASS }}
+      - name: Build Docker image
+        run: docker build -t $REPOSITORY:latest -t $REPOSITORY:${{ steps.version.outputs.VERSION }} .
+      - name: Publish Docker image
+        run: docker push $REPOSITORY
+      

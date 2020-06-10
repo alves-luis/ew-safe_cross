@@ -33,9 +33,7 @@ services:
 
 
   spws_web_app:
-    build:
-      context: ./spws-web-app
-      dockerfile: Dockerfile
+    image: 'ambystomatidae/spws-web-app:latest'
     container_name: 'spws_web_app'
     env_file: ./spws-web-app/.env.example
     ports:
@@ -99,9 +97,7 @@ services:
       - private
 
   crosswalks_logger_service:
-    build:
-      context: ./crosswalks-logger-service
-      dockerfile: Dockerfile
+    image: 'ambystomatidae/crosswalks-logger-service:latest'
     container_name: 'crosswalks_logger_service'
     env_file: ./crosswalks-logger-service/.env.example
     restart: on-failure
