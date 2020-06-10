@@ -142,11 +142,11 @@
                 circle: {
                     pedestrian: {
                         color: 'yellow',
-                        radius: 25
+                        radius: 20
                     },
                     vehicle: {
                         color: 'green',
-                        radius: 50
+                        radius: 40
                     }
                 },
                 active_crosswalk: {

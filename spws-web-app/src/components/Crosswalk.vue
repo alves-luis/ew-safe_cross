@@ -25,7 +25,7 @@
                         </div>                      
                     </li>
                     <li class="list-group-item">
-                        <h5 class="card-title">Last 24h' Status</h5>
+                        <h5 class="card-title">Today's Status</h5>
                         <p class="card-text">Total # pedestrians: {{ total_pedestrians }}</p>
                         <p class="card-text">Total # vehicles: {{ total_vehicles }}</p>
                     </li>
@@ -108,7 +108,7 @@
             subscribeExchanges() {
                 this.crosswalk_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.status.short`, this.processCrosswalkExchange, (error) => console.log(error));
                 this.pedestrian_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.pedestrian.location`, this.processPedestrianExchange, (error) => console.log(error));
-                this.vehicle_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.vehicle.location`, this.processVehicleResponse, this.processExchangeError);
+                this.vehicle_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.vehicle.location`, this.processVehicleExchange, this.processExchangeError);
             },
 
             processPedestrianExchange(msg) {

@@ -135,14 +135,11 @@ function checkCrosswalkCrossed(crosswalk) {
     distance = geolib.getDistance(data.current_location, data.last_location);
     
     if(geolib.isPointWithinRadius(crosswalk, center, distance/2)){
-        to_print = `${new Date().toISOString()}: \nCrosswalk #${crosswalk.id} crossed.\n`.green
-        to_print += `Crosswalk info: \n\t`.green
-        to_print += `Light: ${crosswalk.light} \n\t`.green
-        if(crosswalk.light !== 'red') to_print += `Pay attention to traffic light!\n\t`.red
-        to_print += `Vehicles nearby: ${crosswalk.nearby_vehicles}\n\t`.green
-        if(crosswalk.nearby_vehicles > 0 && crosswalk.light !== 'red')  to_print += `You could have been run over!`.red
-        
-        console.log(to_print)
+        console.log(`${new Date().toISOString()}: \nCrosswalk #${crosswalk.id} crossed.`.green)
+        if(crosswalk.light !== 'red') {
+            console.log(`\tPay attention to traffic light!`.red)
+            if(crosswalk.nearby_vehicles > 0) console.log(`\tYou could have been run over!`.red)
+        }      
     }
 }
 
@@ -204,6 +201,7 @@ function subscribeCrosswalkExchange(crosswalk_id) {
         console.log(`${new Date().toISOString()}:\nCrosswalk #${crosswalk_id} status:`.green)
         console.log(`\tLight: ${crosswalk.light}`.green)
         console.log(`\tNearby vehicles: ${crosswalk.nearby_vehicles}`.green)
+        if(crosswalk.nearby_vehicles > 0) console.log("\tPay attention".yellow)
     }, (error) => {
         console.log(error);
     });
