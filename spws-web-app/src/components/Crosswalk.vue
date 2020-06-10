@@ -25,7 +25,7 @@
                         </div>                      
                     </li>
                     <li class="list-group-item">
-                        <h5 class="card-title">Last 24h' Status</h5>
+                        <h5 class="card-title">Today's Status</h5>
                         <p class="card-text">Total # pedestrians: {{ total_pedestrians }}</p>
                         <p class="card-text">Total # vehicles: {{ total_vehicles }}</p>
                     </li>
@@ -50,7 +50,7 @@
     let PORT = process.env.VUE_APP_PORT;
     let PATH = process.env.VUE_APP_PATH;
     let PEDESTRIAN_UPDATE = parseInt(process.env.VUE_APP_PEDESTRIAN_UPDATE);
-    let VEHCILE_UPDATE = parseInt(process.env.VUE_APP_VEHICLE_UPDATE);
+    let VEHICLE_UPDATE = parseInt(process.env.VUE_APP_VEHICLE_UPDATE);
 
     export default {
         name: "Crosswalk",
@@ -91,7 +91,7 @@
                 var vm = this;
                 setInterval(function(){
                     vm.crosswalk.current_pedestrians = vm.crosswalk.current_pedestrians.filter(p => new Date() - p.date < PEDESTRIAN_UPDATE + 1000)
-                    vm.crosswalk.current_vehicles = vm.crosswalk.current_vehicles.filter(v => new Date() - v.date < VEHCILE_UPDATE + 1000)
+                    vm.crosswalk.current_vehicles = vm.crosswalk.current_vehicles.filter(v => new Date() - v.date < VEHICLE_UPDATE + 1000)
                 }, 1000);
 
                 this.subscribeExchanges();          
@@ -108,7 +108,7 @@
             subscribeExchanges() {
                 this.crosswalk_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.status.short`, this.processCrosswalkExchange, (error) => console.log(error));
                 this.pedestrian_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.pedestrian.location`, this.processPedestrianExchange, (error) => console.log(error));
-                this.vehicle_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.vehicle.location`, this.processVehicleResponse, this.processExchangeError);
+                this.vehicle_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.vehicle.location`, this.processVehicleExchange, this.processExchangeError);
             },
 
             processPedestrianExchange(msg) {

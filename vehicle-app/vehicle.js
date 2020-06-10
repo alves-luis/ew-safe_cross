@@ -10,8 +10,8 @@ const WebSocket = require('ws')
 // Setup ---------------------------------------------------------
 
 // Environment variables
-MAX_DISTANCE = process.env.MAX_DISTANCE || 20  // m
-UPDATE_LOCATION_RATE = process.env.UPDATE_LOCATION_RATE || 2000 // ms
+MAX_DISTANCE = process.env.MAX_DISTANCE || 40  // m
+UPDATE_LOCATION_RATE = process.env.UPDATE_LOCATION_RATE || 1000 // ms
 REQUEST_NEARBY_CROSSWALKS_RATE = process.env.REQUEST_NEARBY_CROSSWALKS_RATE || 30000 // ms
 WS_URL = process.env.WS_URL
 WS_PORT = process.env.WS_PORT
@@ -136,10 +136,9 @@ function checkCrosswalkCrossed(crosswalk) {
     
     if(geolib.isPointWithinRadius(crosswalk, center, distance/2)){
         console.log(`${new Date().toISOString()}: \nCrosswalk #${crosswalk.id} crossed.`.green)
-        if(crosswalk.light !== 'red') {
-            console.log(`\tPay attention to traffic light!`.red)
-            if(crosswalk.nearby_vehicles > 0) console.log(`\tYou could have been run over!`.red)
-        }      
+        if(crosswalk.light === 'yellow') console.log(`\tTry to be more careful, the light was yellow!`.yellow)
+        else if(crosswalk.light === 'red') console.log(`\tSTOP! Pay attention to traffic light! Real lives are at stake!`.red)
+        if(crosswalk.nearby_pedestrians > 0) console.log(`\tPedestrians nearby. Pay attention to your surroundings!`.red)        
     }
 }
 
@@ -154,7 +153,7 @@ function sendLocationExchange(crosswalk_id) {
         longitude: data.current_location.longitude
     }
     
-    client.send(`/exchange/public/${crosswalk_id}.pedestrian.location`, {}, JSON.stringify(body));
+    client.send(`/exchange/public/${crosswalk_id}.vehicle.location`, {}, JSON.stringify(body));
 }
 
 
@@ -167,7 +166,7 @@ function sendCrosswalkNearExchange(crosswalk_id) {
         crosswalk_id: crosswalk_id 
     }
 
-    client.send(`/exchange/private/${crosswalk_id}.pedestrian.near`, {}, JSON.stringify(body));
+    client.send(`/exchange/private/${crosswalk_id}.vehicle.near`, {}, JSON.stringify(body));
 }
 
 
@@ -180,7 +179,7 @@ function sendCrosswalkFarExchange(crosswalk_id) {
         crosswalk_id: crosswalk_id 
     }
 
-    client.send(`/exchange/private/${crosswalk_id}.pedestrian.far`, {}, JSON.stringify(body));
+    client.send(`/exchange/private/${crosswalk_id}.vehicle.far`, {}, JSON.stringify(body));
     data.nearest_crosswalks.get(crosswalk_id).exchange_id.unsubscribe();
 }
 
@@ -200,8 +199,8 @@ function subscribeCrosswalkExchange(crosswalk_id) {
 
         console.log(`${new Date().toISOString()}:\nCrosswalk #${crosswalk_id} status:`.green)
         console.log(`\tLight: ${crosswalk.light}`.green)
-        console.log(`\tNearby vehicles: ${crosswalk.nearby_vehicles}`.green)
-        if(crosswalk.nearby_vehicles > 0) console.log("\tPay attention".yellow)
+        console.log(`\tNearby pedestrians: ${crosswalk.nearby_pedestrians}`.green)
+        if(crosswalk.nearby_pedestrians > 0) console.log(`\tTake care!`.red)
     }, (error) => {
         console.log(error);
     });
@@ -224,7 +223,7 @@ function shutdown() {
 // MAIN ---------------------------------------------------------
 
 function login() {
-    request.post("http://localhost:3000/api/v1/pedestrian/signup", (err, res, body) => {
+    request.post("http://localhost:3000/api/v1/vehicle/signup", (err, res, body) => {
         if(err) {
             console.log(err);
         }
@@ -238,7 +237,7 @@ function login() {
 
 
 function main() {
-    console.log(`${new Date().toISOString()}: Registered as Pedestrian with ID = ${data.id}`.blue);
+    console.log(`${new Date().toISOString()}: Registered as Vehicle with ID = ${data.id}`.blue);
 
     // Evaluate current location -------------------------------------
     data.current_location = location_simulator.getCurrentLocation();
