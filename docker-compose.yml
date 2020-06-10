@@ -56,6 +56,7 @@ services:
       - database
       - welcome_service
       - crosswalks_location_service
+      - crosswalks_logger_service
 
   rabbit:
     build:
@@ -94,6 +95,19 @@ services:
     depends_on:
       - crosswalks_location_service
       - rabbit
+    networks:
+      - private
+
+  crosswalks_logger_service:
+    build:
+      context: ./crosswalks-logger-service
+      dockerfile: Dockerfile
+    container_name: 'crosswalks_logger_service'
+    env_file: ./crosswalks-logger-service/.env.example
+    restart: on-failure
+    depends_on:
+      - rabbit
+      - database
     networks:
       - private
 
