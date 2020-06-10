@@ -23,38 +23,15 @@ RMQ_PASSWORD = process.env.RMQ_PASSWORD
 let data = {
     id: 0,
     current_location: {
-        latitude: 41.54958, 
-        longitude: -8.43351
+        latitude: 0, 
+        longitude: 0
     },
     last_location: {
         latitude: 0, 
         longitude: 0
     },
-    nearby_crosswalks: [
-        { // simulação veiculo 1
-            id: 1,
-            latitude: 41.5390993, 
-            longitude: -8.4337006
-        },
-        {
-            id: 2, 
-            latitude: 41.5445975, 
-            longitude: -8.4256079
-        },
-        {   // simulação pedestre 1
-            id: 3,
-            latitude: 41.5476900,
-            longitude: -8.4069275
-        }
-        
-    ],
-    nearest_crosswalk: {
-        id: 0,
-        latitude: 0, 
-        longitude: 0,
-        light: 'green',
-        exchange_id: 0
-    }
+    nearby_crosswalks: [],
+    nearest_crosswalks: new Map()
 }
 
 // Parsing args
@@ -84,7 +61,166 @@ const client = Stomp.over(ws);
 client.connect(RMQ_USERNAME, RMQ_PASSWORD, () => console.log('Connected.'), () => console.log('Error.'.red));
 
 
-// Login ---------------------------------------------------------
+// Functions -------------------------------
+
+
+function checkNearestCrosswalks() {
+    console.log(`${new Date().toISOString()}: Checking nearest crosswalks (under ${MAX_DISTANCE}m)...`);
+
+    // Verify if nearest crosswalks are too far away now
+    data.nearest_crosswalks.forEach(crosswalk => {
+        let to_crosswalk = geolib.getDistance(crosswalk, data.current_location);
+        if (to_crosswalk > MAX_DISTANCE) {
+            console.log(`${new Date().toISOString()}: Too far away from crosswalk #${crosswalk.id} now`.green);
+            sendCrosswalkFarExchange(crosswalk.id)
+            data.nearest_crosswalks.delete(crosswalk.id);
+        }
+    })   
+
+    // Verify for each nearby crosswalk which ones are closer than MAX_DISTANCE
+    data.nearby_crosswalks.forEach( crosswalk => {
+        let to_new_crosswalk = geolib.getDistance(crosswalk, data.current_location);
+
+        if(to_new_crosswalk < MAX_DISTANCE && data.nearest_crosswalks.get(crosswalk.id) === undefined) {
+            console.log(`${new Date().toISOString()}: Close to crosswalk #${crosswalk.id}`.green);               
+
+            data.nearest_crosswalks.set(crosswalk.id, crosswalk);
+            subscribeCrosswalkExchange(crosswalk.id); // tem que subscrever a crosswalk primeiro
+            sendCrosswalkNearExchange(crosswalk.id);
+        } 
+    });
+}
+
+
+
+function updateLocation() {
+    data.last_location  = data.current_location;
+    data.current_location = location_simulator.getCurrentLocation();   
+
+    // Verify if simulation is over
+    let valid = location_simulator.setNextLocation();
+    if(!valid) shutdown();
+
+    data.nearest_crosswalks.forEach( (crosswalk, id) => {
+        checkCrosswalkCrossed(crosswalk);
+        sendLocationExchange(id);
+    });
+    
+    checkNearestCrosswalks();
+}
+
+
+
+function requestNearbyCrosswalks() {
+    lon = data.current_location.longitude;
+    lat = data.current_location.latitude;
+
+    console.log(`${new Date().toISOString()}: Requesting SPWS for nearby crosswalks - Currently at (${lat}, ${lon})...`);
+      
+    axios({
+        method: 'GET',
+        url: `http://localhost:3000/api/v1/crosswalks?lat=${lat}&lon=${lon}&range=${2000}`,
+    }).then( response => {
+        console.log(new Date().toISOString() + `: Got ${response.data.crosswalks.length} new crosswalks near my current location.`);
+        data.nearby_crosswalks = response.data.crosswalks
+    }).catch(error => {
+        console.log(error);
+    })
+}
+
+
+
+function checkCrosswalkCrossed(crosswalk) {
+    center = geolib.getCenter([data.current_location, data.last_location]);
+    distance = geolib.getDistance(data.current_location, data.last_location);
+    
+    if(geolib.isPointWithinRadius(crosswalk, center, distance/2)){
+        to_print = `${new Date().toISOString()}: \nCrosswalk #${crosswalk.id} crossed.\n`.green
+        to_print += `Crosswalk info: \n\t`.green
+        to_print += `Light: ${crosswalk.light} \n\t`.green
+        if(crosswalk.light !== 'red') to_print += `Pay attention to traffic light!\n\t`.red
+        to_print += `Vehicles nearby: ${crosswalk.nearby_vehicles}\n\t`.green
+        if(crosswalk.nearby_vehicles > 0 && crosswalk.light !== 'red')  to_print += `You could have been run over!`.red
+        
+        console.log(to_print)
+    }
+}
+
+
+
+function sendLocationExchange(crosswalk_id) {
+    console.log(`${new Date().toISOString()}: Updating #${crosswalk_id} exchange...`.blue);
+    
+    body = {
+        id: data.id,
+        latitude: data.current_location.latitude,
+        longitude: data.current_location.longitude
+    }
+    
+    client.send(`/exchange/public/${crosswalk_id}.pedestrian.location`, {}, JSON.stringify(body));
+}
+
+
+
+function sendCrosswalkNearExchange(crosswalk_id) {
+    console.log(`${new Date().toISOString()}: Saying I'm near to crosswalk #${crosswalk_id} exchange...`.blue);
+    
+    body = { 
+        ped_id: data.id, 
+        crosswalk_id: crosswalk_id 
+    }
+
+    client.send(`/exchange/private/${crosswalk_id}.pedestrian.near`, {}, JSON.stringify(body));
+}
+
+
+
+function sendCrosswalkFarExchange(crosswalk_id) {
+    console.log(`${new Date().toISOString()}: Saying I'm far from crosswalk #${crosswalk_id} exchange...`.blue);
+    
+    body = { 
+        ped_id: data.id, 
+        crosswalk_id: crosswalk_id 
+    }
+
+    client.send(`/exchange/private/${crosswalk_id}.pedestrian.far`, {}, JSON.stringify(body));
+    data.nearest_crosswalks.get(crosswalk_id).exchange_id.unsubscribe();
+}
+
+
+
+function subscribeCrosswalkExchange(crosswalk_id) {
+    let crosswalk = data.nearest_crosswalks.get(crosswalk_id)
+    
+    crosswalk.exchange_id = client.subscribe(`/exchange/public/${crosswalk_id}.status.short`, (msg) => {
+        var json = JSON.parse(msg.body);
+
+        crosswalk.light = json.light;
+        crosswalk.nearby_vehicles = json.num_vehs;
+        crosswalk.nearby_pedestrians = json.num_peds;
+
+        data.nearest_crosswalks.set(crosswalk_id, crosswalk)
+    }, (error) => {
+        console.log(error);
+    });
+}
+
+
+
+function shutdown() {
+    console.log(`${new Date().toISOString()}: Trip is over. Shutting down...`.blue); 
+    
+    data.nearest_crosswalks.forEach( crosswalk => {
+        sendCrosswalkFarExchange(crosswalk.id)
+    });
+    process.exit();  
+}
+
+
+
+
+// MAIN ---------------------------------------------------------
+
 function login() {
     request.post("http://localhost:3000/api/v1/pedestrian/signup", (err, res, body) => {
         if(err) {
@@ -97,7 +233,7 @@ function login() {
     });
 }
 
-login();
+
 
 function main() {
     console.log(`${new Date().toISOString()}: Registered as Pedestrian with ID = ${data.id}`.blue);
@@ -105,7 +241,7 @@ function main() {
     // Evaluate current location -------------------------------------
     data.current_location = location_simulator.getCurrentLocation();
     requestNearbyCrosswalks();
-    checkNearestCrosswalk();
+    checkNearestCrosswalks();
     
     // Update current location --------------------------------
     setInterval(() => {
@@ -119,139 +255,4 @@ function main() {
 }
 
 
-
-function checkNearestCrosswalk() {
-    let current_nearest_crosswalk = data.nearest_crosswalk;
-    console.log(`${new Date().toISOString()}: Checking nearest crosswalk (under ${MAX_DISTANCE}m)...`);
-
-    // Verify if nearest crosswalk is too far away now
-    let to_current_crosswalk = geolib.getDistance(data.nearest_crosswalk, data.current_location);
-    if (to_current_crosswalk > MAX_DISTANCE && data.nearest_crosswalk.id !== 0) {
-        console.log( `${new Date().toISOString()}: Too far away from crosswalk #${data.nearest_crosswalk.id} now`.green);
-        sendCrosswalkFarExchange(data.nearest_crosswalk.id)
-        data.nearest_crosswalk.id = 0;
-    }
-
-    // Verify for each nearby crosswalk which one is the closest and max MAX_DISTANCEm away
-    data.nearby_crosswalks.forEach( crosswalk => {
-        let to_new_crosswalk = geolib.getDistance(crosswalk, data.current_location);
-        to_current_crosswalk = geolib.getDistance(data.nearest_crosswalk, data.current_location);
-
-        if((to_new_crosswalk < to_current_crosswalk || data.nearest_crosswalk.id === 0) && to_new_crosswalk < MAX_DISTANCE ){
-            data.nearest_crosswalk = crosswalk;
-        } 
-    });
-
-    // If nearest crosswalk has changed -> alert SPWS
-    if (current_nearest_crosswalk != data.nearest_crosswalk) {
-        console.log(`${new Date().toISOString()}: Closer to crosswalk #${data.nearest_crosswalk.id}`.green);
-        
-        if(current_nearest_crosswalk.id != 0) sendCrosswalkFarExchange(current_nearest_crosswalk.id); // tem que estar aqui? para apenas uma nearest acho que sim
-        subscribeCrosswalkExchange(data.nearest_crosswalk.id); // tem que subscrever a crosswalk primeiro
-        sendCrosswalkNearExchange(data.nearest_crosswalk.id);
-    }
-}
-
-
-
-function updateLocation() {
-    data.last_location  = data.current_location;
-    data.current_location = location_simulator.getCurrentLocation();   
-
-    // Verify if simulation is over
-    let valid = location_simulator.setNextLocation();
-    if(!valid) shutdown();
-
-    if(data.nearest_crosswalk.id !== 0) {
-        checkCrosswalkCrossed();
-        sendLocationExchange(data.nearest_crosswalk.id);
-    }
-    
-    checkNearestCrosswalk();
-}
-
-
-
-function requestNearbyCrosswalks() {
-    lon = data.current_location.longitude;
-    lat = data.current_location.latitude;
-
-    console.log(`${new Date().toISOString()}: Requesting SPWS for nearby crosswalks - Currently at (${lat}, ${lon})...`);
-      
-    axios({
-        method: 'GET',
-        url: `http://localhost:3000/api/v1/crosswalks?lat=${lat}&lon=${lon}&range=${5000}`,
-    }).then( response => {
-        console.log(new Date().toISOString() + `: Got ${response.data.crosswalks.length} new crosswalks near my current location.`);
-        //data.nearby_crosswalks = response.data.crosswalks
-    }).catch(error => {
-        console.log(error);
-    })
-}
-
-
-
-function checkCrosswalkCrossed() {
-    center = geolib.getCenter([data.current_location, data.last_location]);
-    distance = geolib.getDistance(data.current_location, data.last_location);
-
-    if(geolib.isPointWithinRadius(data.nearest_crosswalk, center, distance/2)){
-        // TODO: Prettier feedback
-        console.log(`${new Date().toISOString()}: Crosswalk #${data.nearest_crosswalk.id} crossed with ${data.nearest_crosswalk.light} light.`.green)
-    }
-}
-
-
-
-function sendLocationExchange(crosswalk_id) {
-    console.log(`${new Date().toISOString()}: Updating exchange...`.blue);
-    
-    body = {
-        id: data.id,
-        latitude: data.current_location.latitude,
-        longitude: data.current_location.longitude
-    }
-    
-    client.send(`/exchange/public/${crosswalk_id}.pedestrian.location`, {}, JSON.stringify(body));
-}
-
-
-function sendCrosswalkNearExchange(crosswalk_id) {
-    console.log(`${new Date().toISOString()}: Saying I'm near to crossalk #${crosswalk_id} exchange...`.blue);
-    
-    body = { 
-        ped_id: data.id, 
-        crosswalk_id: crosswalk_id 
-    }
-
-    client.send(`/exchange/private/${crosswalk_id}.pedestrian.near`, {}, JSON.stringify(body));
-}
-
-
-function sendCrosswalkFarExchange(crosswalk_id) {
-    console.log(`${new Date().toISOString()}: Saying I'm far from crossalk #${crosswalk_id} exchange...`.blue);
-    
-    body = { 
-        ped_id: data.id, 
-        crosswalk_id: crosswalk_id 
-    }
-
-    client.send(`/exchange/private/${crosswalk_id}.pedestrian.far`, {}, JSON.stringify(body));
-    data.nearest_crosswalk.exchange_id.unsubscribe();
-}
-
-function subscribeCrosswalkExchange(crosswalk_id) {
-    data.nearest_crosswalk.exchange_id = client.subscribe(`/exchange/public/${crosswalk_id}.status.short`, (msg) => {
-        var json = JSON.parse(msg.body);
-        data.nearest_crosswalk.light = json.light;
-    }, (error) => {
-        console.log(error);
-    });
-}
-
-function shutdown() {
-    console.log(`${new Date().toISOString()}: Trip is over. Shutting down...`.blue); 
-    // send that i'm done to server
-    process.exit();  
-}
-
+login();

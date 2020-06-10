@@ -8,8 +8,6 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
     volumes:
       - ./database-seeds:/docker-entrypoint-initdb.d:ro
-    ports:
-      - '27018:27017'
     networks:
       - private
 
@@ -23,13 +21,9 @@ services:
       - database
 
   crosswalks_location_service:
-    build:
-      context: ./crosswalks-location-service/
-      dockerfile: Dockerfile
+    image: 'ambystomatidae/crosswalks-location-service:latest'
     container_name: 'crosswalks_location_service'
     env_file: ./crosswalks-location-service/.env.example
-    ports:
-      - '3001:3000'
     networks:
       - private
     restart: on-failure
@@ -39,17 +33,18 @@ services:
 
 
   spws_web_app:
-    image: 'ambystomatidae/spws-web-app:latest'
+    build:
+      context: ./spws-web-app
+      dockerfile: Dockerfile
     container_name: 'spws_web_app'
+    env_file: ./spws-web-app/.env.example
     ports:
       - '8080:8080'
     networks:
       - public
 
   spws:
-    build:
-      context: ./spws
-      dockerfile: Dockerfile
+    image: 'ambystomatidae/spws:latest'
     container_name: 'spws'
     env_file: ./spws/.env.example
     ports:
@@ -82,9 +77,7 @@ services:
       retries: 1
 
   crosswalks_current_status_service:
-    build:
-      context: './crosswalks-current-status-service/'
-      dockerfile: Dockerfile
+    image: 'ambystomatidae/crosswalks-current-status-service:latest'
     container_name: 'crosswalks_current_status_service'
     env_file: './crosswalks-current-status-service/.env.example'
     restart: on-failure
@@ -95,9 +88,7 @@ services:
       - rabbit
 
   traffic_light_simulator:
-    build:
-      context: ./traffic-light-simulator
-      dockerfile: Dockerfile
+    image: 'ambystomatidae/traffic-light-simulator:latest'
     container_name: 'traffic_light_simulator'
     env_file: ./traffic-light-simulator/.env.example
     restart: on-failure

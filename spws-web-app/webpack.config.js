@@ -59,7 +59,10 @@ module.exports = {
   },
   devtool: '#eval-source-map',
   plugins: [
-    new Dotenv()
+    new Dotenv({
+      path: './.env.example', 
+      safe: true 
+    })
   ]
 }
 
@@ -87,6 +90,9 @@ if (process.env.NODE_ENV === 'production') {
     new webpack.LoaderOptionsPlugin({
       minimize: true
     }),
-    new Dotenv()
+    new Dotenv({
+      path: './.env.example',
+      safe: true 
+    })
   ])
 }

@@ -26,7 +26,55 @@ module.exports = class LocationSimulator{
 
 
 routes = [
-    [   // Aptiv -> Hotel Joao XXI - Simulação veículo 1
+    [   // Cantina -> Gym UM - Pedestre 0
+        {latitude: 41.56185, longitude: -8.39799},
+        {latitude: 41.56185, longitude: -8.39795},
+        {latitude: 41.56186, longitude: -8.39790},
+        {latitude: 41.56187, longitude: -8.39785},
+        {latitude: 41.56188, longitude: -8.39780},
+        {latitude: 41.56189, longitude: -8.39775},
+        {latitude: 41.56189, longitude: -8.39770},
+        {latitude: 41.56190, longitude: -8.39766},
+        {latitude: 41.56190, longitude: -8.39762},
+        {latitude: 41.56191, longitude: -8.39758},
+        {latitude: 41.56181, longitude: -8.39756},
+        {latitude: 41.56182, longitude: -8.39752},
+        {latitude: 41.56183, longitude: -8.39749},
+        {latitude: 41.56183, longitude: -8.39746},
+        {latitude: 41.56183, longitude: -8.39741},
+        {latitude: 41.56184, longitude: -8.39738},
+        {latitude: 41.56185, longitude: -8.39734},
+        {latitude: 41.56186, longitude: -8.39729},
+        {latitude: 41.56187, longitude: -8.39724},
+        {latitude: 41.56187, longitude: -8.39719},
+        {latitude: 41.56187, longitude: -8.39715},
+        {latitude: 41.56188, longitude: -8.39712},
+        {latitude: 41.56189, longitude: -8.39707},
+        {latitude: 41.56189, longitude: -8.39703},
+        {latitude: 41.56189, longitude: -8.39700},
+        {latitude: 41.56189, longitude: -8.39697},
+        {latitude: 41.56190, longitude: -8.39692},
+        {latitude: 41.56191, longitude: -8.39687},
+        {latitude: 41.56191, longitude: -8.39683},
+        {latitude: 41.56192, longitude: -8.39679},
+        {latitude: 41.56192, longitude: -8.39675},
+        {latitude: 41.56193, longitude: -8.39671},
+        {latitude: 41.56194, longitude: -8.39668},
+        {latitude: 41.56195, longitude: -8.39664},
+        {latitude: 41.56197, longitude: -8.39661},
+        {latitude: 41.56201, longitude: -8.39651},
+        {latitude: 41.56202, longitude: -8.39648},
+        {latitude: 41.56202, longitude: -8.39646},
+        {latitude: 41.56203, longitude: -8.39642},
+        {latitude: 41.56203, longitude: -8.39638},
+        {latitude: 41.56204, longitude: -8.39634},
+        {latitude: 41.56204, longitude: -8.39630},
+        {latitude: 41.56205, longitude: -8.39626},
+        {latitude: 41.56205, longitude: -8.39622},
+        {latitude: 41.56206, longitude: -8.39619},
+        {latitude: 41.56207, longitude: -8.39616}
+    ],
+    [   // Aptiv -> Hotel Joao XXI - Random 1
         { latitude: 41.53453 , longitude: -8.43728 },
         { latitude: 41.53461 , longitude: -8.43737 },
         { latitude: 41.53472 , longitude: -8.43733 },
@@ -76,7 +124,7 @@ routes = [
         { latitude: 41.54612 , longitude: -8.41924 }
 
     ],
-    [ // Gostinho da Manha -> SuperDecor Braga - Simulação pedestre 1
+    [ // Gostinho da Manha -> SuperDecor Braga - Random 2
         { latitude: 41.54788, longitude: -8.40729 },
         { latitude: 41.54785, longitude: -8.40727 },
         { latitude: 41.54780, longitude: -8.40724 },

@@ -1,7 +1,7 @@
 <template>
-    <div class="px-2">
-        <div class="card vld-parent">
-            <h5 class="card-header">Crosswalk #{{ crosswalk.id }}</h5>
+    <div class="p-3">
+        <div class="card vld-parent border border-secondary rounded">
+            <h5 class="card-header bg-dark text-white ">Crosswalk #{{ crosswalk_id }}</h5>
             <loading :active.sync="isLoading"
                      :can-cancel="false"
                      :is-full-page="false"
@@ -15,16 +15,25 @@
                         <h5 class="card-title">Real-Time Status</h5>
                         <p class="card-text"># pedestrians: {{ crosswalk.current_pedestrians.length }} </p>
                         <p class="card-text"># vehicles:  {{ crosswalk.current_vehicles.length }}</p>
-                        <p class="card-text">Traffic light: {{ light }}</p>
+                        <div>
+                            <span class="card-text">Traffic light: </span>
+                            <div class="traffic rounded">
+                                <span class="dot dot-green" :class="{active: light=='green'}"></span>
+                                <span class="dot dot-yellow" :class="{active: light=='yellow'}"></span>
+                                <span class="dot dot-red" :class="{active: light=='red'}"></span> 
+                            </div>                                                
+                        </div>                      
                     </li>
                     <li class="list-group-item">
-                        <h5 class="card-title">Today's Total Status</h5>
-                        <p class="card-text">Total # pedestrians:</p>
-                        <p class="card-text">Total # vehicles: </p>
+                        <h5 class="card-title">Last 24h' Status</h5>
+                        <p class="card-text">Total # pedestrians: {{ total_pedestrians }}</p>
+                        <p class="card-text">Total # vehicles: {{ total_vehicles }}</p>
                     </li>
                 </ul>
 
-                <button class="btn btn-primary float-right" type="button" @click="close">Back</button>
+                <button class="btn btn-secundary btn-sm float-right border" type="button" @click="close">Back</button>
+
+
             </div>
         </div>
     </div>
@@ -35,11 +44,14 @@
     import Loading from 'vue-loading-overlay';
     import 'vue-loading-overlay/dist/vue-loading.css';
     import Stomp from 'stompjs';
+    import truncate from 'truncate';
 
     let URL = process.env.VUE_APP_URL;
     let PORT = process.env.VUE_APP_PORT;
     let PATH = process.env.VUE_APP_PATH;
-    
+    let PEDESTRIAN_UPDATE = parseInt(process.env.VUE_APP_PEDESTRIAN_UPDATE);
+    let VEHCILE_UPDATE = parseInt(process.env.VUE_APP_VEHICLE_UPDATE);
+
     export default {
         name: "Crosswalk",
         props: {
@@ -48,6 +60,8 @@
         data() {
             return {
                 light: "",
+                total_pedestrians: 0,
+                total_vehicles: 0,
                 isLoading: true,
                 stompClient: undefined,
                 webSocket: undefined,
@@ -63,26 +77,29 @@
 
             // Request crosswalk data
             this.isLoading = true;
-            fetch(`/crosswalk/${this.crosswalk.id}`)
-                .then((response) => response.json())
-                .then((obj) => {
-                    this.crosswalk.current_vehicles = [];
-                    this.crosswalk.current_pedestrians = [];
+            fetch(`http://localhost:3000/api/v1/crosswalks/${this.crosswalk.id}`)
+            .then((response) => response.json())
+            .then((obj) => {
+                this.crosswalk.current_vehicles = [];
+                this.crosswalk.current_pedestrians = [];
 
-                    this.crosswalk.id = obj.crosswalk.id;
-                    this.crosswalk.location = L.latLng(obj.crosswalk.latitude, obj.crosswalk.longitude);
+                this.light = obj.light;
+                this.total_pedestrians = obj.num_ped;
+                this.total_vehicles = obj.num_veh;
 
-                    this.isLoading = false;
+                // Set interval to remove old pins
+                var vm = this;
+                setInterval(function(){
+                    vm.crosswalk.current_pedestrians = vm.crosswalk.current_pedestrians.filter(p => new Date() - p.date < PEDESTRIAN_UPDATE + 1000)
+                    vm.crosswalk.current_vehicles = vm.crosswalk.current_vehicles.filter(v => new Date() - v.date < VEHCILE_UPDATE + 1000)
+                }, 1000);
 
-                    // Set interval to remove old pins
-                    var vm = this;
-                    setInterval(function(){
-                        vm.crosswalk.current_pedestrians = vm.crosswalk.current_pedestrians.filter(p => new Date() - p.date < 2500)
-                        //vm.crosswalk.current_vehicles = vm.crosswalk.current_vehicles.filter(v => new Date() - v.date < 2000)
-                    }, 2500);
+                this.subscribeExchanges();          
+                
+                this.isLoading = false;
 
-                    this.subscribeExchanges();                  
-                });
+            })
+            .catch(error => console.log(error));
         },
         components: {
             Loading
@@ -91,7 +108,7 @@
             subscribeExchanges() {
                 this.crosswalk_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.status.short`, this.processCrosswalkExchange, (error) => console.log(error));
                 this.pedestrian_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.pedestrian.location`, this.processPedestrianExchange, (error) => console.log(error));
-                //this.vehicle_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.vehicle.location`, this.processExchangeResponse, this.processExchangeError);
+                this.vehicle_exchange_id = this.stompClient.subscribe(`/exchange/public/${this.crosswalk.id}.vehicle.location`, this.processVehicleResponse, this.processExchangeError);
             },
 
             processPedestrianExchange(msg) {
@@ -116,9 +133,31 @@
                        
             },
 
+            processVehicleExchange(msg) {
+                var data = JSON.parse(msg.body);
+
+                // Add or update vehicles nearby
+                var index = this.crosswalk.current_vehicles.findIndex(element => element.id == data.id)    
+                if(index != -1) {
+                    this.crosswalk.current_vehicles[index] = {
+                        id: data.id,
+                        location: L.latLng(data.latitude, data.longitude),
+                        date: new Date()
+                    }
+                }
+                else {
+                    this.crosswalk.current_vehicles.push( {
+                        id: data.id,
+                        location: L.latLng(data.latitude, data.longitude),
+                        date: new Date()
+                    })
+                }
+                      
+            },
+
             processCrosswalkExchange(msg) {
                 var data = JSON.parse(msg.body);
-                this.light = data.light;                     
+                this.light = data.light;  
             },
 
             close() {                
@@ -127,13 +166,52 @@
                 this.webSocket.close();
                 this.$emit('back');
             }
+        },
+        computed: {
+            crosswalk_id() {
+                return truncate(this.crosswalk.id, 8)
+            }
         }
     }
 </script>
 
 <style scoped>
-    .info {
-        height: 45vh;
-        width: 45vw;
+
+    .card-body {
+        padding: 0.9rem 0.5rem !important;
+        font-size: 0.9rem;
     }
+
+    .dot {
+        height: 1rem;
+        width: 1rem;
+        border-radius: 50%;
+        display: inline-block;
+        opacity: 0.2;
+    }
+
+    .dot-green {
+        background-color: green;
+    }
+
+    .dot-yellow {
+        background-color: yellow;
+    }
+
+    .dot-red {
+        background-color: red;
+    }  
+
+    .active {
+        opacity: 1 !important;
+        border-style: solid;
+        border-width: 1px;
+    }
+
+    .traffic {
+        display: inline-block;
+        background: dimgray;
+        padding: 0.4em 1em 0 1em;
+    }
+
 </style>
