@@ -92,7 +92,7 @@
             </div>
 
             <l-control position="topright" v-if="active_crosswalk.id != 0">
-                <crosswalk :crosswalk="active_crosswalk"
+                <crosswalk :key="active_crosswalk.id" :crosswalk="active_crosswalk"
                             @back="reset()">
                 </crosswalk>
             </l-control>
