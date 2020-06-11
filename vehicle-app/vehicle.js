@@ -162,7 +162,7 @@ function sendCrosswalkNearExchange(crosswalk_id) {
     console.log(`${new Date().toISOString()}: Saying I'm near to crosswalk #${crosswalk_id} exchange...`.blue);
     
     body = { 
-        ped_id: data.id, 
+        veh_id: data.id, 
         crosswalk_id: crosswalk_id 
     }
 
@@ -175,7 +175,7 @@ function sendCrosswalkFarExchange(crosswalk_id) {
     console.log(`${new Date().toISOString()}: Saying I'm far from crosswalk #${crosswalk_id} exchange...`.blue);
     
     body = { 
-        ped_id: data.id, 
+        veh_id: data.id, 
         crosswalk_id: crosswalk_id 
     }
 

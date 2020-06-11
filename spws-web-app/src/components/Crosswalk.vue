@@ -1,7 +1,10 @@
 <template>
     <div class="p-3">
         <div class="card vld-parent border border-secondary rounded">
-            <h5 class="card-header bg-dark text-white ">Crosswalk #{{ crosswalk_id }}</h5>
+            <div class="card-header bg-dark text-white">
+                <h5>Crosswalk ID</h5>
+                <h6 class="crosswalk-id">{{ crosswalk_id }}</h6>
+            </div>
             <loading :active.sync="isLoading"
                      :can-cancel="false"
                      :is-full-page="false"
@@ -169,7 +172,7 @@
         },
         computed: {
             crosswalk_id() {
-                return truncate(this.crosswalk.id, 8)
+                return this.crosswalk.id;
             }
         }
     }
@@ -212,6 +215,10 @@
         display: inline-block;
         background: dimgray;
         padding: 0.4em 1em 0 1em;
+    }
+
+    .crosswalk-id {
+        font-size: 0.7rem;
     }
 
 </style>
