@@ -100,13 +100,13 @@ function updateLocation() {
     // Verify if simulation is over
     let valid = location_simulator.setNextLocation();
     if(!valid) shutdown();
+      
+    checkNearestCrosswalks();
 
     data.nearest_crosswalks.forEach( (crosswalk, id) => {
         checkCrosswalkCrossed(crosswalk);
         sendLocationExchange(id);
     });
-    
-    checkNearestCrosswalks();
 }
 
 
