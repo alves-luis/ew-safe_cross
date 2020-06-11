@@ -1,0 +1,40 @@
+name: Welcome-Service - Test PR
+
+on:
+  pull_request:
+    branches:
+      - dev
+    paths:
+      - 'welcome-service/**'
+
+jobs:
+  build-and-test:
+    services:
+      database:
+        image: mongo
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: mongoCI
+          MONGO_INITDB_ROOT_PASSWORD: mongoCI
+    name: Build and Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: './welcome-service'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Check node version in .nvmrc
+        run: echo ::set-output name=NVMRC::$(cat .nvmrc)
+        id: nvm
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+      - name: Copy .env.ci
+        run: cp .env.ci .env
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm test

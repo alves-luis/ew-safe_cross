@@ -1,0 +1,32 @@
+name: Crosswalks-Location-Service - Build & Deploy
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'crosswalks-location-service/**'
+
+jobs:
+  docker:
+    name: Publish - Docker Hub
+    runs-on: ubuntu-latest
+    env:
+      REPOSITORY: ${{ secrets.CROSSWALKS_LOCATION_SERVICE_REPO }}
+    defaults:
+      run:
+        working-directory: './crosswalks-location-service'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Get version
+        run: echo ::set-output name=VERSION::$(cat .version)
+        id: version
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USER }}
+             -p ${{ secrets.DOCKER_PASS }}
+      - name: Build Docker image
+        run: docker build -t $REPOSITORY:latest -t $REPOSITORY:${{ steps.version.outputs.VERSION }} .
+      - name: Publish Docker image
+        run: docker push $REPOSITORY
+      

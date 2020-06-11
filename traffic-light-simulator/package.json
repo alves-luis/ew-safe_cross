@@ -1,0 +1,19 @@
+{
+  "name": "traffic-light-simulator",
+  "version": "1.0.0",
+  "description": "Traffic light color simulator",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "mocha tests/test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.5.6",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "mocha": "^7.1.2"
+  }
+}

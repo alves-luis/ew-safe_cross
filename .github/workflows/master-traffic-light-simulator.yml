@@ -1,0 +1,32 @@
+name: Traffic Light Simulator - Build & Deploy
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'traffic-light-simulator/**'
+
+jobs:
+  docker:
+    name: Publish - Docker Hub
+    runs-on: ubuntu-latest
+    env:
+      REPOSITORY: ${{ secrets.TRAFFIC_LIGHT_SIMULATOR_REPO }}
+    defaults:
+      run:
+        working-directory: './traffic-light-simulator'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Get version
+        run: echo ::set-output name=VERSION::$(cat .version)
+        id: version
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USER }}
+             -p ${{ secrets.DOCKER_PASS }}
+      - name: Build Docker image
+        run: docker build -t $REPOSITORY:latest -t $REPOSITORY:${{ steps.version.outputs.VERSION }} .
+      - name: Publish Docker image
+        run: docker push $REPOSITORY
+      

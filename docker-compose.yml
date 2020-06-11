@@ -1,0 +1,114 @@
+version: '3'
+services:
+  database:
+    image: 'mongo'
+    container_name: 'database'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+    volumes:
+      - ./database-seeds:/docker-entrypoint-initdb.d:ro
+    networks:
+      - private
+
+  welcome_service:
+    image: 'ambystomatidae/welcome-service:latest'
+    container_name: 'welcome_service'
+    env_file: ./welcome-service/.env.example
+    networks:
+      - private
+    depends_on:
+      - database
+
+  crosswalks_location_service:
+    image: 'ambystomatidae/crosswalks-location-service:latest'
+    container_name: 'crosswalks_location_service'
+    env_file: ./crosswalks-location-service/.env.example
+    networks:
+      - private
+    restart: on-failure
+    depends_on:
+      - database
+      - rabbit
+
+
+  spws_web_app:
+    image: 'ambystomatidae/spws-web-app:latest'
+    container_name: 'spws_web_app'
+    env_file: ./spws-web-app/.env.example
+    ports:
+      - '8080:8080'
+    networks:
+      - public
+
+  spws:
+    image: 'ambystomatidae/spws:latest'
+    container_name: 'spws'
+    env_file: ./spws/.env.example
+    ports:
+      - '3000:3000'
+    networks:
+      - private
+      - public
+    depends_on:
+      - database
+      - welcome_service
+      - crosswalks_location_service
+      - crosswalks_logger_service
+
+  rabbit:
+    build:
+      context: ./
+      dockerfile: rabbit.Dockerfile
+    container_name: 'rabbit'
+    ports:
+      - '5672:5672' #amqp
+      - '15672:15672' #http
+      - '15674:15674' #web-stomp
+    networks:
+      - private
+      - public
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 5s
+      timeout: 15s
+      retries: 1
+
+  crosswalks_current_status_service:
+    image: 'ambystomatidae/crosswalks-current-status-service:latest'
+    container_name: 'crosswalks_current_status_service'
+    env_file: './crosswalks-current-status-service/.env.example'
+    restart: on-failure
+    networks:
+      - private
+    depends_on:
+      - database
+      - rabbit
+
+  traffic_light_simulator:
+    image: 'ambystomatidae/traffic-light-simulator:latest'
+    container_name: 'traffic_light_simulator'
+    env_file: ./traffic-light-simulator/.env.example
+    restart: on-failure
+    depends_on:
+      - crosswalks_location_service
+      - rabbit
+    networks:
+      - private
+
+  crosswalks_logger_service:
+    image: 'ambystomatidae/crosswalks-logger-service:latest'
+    container_name: 'crosswalks_logger_service'
+    env_file: ./crosswalks-logger-service/.env.example
+    restart: on-failure
+    depends_on:
+      - rabbit
+      - database
+    networks:
+      - private
+
+networks:
+  private:
+    driver: bridge
+  public:
+    driver: bridge

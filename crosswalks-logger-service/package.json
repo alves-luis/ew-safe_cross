@@ -1,0 +1,20 @@
+{
+  "name": "crosswalks-logger-service",
+  "version": "1.0.0",
+  "description": "Micro-service that deals with storing data about clients entering a Crosswalk",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "mocha tests/test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.5.6",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.17"
+  },
+  "devDependencies": {
+    "mocha": "^7.1.2"
+  }
+}

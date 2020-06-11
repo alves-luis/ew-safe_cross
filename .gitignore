@@ -1,0 +1,6 @@
+.env
+pedestrian-app/node_modules/
+pedestrian-app/package-lock.json
+.DS_Store
+vehicle-app/node_modules/
+vehicle-app/package-lock.json
